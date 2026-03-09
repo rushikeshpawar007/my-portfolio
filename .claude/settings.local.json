@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx playwright --version)",
+      "Bash(npm install --save-dev @playwright/test)",
+      "Bash(npx playwright install chromium)",
+      "Bash(npx playwright test tests/carousel.spec.js --reporter=list)"
+    ]
+  }
+}
