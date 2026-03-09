@@ -113,17 +113,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sections.forEach(s => bottomNavObserver.observe(s));
 
-        // ── HEADER SHADOW ON SCROLL ──
+        // ── SCROLL HANDLER (rAF-throttled) ──
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const readProgress = document.getElementById('read-progress');
         const header = document.querySelector('header');
+        let scrollTicking = false;
         window.addEventListener('scroll', () => {
-            if (header) header.classList.toggle('scrolled', window.scrollY > 8);
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    if (header) header.classList.toggle('scrolled', window.scrollY > 8);
+                    if (scrollTopBtn) scrollTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+                    if (readProgress) {
+                        const h = document.documentElement.scrollHeight - window.innerHeight;
+                        readProgress.style.width = h > 0 ? `${(window.scrollY / h) * 100}%` : '0%';
+                    }
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
         }, { passive: true });
 
         // ── CONTACT FORM ──
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
+            let isSubmitting = false;
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                if (isSubmitting) return;
+
+                // Basic validation
+                const name = contactForm.querySelector('#name').value.trim();
+                const email = contactForm.querySelector('#email').value.trim();
+                const message = contactForm.querySelector('#message').value.trim();
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!name || !email || !message) {
+                    showToast(translations[currentLang]?.form_error_message || 'Please fill in all fields.', true);
+                    return;
+                }
+                if (!emailPattern.test(email)) {
+                    showToast('Please enter a valid email address.', true);
+                    return;
+                }
+
+                isSubmitting = true;
                 const formData = new FormData(contactForm);
                 const submitButton = contactForm.querySelector('button[type="submit"]');
                 const origText = submitButton.textContent;
@@ -144,20 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Form error:', err);
                     showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
                 })
-                .finally(() => { submitButton.disabled = false; submitButton.textContent = origText; });
+                .finally(() => { isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; });
             });
         }
 
-        // ── SCROLL TO TOP + READING PROGRESS ──
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-        const readProgress = document.getElementById('read-progress');
-        window.addEventListener('scroll', () => {
-            if (scrollTopBtn) scrollTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-            if (readProgress) {
-                const h = document.documentElement.scrollHeight - window.innerHeight;
-                readProgress.style.width = h > 0 ? `${(window.scrollY / h) * 100}%` : '0%';
-            }
-        }, { passive: true });
+        // ── SCROLL TO TOP ──
         if (scrollTopBtn) scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // ── COPY EMAIL ──
@@ -204,12 +228,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { threshold: 0 });
             expObs.observe(expSection);
 
+            let tlTicking = false;
             window.addEventListener('scroll', () => {
-                if (!isExp) return;
-                const rect = expSection.getBoundingClientRect();
-                const progress = Math.max(0, Math.min(1, -rect.top / (rect.height - window.innerHeight)));
-                timelineProgress.style.height = `${progress * 100}%`;
-            });
+                if (!isExp || tlTicking) return;
+                requestAnimationFrame(() => {
+                    const rect = expSection.getBoundingClientRect();
+                    const progress = Math.max(0, Math.min(1, -rect.top / (rect.height - window.innerHeight)));
+                    timelineProgress.style.height = `${progress * 100}%`;
+                    tlTicking = false;
+                });
+                tlTicking = true;
+            }, { passive: true });
         }
 
         // ── TIMELINE CARD ACTIVE STATE ──

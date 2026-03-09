@@ -81,6 +81,18 @@ body, p, span, li { color: var(--text-primary); }
     color: var(--heading-color);
 }
 
+/* --- FOCUS VISIBLE --- */
+:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+    outline: none;
+}
+
 /* --- NAVIGATION --- */
 header.scrolled {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(0, 0, 0, 0.06);
@@ -955,9 +967,27 @@ section + section::before {
 
 /* --- REDUCED MOTION --- */
 @media (prefers-reduced-motion: reduce) {
-    .glass-card:hover { transform: none; box-shadow: none; }
-    .section-reveal { transition: none; }
-    .stagger-item { transition: none; }
-    .waveform span { animation: none; }
-    .timeline-container { transition: none; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .glass-card:hover { transform: none; }
+    .section-reveal { opacity: 1; transform: none; }
+    .section-reveal.revealed { opacity: 1; transform: none; }
+    .stagger-item { opacity: 1; transform: none; }
+    .stagger-item.visible { opacity: 1; transform: none; }
+    .waveform span { animation: none; height: 12px; }
+    .timeline-container { transform: none; filter: none; opacity: 1; }
+    .bot-message-wrapper { opacity: 1; transform: none; }
+    .typing-indicator-apple span { animation: none; }
+    .analysis-animation .sparkle { animation: none; }
+    .expanded .expanded-content > * { opacity: 1; transform: none; animation: none; }
+    #dynamic-island-container { transition: none; }
+    #dynamic-island-container.collapsed:hover { transform: none; }
+    .timeline-logo { transform: none; }
+    .impact-card:hover { transform: none; }
+    .skill-chip:hover { transform: none; }
+    #certifications .ios-button.primary-btn:hover { transform: none; }
 }

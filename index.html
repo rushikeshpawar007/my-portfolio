@@ -63,6 +63,7 @@
 </head>
 
 <body>
+    <a href="#hero" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
     <div id="read-progress" aria-hidden="true"></div>
 
     <div class="content-wrapper">
@@ -105,8 +106,8 @@
             <section aria-labelledby="hero-heading" class="py-16 section-reveal" id="hero">
                 <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20 max-w-5xl mx-auto">
                     <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5">
-                        <img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" src="profile_bw_effect.png" width="288" />
-                        <img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" src="profile_circle_color.png" width="288" />
+                        <img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" fetchpriority="high" />
+                        <img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" fetchpriority="high" />
                     </div>
                     <div class="text-center md:text-left md:w-3/5">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--heading-color)]" id="hero-heading">Rushikesh Pawar</h1>
@@ -119,13 +120,13 @@
                         </div>
                         <div class="company-logos mt-5 flex items-center justify-center md:justify-start gap-4">
                             <div class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
-                                <img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-light" src="kpmg_logo_bw_circle.png" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-dark" src="kpmg_logo_color_circle.png" /><span class="text-xs font-medium">KPMG</span>
+                                <img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="kpmg_logo_bw_circle.png" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="kpmg_logo_color_circle.png" /><span class="text-xs font-medium">KPMG</span>
                             </div>
                             <div class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
-                                <img alt="CARIAD" class="h-8 w-8 rounded-full object-cover theme-light" src="cariad_logo_bw_circle.png" /><img alt="CARIAD" class="h-8 w-8 rounded-full object-cover theme-dark" src="cariad_logo_color_circle.png" /><span class="text-xs font-medium">CARIAD (VW)</span>
+                                <img alt="CARIAD" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="cariad_logo_bw_circle.png" /><img alt="CARIAD" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="cariad_logo_color_circle.png" /><span class="text-xs font-medium">CARIAD (VW)</span>
                             </div>
                             <div class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
-                                <img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-light" src="lecturio_logo_bw_circle.png" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-dark" src="lecturio_logo_color_circle.png" /><span class="text-xs font-medium">Lecturio</span>
+                                <img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="lecturio_logo_bw_circle.png" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="lecturio_logo_color_circle.png" /><span class="text-xs font-medium">Lecturio</span>
                             </div>
                         </div>
                         <div class="mt-8 flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4">
@@ -323,7 +324,7 @@
                     <div class="md:col-span-2 lg:col-span-3 flex justify-center items-center w-full py-4">
                         <div class="collapsed" id="dynamic-island-container">
                             <div class="collapsed-content">
-                                <span class="font-semibold text-lg" style="color: var(--apple-text-primary);">AI Finance Bot — Click to explore</span>
+                                <span class="font-semibold text-lg" style="color: var(--apple-text-primary);">AI Finance Bot Demo — Click to explore</span>
                                 <div class="waveform"><span></span><span></span><span></span><span></span></div>
                             </div>
                             <div class="expanded-content">
@@ -331,8 +332,8 @@
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                                 <div class="text-center mb-8">
-                                    <h3 class="text-3xl md:text-4xl font-semibold mb-2" style="color: var(--apple-text-primary);">AI Finance Bot</h3>
-                                    <p class="text-lg max-w-2xl mx-auto" style="color: var(--apple-text-secondary);">An interactive demo of an automated financial reporting solution I built.</p>
+                                    <h3 class="text-3xl md:text-4xl font-semibold mb-2" style="color: var(--apple-text-primary);">AI Finance Bot <span class="text-base font-normal opacity-60">(Interactive Demo)</span></h3>
+                                    <p class="text-lg max-w-2xl mx-auto" style="color: var(--apple-text-secondary);">A simulation of the automated financial reporting solution I built with n8n and Generative AI. Select a question below to see the concept in action.</p>
                                 </div>
                                 <div class="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
                                     <div id="bot-simulation-window-apple">
@@ -384,7 +385,7 @@
                                     <p class="text-sm leading-relaxed">Awarded <strong>"Best Aesthetics"</strong> by Onyx Data for dashboard design excellence.</p>
                                 </div>
                                 <a href="https://public.tableau.com/app/profile/rushikesh.pawar/viz/Spotifychallenge/Dashboard1" rel="noopener noreferrer" target="_blank" class="block rounded-xl overflow-hidden min-h-[200px] group">
-                                    <img src="spotify_dashboard.png" alt="Spotify Streaming Analytics Dashboard" class="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                                    <img src="spotify_dashboard.png" alt="Spotify Streaming Analytics Dashboard" class="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" loading="lazy" width="600" height="400" />
                                 </a>
                             </div>
                             <div class="mt-4 pt-4 border-t border-[var(--glass-border)] flex flex-wrap gap-2">
@@ -553,8 +554,9 @@
                             <i class="far fa-copy mr-1"></i>Copy
                         </button>
                     </div>
-                    <form class="max-w-xl mx-auto mb-12" data-netlify="true" id="contact-form" method="POST" name="contact">
+                    <form class="max-w-xl mx-auto mb-12" data-netlify="true" data-netlify-honeypot="bot-field" id="contact-form" method="POST" name="contact">
                         <input name="form-name" type="hidden" value="contact" />
+                        <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
                         <div class="mb-5">
                             <label class="sr-only" data-i18n-key="form_name_label" for="name">Name</label>
                             <input class="w-full bg-[var(--form-bg)] px-4 py-3 border border-[var(--glass-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]" data-i18n-key="form_name_placeholder" id="name" name="name" placeholder="Your Name" required type="text" />
@@ -596,7 +598,7 @@
     <div aria-live="polite" id="toast-container"></div>
 
     <!-- Mobile bottom nav -->
-    <nav aria-label="Mobile navigation" id="bottom-nav">
+    <nav aria-label="Mobile navigation" aria-hidden="true" role="navigation" id="bottom-nav">
         <a href="#about"><i class="fas fa-user"></i><span>About</span></a>
         <a href="#experience"><i class="fas fa-briefcase"></i><span>Work</span></a>
         <a href="#skills"><i class="fas fa-tools"></i><span>Skills</span></a>
