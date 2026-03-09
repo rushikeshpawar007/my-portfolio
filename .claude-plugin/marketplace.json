@@ -1,0 +1,12 @@
+{
+  "projectName": "portfolio-superpowers",
+  "description": "Skills library for static portfolio site development with vanilla HTML/CSS/JS, Netlify functions, and GitHub Pages deployment",
+  "owner": "Rushikesh Pawar",
+  "plugins": [
+    {
+      "name": "portfolio-superpowers",
+      "version": "1.0.0",
+      "description": "Development skills for static portfolio sites: deploy workflows, i18n, theming, serverless, and performance"
+    }
+  ]
+}

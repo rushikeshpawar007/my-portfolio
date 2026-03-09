@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Session start hook for portfolio-superpowers
+# Loads skill context on session startup/resume
+
+PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SKILLS_DIR="$PLUGIN_ROOT/skills"
+
+echo "portfolio-superpowers v1.0.0 loaded"
+echo ""
+echo "Available skills:"
+
+for skill_dir in "$SKILLS_DIR"/*/; do
+  if [ -f "$skill_dir/SKILL.md" ]; then
+    name=$(basename "$skill_dir")
+    desc=$(head -3 "$skill_dir/SKILL.md" | grep "^description:" | sed 's/^description: //')
+    echo "  - $name: $desc"
+  fi
+done
+
+echo ""
+echo "Skills activate automatically based on context."

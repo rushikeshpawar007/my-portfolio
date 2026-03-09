@@ -1,0 +1,14 @@
+{
+  "hooks": [
+    {
+      "event": "startup",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start",
+      "type": "sync"
+    },
+    {
+      "event": "resume",
+      "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start",
+      "type": "sync"
+    }
+  ]
+}
