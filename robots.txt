@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://rushizzportfolio.netlify.app/sitemap.xml

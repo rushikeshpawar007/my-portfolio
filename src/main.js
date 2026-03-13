@@ -5,7 +5,34 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // ── TRANSLATIONS ──
+        /* ── UTILITIES ─────────────────────────────────────── */
+
+        const _throttleFlags = {};
+        function throttled(key, fn, delay = 150) {
+            return function (...args) {
+                if (_throttleFlags[key]) return;
+                _throttleFlags[key] = true;
+                fn.apply(this, args);
+                setTimeout(() => { _throttleFlags[key] = false; }, delay);
+            };
+        }
+
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (isError ? ' toast-error' : '');
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 350);
+            }, 4000);
+        }
+
+        /* ── I18N / TRANSLATIONS ───────────────────────────── */
+
         let translations = {};
         try {
             translations = JSON.parse(document.getElementById('translations-data').textContent);
@@ -41,21 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
             translatePage();
         }
 
-        if (langToggleHeader) langToggleHeader.addEventListener("click", toggleLanguage);
-        if (langToggleMobile) langToggleMobile.addEventListener("click", toggleLanguage);
+        const throttledToggleLang = throttled('lang', toggleLanguage);
+        if (langToggleHeader) langToggleHeader.addEventListener("click", throttledToggleLang);
+        if (langToggleMobile) langToggleMobile.addEventListener("click", throttledToggleLang);
         translatePage();
 
-        // ── THEME TOGGLE ──
+        /* ── THEME TOGGLE ──────────────────────────────────── */
+
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
+            themeToggle.addEventListener('click', throttled('theme', () => {
                 const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', next);
                 localStorage.setItem('theme', next);
-            });
+            }));
         }
 
-        // ── MOBILE MENU ──
+        /* ── MOBILE MENU ───────────────────────────────────── */
+
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenuButton && mobileMenu) {
@@ -65,24 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        // ── TOAST HELPER ──
-        function showToast(message, isError = false) {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = 'toast' + (isError ? ' toast-error' : '');
-            toast.textContent = message;
-            container.appendChild(toast);
-            requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 350);
-            }, 4000);
-        }
+        /* ── NAV HIGHLIGHTING (unified desktop + mobile) ──── */
 
-        // ── NAV HIGHLIGHTING (desktop) ──
         const sections = document.querySelectorAll('main section[id]');
         const navLinks = document.querySelectorAll('header nav ul li a');
+        const bottomNavLinks = document.querySelectorAll('#bottom-nav a');
 
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -92,18 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         link.classList.remove('active-link');
                         if (link.getAttribute('href') === `#${id}`) link.classList.add('active-link');
                     });
-                }
-            });
-        }, { rootMargin: '0px', threshold: 0.5 });
-
-        sections.forEach(s => navObserver.observe(s));
-
-        // ── BOTTOM NAV HIGHLIGHTING (mobile) ──
-        const bottomNavLinks = document.querySelectorAll('#bottom-nav a');
-        const bottomNavObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
                     bottomNavLinks.forEach(link =>
                         link.classList.toggle('active-bottom', link.getAttribute('href') === `#${id}`)
                     );
@@ -111,9 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { rootMargin: '0px', threshold: 0.5 });
 
-        sections.forEach(s => bottomNavObserver.observe(s));
+        sections.forEach(s => navObserver.observe(s));
 
-        // ── SCROLL HANDLER (rAF-throttled) ──
+        /* ── SCROLL HANDLER (rAF-throttled) ────────────────── */
+
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         const readProgress = document.getElementById('read-progress');
         const header = document.querySelector('header');
@@ -133,7 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { passive: true });
 
-        // ── CONTACT FORM ──
+        if (scrollTopBtn) scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        /* ── CONTACT FORM ──────────────────────────────────── */
+
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
             let isSubmitting = false;
@@ -141,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 if (isSubmitting) return;
 
-                // Basic validation
                 const name = contactForm.querySelector('#name').value.trim();
                 const email = contactForm.querySelector('#email').value.trim();
                 const message = contactForm.querySelector('#message').value.trim();
@@ -181,23 +189,31 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // ── SCROLL TO TOP ──
-        if (scrollTopBtn) scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        /* ── COPY EMAIL ────────────────────────────────────── */
 
-        // ── COPY EMAIL ──
         document.querySelectorAll('.copy-email-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const email = btn.dataset.email;
                 navigator.clipboard.writeText(email).then(() => {
-                    const orig = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+                    const origNodes = Array.from(btn.childNodes).map(n => n.cloneNode(true));
+                    btn.textContent = '';
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-check mr-1';
+                    btn.appendChild(icon);
+                    btn.appendChild(document.createTextNode('Copied!'));
                     btn.disabled = true;
-                    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2000);
+                    setTimeout(() => {
+                        btn.textContent = '';
+                        origNodes.forEach(n => btn.appendChild(n));
+                        btn.disabled = false;
+                    }, 2000);
                 }).catch(() => prompt('Copy this email:', email));
             });
         });
 
-        // ── COUNT-UP ANIMATION ──
+        /* ── INTERSECTION OBSERVERS ────────────────────────── */
+
+        // Count-up animation
         const countUpObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
@@ -218,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.5 });
         document.querySelectorAll('.metric-highlight').forEach(el => countUpObs.observe(el));
 
-        // ── TIMELINE SCROLL PROGRESS ──
+        // Timeline scroll progress
         const expSection = document.getElementById('experience');
         const timelineProgress = document.querySelector('.timeline-progress');
         if (expSection && timelineProgress) {
@@ -241,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { passive: true });
         }
 
-        // ── TIMELINE CARD ACTIVE STATE ──
+        // Timeline card active state
         const timelineContainers = document.querySelectorAll('.timeline-container');
         if (timelineContainers.length) {
             const tlObs = new IntersectionObserver((entries) => {
@@ -256,32 +272,21 @@ document.addEventListener('DOMContentLoaded', () => {
             timelineContainers[0]?.classList.add('timeline-card-active');
         }
 
-        // ── SECTION REVEAL ON SCROLL ──
-        const revealObs = new IntersectionObserver((entries) => {
+        // Section reveal + stagger items (unified observer)
+        const revealObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    revealObs.unobserve(entry.target);
+                    if (entry.target.classList.contains('section-reveal')) entry.target.classList.add('revealed');
+                    if (entry.target.classList.contains('stagger-item')) entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-        document.querySelectorAll('.section-reveal').forEach(el => revealObs.observe(el));
+        document.querySelectorAll('.section-reveal, .stagger-item').forEach(el => revealObs.observe(el));
 
-        // ── STAGGER ITEMS ──
-        const staggerObs = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    staggerObs.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        /* ── KEYBOARD SHORTCUTS ────────────────────────────── */
 
-        document.querySelectorAll('.stagger-item').forEach(el => staggerObs.observe(el));
-
-
-        // ── KEYBOARD SHORTCUTS ──
         document.addEventListener('keydown', (e) => {
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
             if (e.key === 't' || e.key === 'T') {
@@ -299,11 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        /* ── AI FINANCE BOT ────────────────────────────────── */
 
-        // ── AI FINANCE BOT ──
         initFinanceBot();
 
-        // ── COPYRIGHT YEAR ──
+        /* ── COPYRIGHT YEAR ────────────────────────────────── */
+
         const yearEl = document.getElementById('copyright-year');
         if (yearEl) yearEl.textContent = new Date().getFullYear();
 
@@ -314,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/* ── AI FINANCE BOT (Dynamic Island) ── */
+/* ── AI FINANCE BOT (Dynamic Island) ──────────────────────── */
 function initFinanceBot() {
     const islandContainer = document.getElementById('dynamic-island-container');
     if (!islandContainer) return;
@@ -348,12 +354,23 @@ function initFinanceBot() {
     islandContainer.addEventListener('click', expand);
     if (closeButton) closeButton.addEventListener('click', (e) => { e.stopPropagation(); collapse(); });
 
-    function addMsg(sender, content, isHtml) {
+    function addMsg(sender, content) {
         const wrapper = document.createElement('div');
         wrapper.className = `bot-message-wrapper ${sender}-message`;
         const bubble = document.createElement('div');
         bubble.className = 'bot-message-bubble';
-        if (isHtml) bubble.innerHTML = content; else bubble.textContent = content;
+        bubble.textContent = content;
+        wrapper.appendChild(bubble);
+        messagesContainer.appendChild(wrapper);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function addMsgElement(sender, element) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `bot-message-wrapper ${sender}-message`;
+        const bubble = document.createElement('div');
+        bubble.className = 'bot-message-bubble';
+        bubble.appendChild(element);
         wrapper.appendChild(bubble);
         messagesContainer.appendChild(wrapper);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -366,7 +383,13 @@ function initFinanceBot() {
             const el = document.createElement('div');
             el.id = 'bot-typing-indicator';
             el.className = 'bot-message-wrapper bot-message';
-            el.innerHTML = `<div class="bot-message-bubble"><div class="typing-indicator-apple"><span></span><span></span><span></span></div></div>`;
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'bot-message-bubble';
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator-apple';
+            for (let i = 0; i < 3; i++) indicator.appendChild(document.createElement('span'));
+            bubbleDiv.appendChild(indicator);
+            el.appendChild(bubbleDiv);
             messagesContainer.appendChild(el);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -380,7 +403,31 @@ function initFinanceBot() {
         addMsg('user', d.question);
 
         setTimeout(() => {
-            addMsg('bot', `<div class="analysis-animation"><svg viewBox="0 0 100 50"><path d="M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10" stroke="var(--apple-blue)" fill="none" stroke-width="3" stroke-linecap="round"><animate attributeName="d" values="M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10;M 10 20 C 20 40, 30 40, 40 15 S 60 10, 70 30 S 90 40, 90 40;M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10" dur="2s" repeatCount="indefinite"/></path></svg><p class="text-xs" style="color:var(--apple-text-secondary)">Analyzing data...</p></div>`, true);
+            const svgNS = 'http://www.w3.org/2000/svg';
+            const animDiv = document.createElement('div');
+            animDiv.className = 'analysis-animation';
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('viewBox', '0 0 100 50');
+            const path = document.createElementNS(svgNS, 'path');
+            path.setAttribute('d', 'M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10');
+            path.setAttribute('stroke', 'var(--apple-blue)');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('stroke-linecap', 'round');
+            const animate = document.createElementNS(svgNS, 'animate');
+            animate.setAttribute('attributeName', 'd');
+            animate.setAttribute('values', 'M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10;M 10 20 C 20 40, 30 40, 40 15 S 60 10, 70 30 S 90 40, 90 40;M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10');
+            animate.setAttribute('dur', '2s');
+            animate.setAttribute('repeatCount', 'indefinite');
+            path.appendChild(animate);
+            svg.appendChild(path);
+            const p = document.createElement('p');
+            p.className = 'text-xs';
+            p.style.color = 'var(--apple-text-secondary)';
+            p.textContent = 'Analyzing data...';
+            animDiv.appendChild(svg);
+            animDiv.appendChild(p);
+            addMsgElement('bot', animDiv);
         }, 500);
 
         setTimeout(() => {
@@ -398,13 +445,28 @@ function initFinanceBot() {
     }
 
     function initBotUI() {
-        messagesContainer.innerHTML = '';
-        promptsContainer.innerHTML = '';
+        while (messagesContainer.firstChild) messagesContainer.firstChild.remove();
+        while (promptsContainer.firstChild) promptsContainer.firstChild.remove();
         addMsg('bot', 'Hello! I\'m a simulation of the Finance Bot. Select a question below to see how I work.');
+        const svgNS = 'http://www.w3.org/2000/svg';
         Object.keys(simData).forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'prompt-button';
-            btn.innerHTML = `<span>${simData[key].question}</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`;
+            const spanEl = document.createElement('span');
+            spanEl.textContent = simData[key].question;
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('class', 'w-4 h-4');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            const pathEl = document.createElementNS(svgNS, 'path');
+            pathEl.setAttribute('stroke-linecap', 'round');
+            pathEl.setAttribute('stroke-linejoin', 'round');
+            pathEl.setAttribute('stroke-width', '2');
+            pathEl.setAttribute('d', 'M9 5l7 7-7 7');
+            svg.appendChild(pathEl);
+            btn.appendChild(spanEl);
+            btn.appendChild(svg);
             btn.onclick = () => handleQ(key);
             promptsContainer.appendChild(btn);
         });

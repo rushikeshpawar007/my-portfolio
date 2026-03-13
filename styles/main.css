@@ -137,6 +137,7 @@ header nav ul li a.active-link::after { width: 100%; }
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
     transition: transform 220ms ease, box-shadow 220ms ease;
     contain: layout style;
+    will-change: transform;
 }
 
 .glass-card:hover {
@@ -324,6 +325,7 @@ html[data-theme='light'] .primary-btn { color: white; }
         filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     z-index: 1;
     contain: layout style;
+    will-change: transform, filter;
 }
 
 .timeline-container.timeline-card-active {
@@ -853,11 +855,13 @@ html[data-theme='dark'] {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
+    will-change: opacity, transform;
 }
 
 .section-reveal.revealed {
     opacity: 1;
     transform: translateY(0);
+    will-change: auto;
 }
 
 /* Staggered children */
@@ -866,11 +870,13 @@ html[data-theme='dark'] {
     transform: translateY(16px);
     transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
 }
 
 .stagger-item.visible {
     opacity: 1;
     transform: translateY(0);
+    will-change: auto;
 }
 
 .stagger-item:nth-child(1) { transition-delay: 0.05s; }
@@ -990,4 +996,24 @@ section + section::before {
     .impact-card:hover { transform: none; }
     .skill-chip:hover { transform: none; }
     #certifications .ios-button.primary-btn:hover { transform: none; }
+}
+
+/* --- HIGH CONTRAST --- */
+@media (prefers-contrast: more) {
+    :root {
+        --glass-bg: var(--bg-color);
+        --glass-border: currentColor;
+    }
+    .glass-card {
+        border-width: 2px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    .skill-tag-sm, .skill-chip, .quick-fact {
+        border-width: 2px;
+    }
+    .section-reveal, .stagger-item {
+        opacity: 1;
+        transform: none;
+    }
 }
