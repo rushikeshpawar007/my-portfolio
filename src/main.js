@@ -172,20 +172,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitButton.disabled = true;
                 submitButton.textContent = translations[currentLang]?.form_sending_button || 'Sending...';
 
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 15000);
+
                 fetch("/", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: new URLSearchParams(formData).toString(),
+                    signal: controller.signal,
                 })
                 .then(() => {
                     showToast(translations[currentLang]?.form_success_message || "Thank you! Your message has been sent.");
                     contactForm.reset();
                 })
                 .catch((err) => {
-                    console.error('Form error:', err);
-                    showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
+                    if (err.name === 'AbortError') {
+                        showToast('Request timed out. Please try again.', true);
+                    } else {
+                        console.error('Form error:', err);
+                        showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
+                    }
                 })
-                .finally(() => { isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; });
+                .finally(() => { clearTimeout(timeout); isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; });
             });
         }
 
@@ -207,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         origNodes.forEach(n => btn.appendChild(n));
                         btn.disabled = false;
                     }, 2000);
-                }).catch(() => prompt('Copy this email:', email));
+                }).catch(() => showToast(email, false));
             });
         });
 
