@@ -48,8 +48,8 @@
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="preload" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" /><style>body{visibility:visible!important}</style></noscript>
+    <link as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="preload" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" /><style>body{visibility:visible!important}</style></noscript>
     <!-- Theme init (before first paint) -->
     <script>
         (function() {
@@ -107,11 +107,13 @@
             <section aria-labelledby="hero-heading" class="py-16 section-reveal" id="hero">
                 <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20 max-w-5xl mx-auto">
                     <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5">
-                        <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" fetchpriority="high" /></picture>
-                        <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" fetchpriority="high" /></picture>
+                        <div class="profile-ring-glow">
+                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" fetchpriority="high" /></picture>
+                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" fetchpriority="high" /></picture>
+                        </div>
                     </div>
                     <div class="text-center md:text-left md:w-3/5">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--heading-color)]" id="hero-heading">Rushikesh Pawar</h1>
+                        <h1 class="hero-name text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight" id="hero-heading">Rushikesh Pawar</h1>
                         <p class="text-xl md:text-2xl mt-2 text-[var(--accent-color)] font-semibold">Business & Data Analyst <span class="text-[var(--text-color)] font-normal text-lg">| Berlin</span></p>
                         <p class="hero-tagline mt-4 text-[var(--text-primary)]" data-i18n-key="hero_tagline">I cut manual reporting by 40% at Lecturio by building automated Power BI dashboards that finance and sales teams actually use.</p>
                         <div class="mt-5 flex items-center justify-center md:justify-start gap-2 text-sm text-[var(--text-color)]">
@@ -138,6 +140,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="scroll-indicator" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5"/><path d="M7 6l5 5 5-5"/></svg>
+                </div>
             </section>
 
             <!-- ── IMPACT SUMMARY ── -->
@@ -159,7 +164,7 @@
             </section>
 
             <!-- ── ABOUT ── -->
-            <section aria-labelledby="about-heading" class="py-16 section-reveal" id="about">
+            <section aria-labelledby="about-heading" class="py-16 section-reveal reveal-left" id="about">
                 <div class="glass-card p-8 md:p-12">
                     <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="about-heading">
                         <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n-key="about_title">About Me</span></span>
@@ -171,7 +176,7 @@
             </section>
 
             <!-- ── EXPERIENCE ── -->
-            <section aria-labelledby="experience-heading" class="py-16 section-reveal" id="experience">
+            <section aria-labelledby="experience-heading" class="py-16 section-reveal reveal-right" id="experience">
                 <h2 class="text-3xl font-bold text-center mb-16 section-title text-[var(--heading-color)]" id="experience-heading">
                     <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M20 10h-2V8a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2H8a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2zm-4 0v-2h-4v2h4z"/></svg><span data-i18n-key="experience_title">Work Experience</span></span>
                 </h2>
@@ -487,7 +492,7 @@
             </section>
 
             <!-- ── SKILLS ── -->
-            <section aria-labelledby="skills-heading" class="py-16 section-reveal" id="skills">
+            <section aria-labelledby="skills-heading" class="py-16 section-reveal reveal-left" id="skills">
                 <h2 class="text-3xl font-bold text-center mb-12 section-title text-[var(--heading-color)]" id="skills-heading">
                     <span class="section-title"><i class="fas fa-tools text-2xl"></i><span data-i18n-key="toolbelt_title">My Tech Toolbelt</span></span>
                 </h2>
@@ -553,7 +558,7 @@
             </section>
 
             <!-- ── EDUCATION & CERTIFICATIONS (combined) ── -->
-            <section aria-labelledby="education-heading" class="py-16 section-reveal" id="education">
+            <section aria-labelledby="education-heading" class="py-16 section-reveal reveal-right" id="education">
                 <div class="glass-card p-8 md:p-12">
                     <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="education-heading">
                         <span class="section-title"><i class="fas fa-graduation-cap text-2xl"></i><span data-i18n-key="education_title">Education</span></span>
@@ -596,7 +601,7 @@
             </section>
 
             <!-- ── CONTACT ── -->
-            <section aria-labelledby="contact-heading" class="py-16 section-reveal" id="contact">
+            <section aria-labelledby="contact-heading" class="py-16 section-reveal reveal-left" id="contact">
                 <div class="glass-card p-8 md:p-12">
                     <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="contact-heading">
                         <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-i18n-key="contact_title">Let&rsquo;s Work Together</span></span>
