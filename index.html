@@ -113,17 +113,17 @@
                         </div>
                     </div>
                     <div class="text-center md:text-left md:w-3/5">
-                        <h1 class="hero-name text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight" id="hero-heading">Rushikesh Pawar</h1>
-                        <p class="text-xl md:text-2xl mt-2 text-[var(--accent-color)] font-semibold">Business & Data Analyst <span class="text-[var(--text-color)] font-normal text-lg">| Berlin</span></p>
-                        <p class="hero-tagline mt-4 text-[var(--text-primary)]" data-i18n-key="hero_tagline">I cut manual reporting by 40% at Lecturio by building automated Power BI dashboards that finance and sales teams actually use.</p>
-                        <div class="mt-5 flex items-center justify-center md:justify-start gap-2 text-sm text-[var(--text-color)]">
+                        <h1 class="hero-name hero-stagger text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight" id="hero-heading">Rushikesh Pawar</h1>
+                        <p class="hero-stagger text-xl md:text-2xl mt-2 text-[var(--accent-color)] font-semibold"><span id="typing-role">Business &amp; Data Analyst</span><span class="typing-cursor" aria-hidden="true"></span> <span class="text-[var(--text-color)] font-normal text-lg">| Berlin</span></p>
+                        <p class="hero-stagger hero-tagline mt-4 text-[var(--text-primary)]" data-i18n-key="hero_tagline">I cut manual reporting by 40% at Lecturio by building automated Power BI dashboards that finance and sales teams actually use.</p>
+                        <div class="hero-stagger mt-5 flex items-center justify-center md:justify-start gap-2 text-sm text-[var(--text-color)]">
                             <span>15+ Production Dashboards</span>
                             <span class="opacity-40">|</span>
                             <span>40% Less Manual Work</span>
                             <span class="opacity-40">|</span>
                             <span>3 Enterprise BI Stacks</span>
                         </div>
-                        <div class="company-logos mt-5 flex items-center justify-center md:justify-start gap-4">
+                        <div class="hero-stagger company-logos mt-5 flex items-center justify-center md:justify-start gap-4">
                             <div class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
                                 <picture><source srcset="kpmg_logo_bw_circle.webp" type="image/webp" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="kpmg_logo_bw_circle.png" /></picture><picture><source srcset="kpmg_logo_color_circle.webp" type="image/webp" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="kpmg_logo_color_circle.png" /></picture><span class="text-xs font-medium">KPMG</span>
                             </div>
@@ -134,7 +134,7 @@
                                 <picture><source srcset="lecturio_logo_bw_circle.webp" type="image/webp" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="lecturio_logo_bw_circle.png" /></picture><picture><source srcset="lecturio_logo_color_circle.webp" type="image/webp" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="lecturio_logo_color_circle.png" /></picture><span class="text-xs font-medium">Lecturio</span>
                             </div>
                         </div>
-                        <div class="mt-8 flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4">
+                        <div class="hero-stagger mt-8 flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4">
                             <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" href="https://drive.google.com/file/d/1h5x2iMUSEM0KVWgJ6Z1KLcg8tByktmYt/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
                             <a class="ios-button secondary-btn w-full sm:w-auto" data-i18n-key="see_my_work_button" href="#dynamic-island-container">View Key Project</a>
                         </div>
@@ -165,13 +165,25 @@
 
             <!-- ── ABOUT ── -->
             <section aria-labelledby="about-heading" class="py-16 section-reveal reveal-left" id="about">
-                <div class="glass-card p-8 md:p-12">
-                    <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="about-heading">
-                        <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n-key="about_title">About Me</span></span>
-                    </h2>
-                    <div class="max-w-3xl mx-auto text-lg leading-relaxed">
-                        <p data-i18n-key="about_intro">I'm a Senior Business Analyst at Lecturio GmbH in Berlin with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.</p>
+                <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="about-heading">
+                    <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span data-i18n-key="about_title">About Me</span></span>
+                </h2>
+                <div class="about-grid max-w-4xl mx-auto mb-8">
+                    <div class="glass-card impact-card p-5 stagger-item">
+                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">4+</span>
+                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_years">Years of finance analytics across EdTech, Automotive & Consulting</p>
                     </div>
+                    <div class="glass-card impact-card p-5 stagger-item">
+                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">3</span>
+                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_industries">Industries: Lecturio, CARIAD/VW, KPMG</p>
+                    </div>
+                    <div class="glass-card impact-card p-5 stagger-item">
+                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">E2E</span>
+                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_builder">From Power BI dashboards to production RAG chatbots</p>
+                    </div>
+                </div>
+                <div class="glass-card p-8 md:p-10 max-w-3xl mx-auto">
+                    <p class="text-base leading-relaxed" data-i18n-key="about_intro">I'm a Senior Business Analyst at Lecturio GmbH in Berlin with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.</p>
                 </div>
             </section>
 
@@ -497,7 +509,7 @@
                     <span class="section-title"><i class="fas fa-tools text-2xl"></i><span data-i18n-key="toolbelt_title">My Tech Toolbelt</span></span>
                 </h2>
                 <div class="max-w-3xl mx-auto space-y-6">
-                    <div class="glass-card p-5 stagger-item">
+                    <div class="glass-card skill-card-core p-5 stagger-item">
                         <div class="flex items-center gap-3 mb-3">
                             <i class="fas fa-chart-bar text-[var(--accent-color)]"></i>
                             <h3 class="font-semibold text-[var(--heading-color)]">Data Visualization & BI</h3>
@@ -509,9 +521,9 @@
                             <span class="skill-chip">Looker</span>
                             <span class="skill-chip">Qlik Sense</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70">15+ production dashboards built &middot; 4+ years daily use</p>
+                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70"><span class="metric-highlight">15+</span> production dashboards built &middot; <span class="metric-highlight">4+</span> years daily use</p>
                     </div>
-                    <div class="glass-card p-5 stagger-item">
+                    <div class="glass-card skill-card-core p-5 stagger-item">
                         <div class="flex items-center gap-3 mb-3">
                             <i class="fas fa-database text-[var(--accent-color)]"></i>
                             <h3 class="font-semibold text-[var(--heading-color)]">Data Engineering & Analytics</h3>
@@ -524,12 +536,12 @@
                             <span class="skill-chip">dbt</span>
                             <span class="skill-chip">Airflow</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70">Complex queries, data modeling, ETL/ELT pipelines &middot; 5 database platforms</p>
+                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70">Complex queries, data modeling, ETL/ELT pipelines &middot; <span class="metric-highlight">5</span> database platforms</p>
                     </div>
-                    <div class="glass-card p-5 stagger-item">
+                    <div class="glass-card skill-card-highlight p-5 stagger-item">
                         <div class="flex items-center gap-3 mb-3">
-                            <i class="fas fa-robot text-[var(--accent-color)]"></i>
-                            <h3 class="font-semibold text-[var(--heading-color)]">Automation & AI</h3>
+                            <i class="fas fa-robot text-[var(--accent-secondary)]"></i>
+                            <h3 class="font-semibold skill-highlight-title">Automation & AI</h3>
                         </div>
                         <div class="flex flex-wrap gap-3">
                             <span class="skill-chip"><img src="n8n.png" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />n8n</span>
@@ -603,9 +615,14 @@
             <!-- ── CONTACT ── -->
             <section aria-labelledby="contact-heading" class="py-16 section-reveal reveal-left" id="contact">
                 <div class="glass-card p-8 md:p-12">
-                    <h2 class="text-3xl font-bold text-center mb-8 section-title text-[var(--heading-color)]" id="contact-heading">
+                    <h2 class="text-3xl font-bold text-center mb-6 section-title text-[var(--heading-color)]" id="contact-heading">
                         <span class="section-title"><svg aria-hidden="true" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span data-i18n-key="contact_title">Let&rsquo;s Work Together</span></span>
                     </h2>
+                    <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+                        <span class="quick-fact"><i class="fas fa-map-marker-alt text-[var(--accent-color)]"></i> Berlin, Germany</span>
+                        <span class="quick-fact"><i class="fas fa-clock text-[var(--accent-color)]"></i> <span data-i18n-key="contact_response">Response within 24h</span></span>
+                        <span class="contact-available-badge"><i class="fas fa-check-circle"></i> <span data-i18n-key="contact_available">Open to opportunities</span></span>
+                    </div>
                     <p class="text-center text-sm mb-6 text-[var(--text-color)]" data-i18n-key="contact_availability">Currently at Lecturio GmbH in Berlin — open to new opportunities in data analytics, BI, and AI-powered reporting.</p>
                     <div class="flex items-center justify-center gap-3 mb-8">
                         <a class="text-[var(--accent-color)] font-mono text-sm" href="mailto:rushikeshpawar197@gmail.com">rushikeshpawar197@gmail.com</a>
@@ -616,19 +633,19 @@
                     <form class="max-w-xl mx-auto mb-12" data-netlify="true" data-netlify-honeypot="bot-field" id="contact-form" method="POST" name="contact">
                         <input name="form-name" type="hidden" value="contact" />
                         <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
-                        <div class="mb-5">
+                        <div class="mb-5 stagger-item">
                             <label class="sr-only" data-i18n-key="form_name_label" for="name">Name</label>
-                            <input class="w-full bg-[var(--form-bg)] px-4 py-3 border border-[var(--glass-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]" data-i18n-key="form_name_placeholder" id="name" name="name" placeholder="Your Name" required type="text" />
+                            <input class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_name_placeholder" id="name" name="name" placeholder="Your Name" required type="text" />
                         </div>
-                        <div class="mb-5">
+                        <div class="mb-5 stagger-item">
                             <label class="sr-only" data-i18n-key="form_email_label" for="email">Email</label>
-                            <input class="w-full bg-[var(--form-bg)] px-4 py-3 border border-[var(--glass-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]" data-i18n-key="form_email_placeholder" id="email" name="email" placeholder="Your Email" required type="email" />
+                            <input class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_email_placeholder" id="email" name="email" placeholder="Your Email" required type="email" />
                         </div>
-                        <div class="mb-6">
+                        <div class="mb-6 stagger-item">
                             <label class="sr-only" data-i18n-key="form_message_label" for="message">Message</label>
-                            <textarea class="w-full bg-[var(--form-bg)] px-4 py-3 border border-[var(--glass-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]" data-i18n-key="form_message_placeholder" id="message" name="message" placeholder="Your Message" required rows="4"></textarea>
+                            <textarea class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_message_placeholder" id="message" name="message" placeholder="Your Message" required rows="4"></textarea>
                         </div>
-                        <div class="text-center">
+                        <div class="text-center stagger-item">
                             <button class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="form_send_button" type="submit">Send Message</button>
                         </div>
                     </form>
@@ -637,16 +654,21 @@
         </main>
 
         <!-- ════════ FOOTER ════════ -->
-        <footer class="text-inherit opacity-70 py-8">
+        <footer class="py-12">
             <div class="container mx-auto px-6 text-center">
-                <div class="flex justify-center items-center space-x-6 mb-4 text-2xl">
-                    <a aria-label="GitHub" class="hover:text-[var(--accent-color)]" href="https://github.com/rushikeshpawar007" rel="noopener noreferrer" target="_blank"><i class="fab fa-github"></i></a>
-                    <a aria-label="LinkedIn" class="hover:text-[var(--accent-color)]" href="https://www.linkedin.com/in/rushikesh-pawar-261b9215b/" rel="noopener noreferrer" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a aria-label="Email" class="hover:text-[var(--accent-color)]" href="mailto:rushikeshpawar197@gmail.com"><i class="far fa-envelope"></i></a>
-                    <a aria-label="Blog" class="hover:text-[var(--accent-color)]" href="https://rushikeshpawar.hashnode.dev/" rel="noopener noreferrer" target="_blank"><i class="fas fa-blog"></i></a>
+                <div class="flex justify-center items-center space-x-6 mb-5 text-2xl">
+                    <a aria-label="GitHub" class="footer-social" href="https://github.com/rushikeshpawar007" rel="noopener noreferrer" target="_blank"><i class="fab fa-github"></i></a>
+                    <a aria-label="LinkedIn" class="footer-social" href="https://www.linkedin.com/in/rushikesh-pawar-261b9215b/" rel="noopener noreferrer" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a aria-label="Email" class="footer-social" href="mailto:rushikeshpawar197@gmail.com"><i class="far fa-envelope"></i></a>
+                    <a aria-label="Blog" class="footer-social" href="https://rushikeshpawar.hashnode.dev/" rel="noopener noreferrer" target="_blank"><i class="fas fa-blog"></i></a>
                 </div>
-                <p class="text-sm">&copy; <span id="copyright-year"></span> Rushikesh Pawar. All Rights Reserved.</p>
-                <p class="text-xs mt-2 opacity-50">Built with vanilla JS, Tailwind CSS v4, and 79 E2E tests. Deployed on Netlify.</p>
+                <div class="flex flex-wrap justify-center gap-2 mb-5">
+                    <span class="skill-tag-sm">Vanilla JS</span>
+                    <span class="skill-tag-sm">Tailwind CSS v4</span>
+                    <span class="skill-tag-sm">79 E2E Tests</span>
+                    <span class="skill-tag-sm">Netlify</span>
+                </div>
+                <p class="text-sm text-[var(--text-color)]">&copy; <span id="copyright-year"></span> Rushikesh Pawar</p>
             </div>
         </footer>
     </div>
@@ -710,7 +732,12 @@
         "form_send_button": "Send Message",
         "form_sending_button": "Sending...",
         "form_success_message": "Thank you! Your message has been sent.",
-        "form_error_message": "Sorry, an error occurred. Please try again."
+        "form_error_message": "Sorry, an error occurred. Please try again.",
+        "about_years": "Years of finance analytics across EdTech, Automotive & Consulting",
+        "about_industries": "Industries: Lecturio, CARIAD/VW, KPMG",
+        "about_builder": "From Power BI dashboards to production RAG chatbots",
+        "contact_response": "Response within 24h",
+        "contact_available": "Open to opportunities"
     },
     "de": {
         "lang_toggle_title": "Sprache wechseln",
@@ -753,7 +780,12 @@
         "form_send_button": "Nachricht senden",
         "form_sending_button": "Wird gesendet...",
         "form_success_message": "Vielen Dank! Ihre Nachricht wurde gesendet.",
-        "form_error_message": "Leider ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+        "form_error_message": "Leider ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        "about_years": "Jahre Finance-Analytics in EdTech, Automotive & Beratung",
+        "about_industries": "Branchen: Lecturio, CARIAD/VW, KPMG",
+        "about_builder": "Von Power BI-Dashboards bis zu produktiven RAG-Chatbots",
+        "contact_response": "Antwort innerhalb von 24h",
+        "contact_available": "Offen f\u00fcr neue M\u00f6glichkeiten"
     }
 }
 </script>

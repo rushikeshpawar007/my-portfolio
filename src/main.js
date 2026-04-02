@@ -141,6 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (scrollTopBtn) scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        /* ── CURSOR GLOW ON GLASS CARDS ────────────────────── */
+
+        if (window.matchMedia('(hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.querySelectorAll('.glass-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                });
+            });
+        }
+
         /* ── CONTACT FORM ──────────────────────────────────── */
 
         const contactForm = document.getElementById('contact-form');
@@ -311,6 +323,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+
+        /* ── TYPING SUBTITLE ────────────────────────────────── */
+
+        const typingEl = document.getElementById('typing-role');
+        if (typingEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const roles = {
+                en: ['Business & Data Analyst', 'Dashboard Builder', 'Automation Engineer'],
+                de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsingenieur']
+            };
+            let roleIdx = 0;
+
+            function typeRole() {
+                const list = roles[currentLang] || roles.en;
+                roleIdx = (roleIdx + 1) % list.length;
+                const target = list[roleIdx];
+                const current = typingEl.textContent;
+                let i = current.length;
+
+                // Delete
+                const delTimer = setInterval(() => {
+                    if (i <= 0) {
+                        clearInterval(delTimer);
+                        let j = 0;
+                        // Type
+                        const typeTimer = setInterval(() => {
+                            typingEl.textContent = target.slice(0, j + 1);
+                            j++;
+                            if (j >= target.length) clearInterval(typeTimer);
+                        }, 60);
+                    } else {
+                        i--;
+                        typingEl.textContent = current.slice(0, i);
+                    }
+                }, 30);
+            }
+
+            setInterval(typeRole, 4000);
+        }
 
         /* ── AI FINANCE BOT ────────────────────────────────── */
 
