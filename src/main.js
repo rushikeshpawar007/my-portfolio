@@ -153,6 +153,40 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        /* ── COOKIE CONSENT (GDPR) ─────────────────────────── */
+
+        const consentBanner = document.getElementById('cookie-consent-banner');
+        if (consentBanner) {
+            let storedConsent = null;
+            try { storedConsent = localStorage.getItem('cookie-consent'); } catch (e) {}
+            if (!storedConsent) {
+                consentBanner.hidden = false;
+            }
+            const setConsent = (granted) => {
+                try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch (e) {}
+                if (typeof gtag === 'function') {
+                    gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
+                }
+                consentBanner.hidden = true;
+            };
+            document.getElementById('cookie-accept')?.addEventListener('click', () => setConsent(true));
+            document.getElementById('cookie-decline')?.addEventListener('click', () => setConsent(false));
+            document.getElementById('reopen-cookie-consent')?.addEventListener('click', () => { consentBanner.hidden = false; });
+        }
+
+        /* ── GA EVENT TRACKING (data-ga-event) ─────────────── */
+
+        document.querySelectorAll('[data-ga-event]').forEach((el) => {
+            el.addEventListener('click', () => {
+                if (typeof gtag === 'function') {
+                    gtag('event', el.dataset.gaEvent, {
+                        link_url: el.href || '',
+                        link_text: (el.textContent || '').trim().slice(0, 80),
+                    });
+                }
+            });
+        });
+
         /* ── CONTACT FORM ──────────────────────────────────── */
 
         const contactForm = document.getElementById('contact-form');
@@ -196,6 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(() => {
                     showToast(translations[currentLang]?.form_success_message || "Thank you! Your message has been sent.");
                     contactForm.reset();
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'contact_form_submit', { form_name: 'contact', language: currentLang });
+                    }
                 })
                 .catch((err) => {
                     if (err.name === 'AbortError') {

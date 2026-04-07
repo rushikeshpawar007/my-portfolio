@@ -2,13 +2,28 @@
 <html class="scroll-smooth" lang="en">
 
 <head>
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) with Consent Mode v2 (GDPR) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H2TJQ5H08S"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      // Default: deny everything until user consents (GDPR-safe for EU visitors)
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500
+      });
+      // Restore prior consent if user already chose
+      try {
+        const stored = localStorage.getItem('cookie-consent');
+        if (stored === 'granted') {
+          gtag('consent', 'update', { analytics_storage: 'granted' });
+        }
+      } catch (e) {}
       gtag('js', new Date());
-      gtag('config', 'G-H2TJQ5H08S');
+      gtag('config', 'G-H2TJQ5H08S', { anonymize_ip: true });
     </script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -72,6 +87,16 @@
 </head>
 
 <body>
+    <!-- Cookie consent banner (GDPR) -->
+    <div id="cookie-consent-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden
+         style="position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:9999;max-width:640px;margin:0 auto;padding:1rem 1.25rem;border-radius:14px;background:rgba(20,20,20,0.92);color:#fff;backdrop-filter:blur(12px);box-shadow:0 10px 40px rgba(0,0,0,0.35);font-size:0.9rem;display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;justify-content:space-between;">
+      <span data-i18n-key="cookie_consent_text" style="flex:1 1 260px;">This site uses cookies for analytics (Google Analytics) to understand traffic. You can accept or decline.</span>
+      <span style="display:flex;gap:0.5rem;flex-shrink:0;">
+        <button id="cookie-decline" type="button" data-i18n-key="cookie_decline" style="padding:0.5rem 0.9rem;border-radius:10px;border:1px solid rgba(255,255,255,0.25);background:transparent;color:#fff;cursor:pointer;">Decline</button>
+        <button id="cookie-accept" type="button" data-i18n-key="cookie_accept" style="padding:0.5rem 0.9rem;border-radius:10px;border:0;background:#0a84ff;color:#fff;cursor:pointer;">Accept</button>
+      </span>
+    </div>
+
     <a href="#hero" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
     <div id="read-progress" aria-hidden="true"></div>
 
@@ -143,7 +168,7 @@
                             </div>
                         </div>
                         <div class="hero-stagger mt-8 flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4">
-                            <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" href="https://drive.google.com/file/d/1h5x2iMUSEM0KVWgJ6Z1KLcg8tByktmYt/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
+                            <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" data-ga-event="cv_download" href="https://drive.google.com/file/d/1h5x2iMUSEM0KVWgJ6Z1KLcg8tByktmYt/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
                             <a class="ios-button secondary-btn w-full sm:w-auto" data-i18n-key="see_my_work_button" href="#dynamic-island-container">View Key Project</a>
                         </div>
                     </div>
@@ -677,6 +702,13 @@
                     <span class="skill-tag-sm">Netlify</span>
                 </div>
                 <p class="text-sm text-[var(--text-color)]">&copy; <span id="copyright-year"></span> Rushikesh Pawar</p>
+                <p class="text-xs text-[var(--text-color)] mt-3 opacity-80">
+                    <a href="privacy.html" data-i18n-key="footer_privacy" class="hover:underline">Privacy Policy</a>
+                    <span aria-hidden="true"> · </span>
+                    <a href="impressum.html" data-i18n-key="footer_impressum" class="hover:underline">Impressum</a>
+                    <span aria-hidden="true"> · </span>
+                    <button type="button" id="reopen-cookie-consent" data-i18n-key="footer_cookie_settings" class="hover:underline" style="background:none;border:0;padding:0;color:inherit;cursor:pointer;font:inherit;">Cookie Settings</button>
+                </p>
             </div>
         </footer>
     </div>
@@ -701,6 +733,12 @@
 {
     "en": {
         "lang_toggle_title": "Switch Language",
+        "cookie_consent_text": "This site uses cookies for analytics (Google Analytics) to understand traffic. You can accept or decline.",
+        "cookie_accept": "Accept",
+        "cookie_decline": "Decline",
+        "footer_privacy": "Privacy Policy",
+        "footer_impressum": "Impressum",
+        "footer_cookie_settings": "Cookie Settings",
         "nav_about": "About",
         "nav_experience": "Experience",
         "nav_skills": "Skills",
@@ -749,6 +787,12 @@
     },
     "de": {
         "lang_toggle_title": "Sprache wechseln",
+        "cookie_consent_text": "Diese Seite verwendet Cookies für Analysen (Google Analytics), um den Traffic zu verstehen. Du kannst zustimmen oder ablehnen.",
+        "cookie_accept": "Akzeptieren",
+        "cookie_decline": "Ablehnen",
+        "footer_privacy": "Datenschutzerklärung",
+        "footer_impressum": "Impressum",
+        "footer_cookie_settings": "Cookie-Einstellungen",
         "nav_about": "\u00dcber",
         "nav_experience": "Erfahrung",
         "nav_skills": "F\u00e4higkeiten",
