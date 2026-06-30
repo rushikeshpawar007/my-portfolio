@@ -34,13 +34,6 @@ module.exports = [
                 exports: "writable",
                 global: "writable",
                 console: "readonly",
-                // Jest globals
-                jest: "readonly",
-                describe: "readonly",
-                test: "readonly",
-                expect: "readonly",
-                beforeEach: "readonly",
-                afterEach: "readonly",
             },
         },
         rules: {

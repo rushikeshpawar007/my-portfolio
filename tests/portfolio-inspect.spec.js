@@ -577,11 +577,12 @@ test.describe('Contact Form', () => {
     expect(type).toBe('email');
   });
 
-  test('hidden form-name field exists for Netlify', async ({ page }) => {
-    const hidden = page.locator('input[name="form-name"]');
+  test('hidden access_key field exists for Web3Forms', async ({ page }) => {
+    const hidden = page.locator('input[name="access_key"]');
     await expect(hidden).toBeAttached();
     expect(await hidden.getAttribute('type')).toBe('hidden');
-    expect(await hidden.getAttribute('value')).toBe('contact');
+    // form posts to the Web3Forms endpoint
+    expect(await page.locator('#contact-form').getAttribute('action')).toContain('web3forms.com');
   });
 
   test('copy email button exists and has data-email', async ({ page }) => {

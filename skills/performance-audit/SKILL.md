@@ -56,12 +56,11 @@ Images are the #1 performance bottleneck for portfolio sites.
 - Use semantic HTML for better parser efficiency
 - Preconnect to external origins (fonts, APIs)
 
-### 6. CACHING (netlify.toml)
+### 6. CACHING (GitHub Pages CDN)
 
-Current setup:
-- PNGs: 1 year, immutable (good for static assets)
-- JS/CSS: must-revalidate (good for cache-busting)
-- Verify `Cache-Control` headers match asset update frequency
+GitHub Pages serves assets through its Fastly CDN with a fixed `Cache-Control` (~10 min) —
+per-asset cache headers are not configurable. Cache-busting therefore relies on content changes
+plus the short TTL; for long-lived assets prefer hashed/renamed filenames over header tuning.
 
 ## Performance Budget
 

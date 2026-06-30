@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!t) return;
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                     el.placeholder = t;
+                } else if (el.hasAttribute('data-i18n-html')) {
+                    // Author-controlled translation strings only (safe, static markup like <span>/<strong>)
+                    el.innerHTML = t;
                 } else if (el.children.length === 0) {
                     el.textContent = t;
                 }
@@ -66,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function toggleLanguage() {
             currentLang = currentLang === 'de' ? 'en' : 'de';
             translatePage();
+            syncTypingRole();
         }
 
         const throttledToggleLang = throttled('lang', toggleLanguage);
@@ -218,21 +222,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitButton.disabled = true;
                 submitButton.textContent = translations[currentLang]?.form_sending_button || 'Sending...';
 
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 15000);
-
-                fetch("/", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams(formData).toString(),
-                    signal: controller.signal,
-                })
-                .then(() => {
+                const restore = () => { isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; };
+                const finishOk = () => {
                     showToast(translations[currentLang]?.form_success_message || "Thank you! Your message has been sent.");
                     contactForm.reset();
                     if (typeof gtag === 'function') {
                         gtag('event', 'contact_form_submit', { form_name: 'contact', language: currentLang });
                     }
+                };
+
+                // Fallback: until a Web3Forms access key is configured, open a pre-filled email draft.
+                const accessKey = (contactForm.querySelector('[name="access_key"]')?.value || '').trim();
+                if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+                    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+                    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+                    window.location.href = `mailto:rushikeshpawar197@gmail.com?subject=${subject}&body=${body}`;
+                    contactForm.reset();
+                    restore();
+                    return;
+                }
+
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 15000);
+
+                fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    body: formData,
+                    signal: controller.signal,
+                })
+                .then(async (response) => {
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok || !data.success) throw new Error(data.message || 'Submission failed');
+                    finishOk();
                 })
                 .catch((err) => {
                     if (err.name === 'AbortError') {
@@ -242,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
                     }
                 })
-                .finally(() => { clearTimeout(timeout); isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; });
+                .finally(() => { clearTimeout(timeout); restore(); });
             });
         }
 
@@ -275,6 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 const el = entry.target;
+                // Respect reduced-motion: leave the final value as-is (no count-up)
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { obs.unobserve(el); return; }
                 const match = el.textContent.trim().match(/^(\d+)(%|x|\+)?$/);
                 if (!match) return;
                 const target = parseInt(match[1], 10);
@@ -364,15 +387,21 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── TYPING SUBTITLE ────────────────────────────────── */
 
         const typingEl = document.getElementById('typing-role');
-        if (typingEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            const roles = {
-                en: ['Business & Data Analyst', 'Dashboard Builder', 'Automation Engineer'],
-                de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsingenieur']
-            };
-            let roleIdx = 0;
+        const roleList = {
+            en: ['Business & Data Analyst', 'Dashboard Builder', 'Automation Specialist'],
+            de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsspezialist']
+        };
+        let roleIdx = 0;
 
+        function syncTypingRole() {
+            if (!typingEl) return;
+            const list = roleList[currentLang] || roleList.en;
+            typingEl.textContent = list[roleIdx] || list[0];
+        }
+
+        if (typingEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             function typeRole() {
-                const list = roles[currentLang] || roles.en;
+                const list = roleList[currentLang] || roleList.en;
                 roleIdx = (roleIdx + 1) % list.length;
                 const target = list[roleIdx];
                 const current = typingEl.textContent;

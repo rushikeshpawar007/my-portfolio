@@ -522,6 +522,12 @@ html[data-theme='light'] .primary-btn { color: white; }
     font-weight: 600;
 }
 
+/* Darker tag text in light theme to meet WCAG AA contrast (>=4.5:1) on the tinted pill */
+html[data-theme='light'] .skill-tag-sm,
+html[data-theme='light'] .skill-tag-sm-apple {
+    color: #0f766e;
+}
+
 /* --- ARCHITECTURE DIAGRAM --- */
 .arch-diagram {
     display: flex;
@@ -1132,6 +1138,11 @@ section + section::before {
     background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.10), transparent);
     opacity: 0.35;
     border-radius: 999px;
+}
+
+/* Divider needs a light tint to be visible on the dark canvas */
+html[data-theme='dark'] section + section::before {
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.12), transparent);
 }
 
 /* --- READING PROGRESS BAR --- */

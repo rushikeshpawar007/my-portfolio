@@ -5,7 +5,7 @@ description: Use when preparing to deploy, pushing to production, building for r
 
 ## Overview
 
-Structured deployment workflow for a static portfolio site on GitHub Pages with Netlify serverless functions. Prevents broken deploys by enforcing build, test, and validation gates.
+Structured deployment workflow for a static portfolio site on GitHub Pages. Prevents broken deploys by enforcing build, test, and validation gates.
 
 ## When to Use
 
@@ -23,19 +23,13 @@ npm run build:css
 ```
 Compiles `src/input.css` to `styles/tailwind.css`. Verify the output file was updated.
 
-### 2. RUN UNIT TESTS
+### 2. RUN TESTS
 ```bash
-npm test
+npm test          # runs the Playwright E2E suite
 ```
-All Jest tests for Netlify functions must pass.
+All Playwright E2E tests must pass (79 tests): page structure, navigation, theme/language toggles, scroll behaviors, AI bot, accessibility, mobile viewport, and keyboard shortcuts.
 
-### 3. RUN E2E TESTS
-```bash
-npx playwright test
-```
-All 50+ Playwright tests must pass. These cover page structure, navigation, theme/language toggles, scroll behaviors, AI bot, accessibility, mobile viewport, and keyboard shortcuts.
-
-### 4. VALIDATE CRITICAL FILES
+### 3. VALIDATE CRITICAL FILES
 Check that these exist and are non-empty:
 - `index.html` — the entire site
 - `styles/tailwind.css` — compiled CSS (must be fresher than `src/input.css`)
@@ -43,13 +37,13 @@ Check that these exist and are non-empty:
 - `src/main.js` — all interactive behavior
 - `robots.txt` — SEO
 
-### 5. CHECK i18n COMPLETENESS
+### 4. CHECK i18n COMPLETENESS
 Verify every `data-i18n-key` in `index.html` has a matching entry in both the EN and DE translation objects.
 
-### 6. STAGE AND COMMIT
+### 5. STAGE AND COMMIT
 Stage only relevant files. Always include `styles/tailwind.css` if CSS changed. Never commit `node_modules/` or `test-results/`.
 
-### 7. PUSH
+### 6. PUSH
 Push to main only after all gates pass.
 
 ## Common Mistakes
