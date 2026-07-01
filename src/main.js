@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         /* ── UTILITIES ─────────────────────────────────────── */
 
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const _throttleFlags = {};
         function throttled(key, fn, delay = 150) {
             return function (...args) {
@@ -147,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── CURSOR GLOW ON GLASS CARDS ────────────────────── */
 
-        if (window.matchMedia('(hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (window.matchMedia('(hover: hover)').matches && !prefersReducedMotion) {
             document.querySelectorAll('.glass-card').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
@@ -160,17 +161,34 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── COOKIE CONSENT (GDPR) ─────────────────────────── */
 
         const consentBanner = document.getElementById('cookie-consent-banner');
+        let analyticsLoaded = false;
+        function loadAnalytics() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-H2TJQ5H08S';
+            document.head.appendChild(s);
+            if (typeof gtag === 'function') {
+                gtag('js', new Date());
+                gtag('config', 'G-H2TJQ5H08S', { anonymize_ip: true });
+            }
+        }
         if (consentBanner) {
             let storedConsent = null;
             try { storedConsent = localStorage.getItem('cookie-consent'); } catch (e) {}
             if (!storedConsent) {
                 consentBanner.hidden = false;
+            } else if (storedConsent === 'granted') {
+                if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' });
+                loadAnalytics();
             }
             const setConsent = (granted) => {
                 try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch (e) {}
                 if (typeof gtag === 'function') {
                     gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
                 }
+                if (granted) loadAnalytics();
                 consentBanner.hidden = true;
             };
             document.getElementById('cookie-accept')?.addEventListener('click', () => setConsent(true));
@@ -275,8 +293,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 navigator.clipboard.writeText(email).then(() => {
                     const origNodes = Array.from(btn.childNodes).map(n => n.cloneNode(true));
                     btn.textContent = '';
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-check mr-1';
+                    const svgNS = 'http://www.w3.org/2000/svg';
+                    const icon = document.createElementNS(svgNS, 'svg');
+                    icon.setAttribute('class', 'icon mr-1');
+                    icon.setAttribute('aria-hidden', 'true');
+                    const use = document.createElementNS(svgNS, 'use');
+                    use.setAttribute('href', '#i-check');
+                    icon.appendChild(use);
                     btn.appendChild(icon);
                     btn.appendChild(document.createTextNode('Copied!'));
                     btn.disabled = true;
@@ -297,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!entry.isIntersecting) return;
                 const el = entry.target;
                 // Respect reduced-motion: leave the final value as-is (no count-up)
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { obs.unobserve(el); return; }
+                if (prefersReducedMotion) { obs.unobserve(el); return; }
                 const match = el.textContent.trim().match(/^(\d+)(%|x|\+)?$/);
                 if (!match) return;
                 const target = parseInt(match[1], 10);
@@ -399,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             typingEl.textContent = list[roleIdx] || list[0];
         }
 
-        if (typingEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (typingEl && !prefersReducedMotion) {
             function typeRole() {
                 const list = roleList[currentLang] || roleList.en;
                 roleIdx = (roleIdx + 1) % list.length;
