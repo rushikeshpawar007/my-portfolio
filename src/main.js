@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function toggleLanguage() {
             currentLang = currentLang === 'de' ? 'en' : 'de';
+            try { localStorage.setItem('lang', currentLang); } catch {}
             translatePage();
             syncTypingRole();
         }
@@ -80,12 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── THEME TOGGLE ──────────────────────────────────── */
 
+        function setTheme(next) {
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('theme', next); } catch {}
+        }
+
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', throttled('theme', () => {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
+                setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             }));
         }
 
@@ -94,9 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            mobileMenuButton.addEventListener('click', () => {
+                const open = !mobileMenu.classList.toggle('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', String(open));
+            });
             mobileMenu.querySelectorAll('a, button').forEach(link =>
-                link.addEventListener('click', () => mobileMenu.classList.add('hidden'))
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                })
             );
         }
 
@@ -176,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (consentBanner) {
             let storedConsent = null;
-            try { storedConsent = localStorage.getItem('cookie-consent'); } catch (e) {}
+            try { storedConsent = localStorage.getItem('cookie-consent'); } catch {}
             if (!storedConsent) {
                 consentBanner.hidden = false;
             } else if (storedConsent === 'granted') {
@@ -184,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnalytics();
             }
             const setConsent = (granted) => {
-                try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch (e) {}
+                try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch {}
                 if (typeof gtag === 'function') {
                     gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
                 }
@@ -320,7 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!entry.isIntersecting) return;
                 const el = entry.target;
                 // Respect reduced-motion: leave the final value as-is (no count-up)
-                if (prefersReducedMotion) { obs.unobserve(el); return; }
+                obs.unobserve(el);
+                if (prefersReducedMotion) return;
                 const match = el.textContent.trim().match(/^(\d+)(%|x|\+)?$/);
                 if (!match) return;
                 const target = parseInt(match[1], 10);
@@ -332,7 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (t < 1) requestAnimationFrame(tick);
                 };
                 requestAnimationFrame(tick);
-                obs.unobserve(el);
             });
         }, { threshold: 0.5 });
         document.querySelectorAll('.metric-highlight').forEach(el => countUpObs.observe(el));
@@ -391,11 +401,11 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── KEYBOARD SHORTCUTS ────────────────────────────── */
 
         document.addEventListener('keydown', (e) => {
-            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+            const active = document.activeElement;
+            if (!active || active.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
             if (e.key === 't' || e.key === 'T') {
                 const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
+                setTheme(next);
                 showToast(`Theme: ${next === 'dark' ? 'Dark' : 'Light'}`);
             } else if (e.key === '?') {
                 const island = document.getElementById('dynamic-island-container');
@@ -415,15 +425,23 @@ document.addEventListener('DOMContentLoaded', () => {
             de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsspezialist']
         };
         let roleIdx = 0;
+        let typingTimers = [];
+
+        function clearTypingTimers() {
+            typingTimers.forEach(clearInterval);
+            typingTimers = [];
+        }
 
         function syncTypingRole() {
             if (!typingEl) return;
+            clearTypingTimers();
             const list = roleList[currentLang] || roleList.en;
             typingEl.textContent = list[roleIdx] || list[0];
         }
 
         if (typingEl && !prefersReducedMotion) {
             function typeRole() {
+                clearTypingTimers();
                 const list = roleList[currentLang] || roleList.en;
                 roleIdx = (roleIdx + 1) % list.length;
                 const target = list[roleIdx];
@@ -441,11 +459,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             j++;
                             if (j >= target.length) clearInterval(typeTimer);
                         }, 60);
+                        typingTimers.push(typeTimer);
                     } else {
                         i--;
                         typingEl.textContent = current.slice(0, i);
                     }
                 }, 30);
+                typingTimers.push(delTimer);
             }
 
             setInterval(typeRole, 4000);
@@ -475,7 +495,15 @@ function initFinanceBot() {
     const closeButton = document.getElementById('close-island-btn');
     const messagesContainer = document.getElementById('bot-messages-apple');
     const promptsContainer = document.getElementById('bot-question-prompts-apple');
+    if (!messagesContainer || !promptsContainer) return;
     let isBotTyping = false;
+    let botTimers = [];
+
+    function clearBotTimers() {
+        botTimers.forEach(clearTimeout);
+        botTimers = [];
+        isBotTyping = false;
+    }
 
     const simData = {
         'q1': { question: "What was our Q3 revenue vs. budget?", answer: "In Q3, we achieved a revenue of \u20AC1.2M, which is 105% of our \u20AC1.14M budget. Great work by the team!" },
@@ -495,6 +523,7 @@ function initFinanceBot() {
         if (islandContainer.classList.contains('expanded')) {
             islandContainer.classList.remove('expanded');
             islandContainer.classList.add('collapsed');
+            clearBotTimers();
         }
     };
 
@@ -549,7 +578,7 @@ function initFinanceBot() {
         const d = simData[key];
         addMsg('user', d.question);
 
-        setTimeout(() => {
+        botTimers.push(setTimeout(() => {
             const svgNS = 'http://www.w3.org/2000/svg';
             const animDiv = document.createElement('div');
             animDiv.className = 'analysis-animation';
@@ -575,23 +604,24 @@ function initFinanceBot() {
             animDiv.appendChild(svg);
             animDiv.appendChild(p);
             addMsgElement('bot', animDiv);
-        }, 500);
+        }, 500));
 
-        setTimeout(() => {
+        botTimers.push(setTimeout(() => {
             const anim = messagesContainer.querySelector('.analysis-animation');
             if (anim) anim.closest('.bot-message-wrapper').remove();
             showTyping(true);
-        }, 2500);
+        }, 2500));
 
-        setTimeout(() => {
+        botTimers.push(setTimeout(() => {
             showTyping(false);
             addMsg('bot', d.answer);
             isBotTyping = false;
             promptsContainer.querySelectorAll('button').forEach(b => b.disabled = false);
-        }, 3500);
+        }, 3500));
     }
 
     function initBotUI() {
+        clearBotTimers();
         while (messagesContainer.firstChild) messagesContainer.firstChild.remove();
         while (promptsContainer.firstChild) promptsContainer.firstChild.remove();
         addMsg('bot', 'Hello! I\'m a simulation of the Finance Bot. Select a question below to see how I work.');

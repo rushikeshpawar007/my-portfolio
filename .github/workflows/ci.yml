@@ -19,7 +19,12 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run lint
+
       - run: npm run build:css
+
+      # The committed tailwind.css is what GitHub Pages serves — fail if it's stale.
+      - run: git diff --exit-code styles/tailwind.css
 
       - run: npx playwright install --with-deps chromium
 

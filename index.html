@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <!-- Content Security Policy (GitHub Pages can't set headers; this also unblocks Google Analytics) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.web3forms.com" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' 'sha256-NA9vSSTNLSa8KsOId1MfOHyKQmxwCJ4TRrhLsPwGXkk=' 'sha256-GKmB+k1WaOZT4O/sXZydTWJX+OCtgsC+aYgrhE7+RmY=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://api.web3forms.com" />
     <!-- Google Analytics Consent Mode v2 — gtag.js is fetched lazily from src/main.js only after consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -33,6 +33,10 @@
     <meta content="Senior Business Analyst based in Hamburg (open to Berlin & remote). Power BI, SQL, Python, AI/LLMs. 40% faster reporting, 300+ authors automated. Ex-KPMG, ex-CARIAD (VW)." property="og:description" />
     <meta content="https://rushikeshpawar007.github.io/my-portfolio/social_preview.png" property="og:image" />
     <meta content="Rushikesh Pawar — Data Analytics Portfolio" property="og:image:alt" />
+    <meta content="1200" property="og:image:width" />
+    <meta content="630" property="og:image:height" />
+    <meta content="en_US" property="og:locale" />
+    <meta content="de_DE" property="og:locale:alternate" />
     <!-- Twitter -->
     <meta content="summary_large_image" name="twitter:card" />
     <meta content="https://rushikeshpawar007.github.io/my-portfolio/" name="twitter:url" />
@@ -48,7 +52,7 @@
   "@type": "Person",
   "name": "Rushikesh Pawar",
   "url": "https://rushikeshpawar007.github.io/my-portfolio/",
-  "image": "https://rushikeshpawar007.github.io/my-portfolio/profile_circle_color.png",
+  "image": "https://rushikeshpawar007.github.io/my-portfolio/profile_circle_color.webp",
   "jobTitle": "Senior Business Analyst",
   "worksFor": { "@type": "Organization", "name": "Lecturio GmbH" },
   "address": { "@type": "PostalAddress", "addressLocality": "Hamburg", "addressCountry": "DE" },
@@ -66,12 +70,19 @@
 </script>
     <!-- Fonts are self-hosted via @font-face in styles/main.css; icons are an inline SVG sprite (no external CDNs) -->
     <noscript><style>body{visibility:visible!important}</style></noscript>
-    <!-- Theme init (before first paint) -->
+    <!-- Theme + language init (before first paint) -->
     <script>
         (function() {
-            var saved = localStorage.getItem('theme');
+            var saved = null, lang = null;
+            try { saved = localStorage.getItem('theme'); lang = localStorage.getItem('lang'); } catch (e) {}
             var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
             document.documentElement.setAttribute('data-theme', theme);
+            if (lang === 'de' || lang === 'en') document.documentElement.lang = lang;
+            // Preload only the hero image of the active theme; the inactive one stays lazy.
+            var l = document.createElement('link');
+            l.rel = 'preload'; l.as = 'image'; l.type = 'image/webp'; l.fetchPriority = 'high';
+            l.href = theme === 'light' ? 'profile_bw_effect.webp' : 'profile_circle_color.webp';
+            document.head.appendChild(l);
         })();
     </script>
     <!-- Stylesheets -->
@@ -91,7 +102,7 @@
       </span>
     </div>
 
-    <a href="#hero" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
     <div id="read-progress" aria-hidden="true"></div>
 
     <div class="content-wrapper">
@@ -112,7 +123,7 @@
                         <svg class="h-6 w-6" fill="none" id="theme-icon-dark" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                     </button>
                     <button aria-label="Toggle language" class="w-10 h-10 flex items-center justify-center rounded-full text-[var(--heading-color)] hover:bg-[var(--glass-bg)]" id="lang-toggle-header" title="Switch Language"></button>
-                    <button aria-label="Open mobile menu" class="md:hidden text-inherit" id="mobile-menu-button">
+                    <button aria-label="Open mobile menu" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-inherit" id="mobile-menu-button">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                     </button>
                 </div>
@@ -128,15 +139,15 @@
         </header>
 
         <!-- ════════ MAIN ════════ -->
-        <main class="container mx-auto px-4 md:px-6 py-12">
+        <main class="container mx-auto px-4 md:px-6 py-12" id="main" tabindex="-1">
 
             <!-- ── HERO ── -->
             <section aria-labelledby="hero-heading" class="py-16 section-reveal" id="hero">
                 <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20 max-w-5xl mx-auto">
                     <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5">
                         <div class="profile-ring-glow">
-                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" fetchpriority="high" /></picture>
-                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" fetchpriority="high" /></picture>
+                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" loading="lazy" /></picture>
+                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" loading="lazy" /></picture>
                         </div>
                     </div>
                     <div class="text-center md:text-left md:w-3/5">
@@ -655,7 +666,6 @@
                         </button>
                     </div>
                     <form class="max-w-xl mx-auto mb-12" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
-                        <!-- Web3Forms: replace the value below with your free access key from https://web3forms.com -->
                         <input type="hidden" name="access_key" value="10a00cc5-0ec3-420f-9ad1-6650a00f9f56" />
                         <input type="hidden" name="subject" value="New message from your portfolio contact form" />
                         <input type="hidden" name="from_name" value="Portfolio Contact Form" />
@@ -693,7 +703,7 @@
                 <div class="flex flex-wrap justify-center gap-2 mb-5">
                     <span class="skill-tag-sm">Vanilla JS</span>
                     <span class="skill-tag-sm">Tailwind CSS v4</span>
-                    <span class="skill-tag-sm">73 E2E Tests</span>
+                    <span class="skill-tag-sm">Playwright E2E Tests</span>
                     <span class="skill-tag-sm">GitHub Pages</span>
                 </div>
                 <p class="text-sm text-[var(--text-color)]">&copy; <span id="copyright-year"></span> Rushikesh Pawar</p>

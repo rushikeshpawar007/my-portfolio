@@ -105,6 +105,18 @@ test.describe('Images', () => {
     await page.goto(FILE_URL);
     await page.waitForTimeout(2000);
 
+    // Scroll through the page so lazy-loaded images are fetched
+    // (behavior:'instant' overrides the page's smooth scrolling, which would
+    //  otherwise animate too slowly for the sweep to reach the bottom)
+    await page.evaluate(async () => {
+      for (let y = 0; y <= document.body.scrollHeight; y += 400) {
+        window.scrollTo({ top: y, behavior: 'instant' });
+        await new Promise(r => setTimeout(r, 40));
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+    await page.waitForTimeout(1000);
+
     const broken = await page.evaluate(() => {
       const imgs = document.querySelectorAll('img[src]:not([src^="http"]):not([src^="data:"])');
       const results = [];
@@ -120,7 +132,9 @@ test.describe('Images', () => {
       return results;
     });
 
-    // For local file:// images, check only that src attributes are non-empty
+    expect(broken).toEqual([]);
+
+    // For local file:// images, also check that src attributes are non-empty
     const imgSrcs = await page.evaluate(() => {
       const imgs = document.querySelectorAll('img[src]:not([src^="http"]):not([src^="data:"])');
       return [...imgs].map(img => img.getAttribute('src'));
@@ -590,6 +604,43 @@ test.describe('Contact Form', () => {
     await expect(btn).toBeAttached();
     const email = await btn.getAttribute('data-email');
     expect(email).toContain('@');
+  });
+
+  test('successful submit shows success toast and resets the form', async ({ page }) => {
+    await page.route('**/api.web3forms.com/**', route =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      })
+    );
+    await page.fill('#name', 'Test User');
+    await page.fill('#email', 'test@example.com');
+    await page.fill('#message', 'Hello from Playwright');
+    await page.click('#contact-form button[type="submit"]');
+
+    await expect(page.locator('.toast').last()).toContainText(/thank you/i, { timeout: 5000 });
+    await expect(page.locator('#name')).toHaveValue('');
+    await expect(page.locator('#contact-form button[type="submit"]')).toBeEnabled();
+  });
+
+  test('server failure shows error toast and re-enables the button', async ({ page }) => {
+    await page.route('**/api.web3forms.com/**', route =>
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: false, message: 'boom' }),
+      })
+    );
+    await page.fill('#name', 'Test User');
+    await page.fill('#email', 'test@example.com');
+    await page.fill('#message', 'Hello from Playwright');
+    await page.click('#contact-form button[type="submit"]');
+
+    await expect(page.locator('.toast-error').last()).toBeVisible({ timeout: 5000 });
+    // Form is NOT reset on failure so the visitor can retry
+    await expect(page.locator('#name')).toHaveValue('Test User');
+    await expect(page.locator('#contact-form button[type="submit"]')).toBeEnabled();
   });
 });
 

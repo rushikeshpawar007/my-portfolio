@@ -6,7 +6,7 @@
   "scripts": {
     "build:css": "npx tailwindcss -i src/input.css -o styles/tailwind.css --minify",
     "test": "playwright test",
-    "lint": "eslint src/"
+    "lint": "eslint src/ tests/ eslint.config.js playwright.config.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
     "@playwright/test": "^1.58.2",
     "@tailwindcss/cli": "^4.2.1",
     "eslint": "^9.39.4",
+    "globals": "^17.7.0",
     "tailwindcss": "^4.2.1"
   }
 }

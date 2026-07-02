@@ -1,46 +1,37 @@
 const js = require("@eslint/js");
+const globals = require("globals");
 
 module.exports = [
     js.configs.recommended,
     {
+        files: ["src/**/*.js"],
         languageOptions: {
             ecmaVersion: "latest",
             globals: {
-                // Browser globals
-                window: "readonly",
-                document: "readonly",
-                navigator: "readonly",
-                localStorage: "readonly",
-                fetch: "readonly",
-                performance: "readonly",
-                requestAnimationFrame: "readonly",
-                setTimeout: "readonly",
-                clearTimeout: "readonly",
-                IntersectionObserver: "readonly",
-                FormData: "readonly",
-                URLSearchParams: "readonly",
-                AbortController: "readonly",
-                prompt: "readonly",
-                // Node/shared globals
-                URL: "readonly",
-                Date: "readonly",
-                Map: "readonly",
-                Array: "readonly",
-                JSON: "readonly",
-                Promise: "readonly",
-                module: "readonly",
-                require: "readonly",
-                process: "readonly",
-                exports: "writable",
-                global: "writable",
-                console: "readonly",
+                ...globals.browser,
+                gtag: "readonly",
+                dataLayer: "writable",
             },
         },
+    },
+    {
+        files: ["tests/**/*.js", "*.config.js"],
+        languageOptions: {
+            ecmaVersion: "latest",
+            globals: {
+                ...globals.node,
+                // page.evaluate() callbacks run in the browser
+                ...globals.browser,
+            },
+        },
+    },
+    {
         rules: {
             "no-unused-vars": "warn",
             "no-console": "off",
             "prefer-const": "warn",
             "no-inner-declarations": "off",
+            "no-empty": ["error", { "allowEmptyCatch": true }],
         },
     },
 ];
