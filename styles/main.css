@@ -1094,7 +1094,12 @@ html[data-theme='dark'] .cookie-btn-primary { color: #111827; }
 .about-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
+    gap: 2rem;
+}
+
+.about-stat {
+    padding-left: 1rem;
+    border-left: 1px solid var(--glass-border);
 }
 
 @media (max-width: 640px) {
