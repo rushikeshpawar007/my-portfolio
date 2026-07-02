@@ -52,7 +52,7 @@
 | Element | Font | Weight | Size | Letter Spacing |
 |---------|------|--------|------|----------------|
 | Hero Name | Space Grotesk | 700 | 4xl–6xl | -0.02em |
-| Section Titles | Inter | 700 | 3xl | -0.02em |
+| Section Titles | Space Grotesk | 700 | 3xl | -0.02em |
 | Card Headings | Inter | 700 | xl | -0.02em |
 | Body Text | Inter | 400 | base | -0.015em |
 | Supporting Text | Inter | 400 | sm | -0.015em |
@@ -60,6 +60,9 @@
 | Metric Numbers | Space Grotesk | 700 | 4xl–5xl | -0.02em |
 
 **Special:** Hero name uses gradient text effect (accent → accent-hover) for visual emphasis.
+
+### Section Headers
+Left-aligned, numbered: a small uppercase accent eyebrow (`01`–`06` + hairline rule) above a Space Grotesk title. No decorative icons in headings, no centered section titles — this editorial pattern is the site's anti-template signature.
 
 ---
 
@@ -78,9 +81,16 @@
 - Hover: Scale 1.04, lift -3px, glow shadow
 
 ### Impact Cards
-- 3-column grid, left border accent (3px solid)
+- 3-column grid, standard glass border (no colored left-border accents — that pattern is banned site-wide)
 - Large metric numbers with count-up animation
 - Hover: Lift + accent glow
+
+### Anti-slop rules (banned patterns)
+- No colored left-borders on cards, inputs, or toasts
+- No decorative icons glued to section headings
+- No centered-everything sections; content is left-aligned by default
+- Cards must earn their existence — plain text and hairline dividers preferred over wrapper cards (About intro, Education are card-free)
+- One accent gradient maximum (hero name); UI chrome like the read-progress bar stays solid accent
 
 ### Skill Chips
 - Pill-shaped, 15% accent background, glass border
