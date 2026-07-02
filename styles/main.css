@@ -952,6 +952,23 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 .footer-social {
     color: var(--text-color);
     transition: color 0.25s ease, transform 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* 44px-min touch targets for text links (WCAG 2.5.8) */
+header nav ul li a {
+    display: inline-block;
+    padding: 0.6rem 0;
+}
+
+footer p a,
+footer p button {
+    display: inline-block;
+    padding: 0.75rem 0.25rem;
 }
 
 .footer-social:hover {
