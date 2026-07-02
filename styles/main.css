@@ -381,14 +381,9 @@ html[data-theme='light'] .primary-btn { color: white; }
     gap: 1.25rem;
 }
 
-.impact-card {
-    border-left: 3px solid var(--accent-color);
-}
-
 .impact-card:hover {
     transform: translateY(-3px) scale(1.01);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 0 24px var(--card-glow);
-    border-left-color: var(--accent-hover);
 }
 
 .impact-number {
@@ -957,8 +952,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 .toast {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-left: 4px solid var(--accent-color);
+    border: 1px solid rgba(var(--accent-rgb), 0.35);
     color: var(--text-primary);
     padding: 12px 16px;
     border-radius: 10px;
@@ -971,7 +965,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.toast.toast-error { border-left-color: #dc2626; }
+.toast.toast-error { border-color: rgba(220, 38, 38, 0.5); }
 .toast.show { opacity: 1; transform: translateX(0) scale(1); }
 
 /* --- MOBILE BOTTOM NAV --- */
@@ -1038,9 +1032,8 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    border-left: 3px solid transparent;
     color: var(--text-primary);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, border-left-color 0.25s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .contact-input::placeholder {
@@ -1055,8 +1048,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 
 .contact-input:focus {
     outline: none;
-    border-color: rgba(var(--accent-rgb), 0.3);
-    border-left-color: var(--accent-color);
+    border-color: var(--accent-color);
     box-shadow: 0 0 20px var(--card-glow);
 }
 
@@ -1075,14 +1067,6 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 }
 
 /* --- SKILLS HIERARCHY --- */
-.skill-card-core {
-    border-left: 3px solid var(--accent-color);
-}
-
-.skill-card-highlight {
-    border-left: 3px solid var(--accent-secondary);
-}
-
 .skill-card-highlight:hover {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 0 24px rgba(var(--accent-secondary-rgb), 0.12);
     border-color: rgba(var(--accent-secondary-rgb), 0.3);
