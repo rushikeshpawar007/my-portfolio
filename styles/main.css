@@ -1104,6 +1104,8 @@ html[data-theme='dark'] .cookie-btn-primary { color: #111827; }
 
 @media (max-width: 640px) {
     .about-grid { grid-template-columns: 1fr; }
+    .hero-chips { flex-direction: column; gap: 0.3rem; }
+    .hero-chip-sep { display: none; }
 }
 
 /* --- CONTACT FORM --- */
