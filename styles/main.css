@@ -1184,10 +1184,7 @@ html[data-theme='dark'] .cookie-btn-primary { color: #111827; }
 
 .skill-highlight-title {
     font-family: 'Space Grotesk', 'Inter', sans-serif;
-    background: linear-gradient(135deg, var(--accent-secondary), #fbbf24);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--heading-color);
 }
 
 /* --- SECTION REVEAL --- */
@@ -1308,7 +1305,9 @@ html[data-theme='dark'] section + section::before {
     section { padding-left: 1rem; padding-right: 1rem; }
     .glass-card { padding: 1rem; }
 
-    h1, h2, h3 { font-size: 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.625rem; }
+    h3 { font-size: 1.25rem; }
     p, li { font-size: 0.95rem; }
 
     header nav { padding-left: 1rem; padding-right: 1rem; }
