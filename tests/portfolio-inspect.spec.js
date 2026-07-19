@@ -236,16 +236,16 @@ test.describe('Theme Toggle', () => {
     await page.goto(FILE_URL);
     const initial = await page.locator('html').getAttribute('data-theme');
     await page.locator('#theme-toggle').click();
+    // setTheme applies inside a View Transition callback (async by a frame)
+    await expect.poll(() => page.locator('html').getAttribute('data-theme')).not.toBe(initial);
     const after = await page.locator('html').getAttribute('data-theme');
-    expect(after).not.toEqual(initial);
     expect(['light', 'dark']).toContain(after);
   });
 
   test('theme persists in localStorage', async ({ page }) => {
     await page.goto(FILE_URL);
     await page.locator('#theme-toggle').click();
-    const stored = await page.evaluate(() => localStorage.getItem('theme'));
-    expect(['light', 'dark']).toContain(stored);
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('theme'))).toMatch(/^(light|dark)$/);
   });
 
   test('correct theme icon is visible per theme', async ({ page }) => {
@@ -450,7 +450,7 @@ test.describe('Skills Grid', () => {
   });
 
   test('skills section has skill groups', async ({ page }) => {
-    const groups = page.locator('#skills .glass-card');
+    const groups = page.locator('#skills .skill-group');
     const count = await groups.count();
     expect(count).toBeGreaterThanOrEqual(4);
   });
@@ -462,8 +462,9 @@ test.describe('Skills Grid', () => {
   });
 
   test('skill groups have context descriptions', async ({ page }) => {
-    const groups = page.locator('#skills .glass-card');
+    const groups = page.locator('#skills .skill-group');
     const count = await groups.count();
+    expect(count).toBeGreaterThanOrEqual(4);
     for (let i = 0; i < count; i++) {
       const heading = groups.nth(i).locator('h3');
       await expect(heading).toBeAttached();
@@ -483,7 +484,7 @@ test.describe('Projects Section', () => {
   test('bento grid exists with project cards', async ({ page }) => {
     const grid = page.locator('.bento-grid');
     await expect(grid).toBeAttached();
-    // 1 dynamic island wrapper + 2 project cards (Spotify, Invoice) = at least 3 children
+    // 1 dynamic island wrapper + 3 project cards (Spotify, RAG, Invoice) = at least 3 children
     const children = page.locator('.bento-grid > *');
     const count = await children.count();
     expect(count).toBeGreaterThanOrEqual(3);

@@ -21,8 +21,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <!-- Preload above-the-fold self-hosted fonts -->
-    <link rel="preload" as="font" type="font/woff2" href="fonts/inter-latin.woff2" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="fonts/space-grotesk-latin.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="fonts/zodiak-700.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="fonts/switzer-400.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="fonts/fragment-mono-latin.woff2" crossorigin />
     <title>Rushikesh Pawar - Data Analytics Portfolio</title>
     <meta content="Portfolio of Rushikesh Pawar, a Senior Business Analyst based in Hamburg (open to Berlin & remote) — Power BI, SQL, Python, AI/LLMs. Ex-KPMG, ex-CARIAD (VW)." name="description" />
     <meta content="Rushikesh Pawar, Data Analyst, Business Analyst, Portfolio, Power BI, SQL, Python, Tableau, Hamburg, Berlin, Germany" name="keywords" />
@@ -45,6 +46,8 @@
     <meta content="https://rushikeshpawar007.github.io/my-portfolio/social_preview.png" name="twitter:image" />
     <link rel="canonical" href="https://rushikeshpawar007.github.io/my-portfolio/" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAF4EA" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#151310" />
     <!-- Structured Data -->
     <script type="application/ld+json">
 {
@@ -101,39 +104,39 @@
       </span>
     </div>
 
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-[var(--accent-color)] focus:text-[var(--bg-color)] focus:px-4 focus:py-2">Skip to main content</a>
     <div id="read-progress" aria-hidden="true"></div>
 
     <div class="content-wrapper">
         <!-- ════════ HEADER ════════ -->
-        <header class="bg-transparent backdrop-blur-xl sticky top-0 z-50 border-b border-[var(--glass-border)]">
+        <header class="sticky top-0 z-50">
             <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <a class="text-2xl font-bold text-[var(--heading-color)]" href="#hero">Rushikesh Pawar</a>
+                <a href="#hero">Rushikesh Pawar</a>
                 <div class="flex items-center gap-4 md:gap-8">
-                    <ul class="hidden md:flex space-x-8 font-medium">
-                        <li><a class="hover:text-[var(--accent-color)] transition-colors" data-i18n-key="nav_about" href="#about">About</a></li>
-                        <li><a class="hover:text-[var(--accent-color)] transition-colors" data-i18n-key="nav_experience" href="#experience">Experience</a></li>
-                        <li><a class="hover:text-[var(--accent-color)] transition-colors" data-i18n-key="nav_projects" href="#projects">Projects</a></li>
-                        <li><a class="hover:text-[var(--accent-color)] transition-colors" data-i18n-key="nav_skills" href="#skills">Skills</a></li>
-                        <li><a class="hover:text-[var(--accent-color)] transition-colors" data-i18n-key="nav_contact" href="#contact">Contact</a></li>
+                    <ul class="hidden lg:flex space-x-8 font-medium">
+                        <li><a data-i18n-key="nav_about" href="#about">About</a></li>
+                        <li><a data-i18n-key="nav_experience" href="#experience">Experience</a></li>
+                        <li><a data-i18n-key="nav_projects" href="#projects">Projects</a></li>
+                        <li><a data-i18n-key="nav_skills" href="#skills">Skills</a></li>
+                        <li><a data-i18n-key="nav_contact" href="#contact">Contact</a></li>
                     </ul>
-                    <button aria-label="Toggle theme" class="w-10 h-10 flex items-center justify-center rounded-full text-[var(--heading-color)] hover:bg-[var(--glass-bg)]" id="theme-toggle">
+                    <button aria-label="Toggle theme" class="flex items-center justify-center" id="theme-toggle">
                         <svg class="h-6 w-6" fill="none" id="theme-icon-light" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                         <svg class="h-6 w-6" fill="none" id="theme-icon-dark" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                     </button>
-                    <button aria-label="Toggle language" class="w-10 h-10 flex items-center justify-center rounded-full text-[var(--heading-color)] hover:bg-[var(--glass-bg)]" id="lang-toggle-header" title="Switch Language"></button>
-                    <button aria-label="Open mobile menu" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-inherit" id="mobile-menu-button">
+                    <button aria-label="Toggle language" class="flex items-center justify-center" id="lang-toggle-header" title="Switch Language"></button>
+                    <button aria-label="Open mobile menu" aria-expanded="false" aria-controls="mobile-menu" class="lg:hidden text-inherit" id="mobile-menu-button">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
                     </button>
                 </div>
             </nav>
-            <div class="hidden md:hidden px-6 pb-4 glass-card m-4 mt-0" id="mobile-menu">
-                <a class="block py-2 text-center hover:bg-[var(--glass-border)] rounded-md" data-i18n-key="nav_about" href="#about">About</a>
-                <a class="block py-2 text-center hover:bg-[var(--glass-border)] rounded-md" data-i18n-key="nav_experience" href="#experience">Experience</a>
-                <a class="block py-2 text-center hover:bg-[var(--glass-border)] rounded-md" data-i18n-key="nav_projects" href="#projects">Projects</a>
-                <a class="block py-2 text-center hover:bg-[var(--glass-border)] rounded-md" data-i18n-key="nav_skills" href="#skills">Skills</a>
-                <a class="block py-2 text-center hover:bg-[var(--glass-border)] rounded-md" data-i18n-key="nav_contact" href="#contact">Contact</a>
-                <button class="w-full text-center hover:bg-[var(--glass-border)] rounded-md" id="lang-toggle-mobile" title="Switch Language"></button>
+            <div class="hidden lg:hidden px-6 pb-4 glass-card m-4 mt-0" id="mobile-menu">
+                <a class="block py-2 text-center" data-i18n-key="nav_about" href="#about">About</a>
+                <a class="block py-2 text-center" data-i18n-key="nav_experience" href="#experience">Experience</a>
+                <a class="block py-2 text-center" data-i18n-key="nav_projects" href="#projects">Projects</a>
+                <a class="block py-2 text-center" data-i18n-key="nav_skills" href="#skills">Skills</a>
+                <a class="block py-2 text-center" data-i18n-key="nav_contact" href="#contact">Contact</a>
+                <button class="w-full text-center" id="lang-toggle-mobile" title="Switch Language"></button>
             </div>
         </header>
 
@@ -142,25 +145,24 @@
 
             <!-- ── HERO ── -->
             <section aria-labelledby="hero-heading" class="py-16 section-reveal" id="hero">
-                <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20 max-w-5xl mx-auto">
-                    <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5">
+                <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20">
+                    <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5 md:order-2">
                         <div class="profile-ring-glow">
-                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover" height="288" width="288" src="profile_bw_effect.png" loading="lazy" /></picture>
-                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full shadow-2xl ring-4 ring-[var(--glass-bg)] object-cover hidden" height="288" width="288" src="profile_circle_color.png" loading="lazy" /></picture>
+                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover" height="288" width="288" src="profile_bw_effect.png" loading="lazy" /></picture>
+                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover hidden" height="288" width="288" src="profile_circle_color.png" loading="lazy" /></picture>
                         </div>
                     </div>
-                    <div class="text-center md:text-left md:w-3/5">
-                        <h1 class="hero-name hero-stagger text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight" id="hero-heading">Rushikesh Pawar</h1>
-                        <p class="hero-stagger text-xl md:text-2xl mt-2 text-[var(--accent-color)] font-semibold"><span id="typing-role">Business &amp; Data Analyst</span><span class="typing-cursor" aria-hidden="true"></span> <span class="text-[var(--text-color)] font-normal text-lg">| Hamburg</span></p>
-                        <p class="hero-stagger hero-tagline mt-4 text-[var(--text-primary)]" data-i18n-key="hero_tagline">I cut manual reporting by 40% at Lecturio by building automated Power BI dashboards that finance and sales teams actually use.</p>
-                        <div class="hero-stagger hero-chips mt-5 flex items-center justify-center md:justify-start gap-2 text-sm text-[var(--text-color)]">
-                            <span data-i18n-key="hero_chip_1">Production BI Dashboards</span>
-                            <span class="hero-chip-sep opacity-40" aria-hidden="true">|</span>
-                            <span data-i18n-key="hero_chip_2">Finance &amp; Sales Analytics</span>
-                            <span class="hero-chip-sep opacity-40" aria-hidden="true">|</span>
-                            <span data-i18n-key="hero_chip_3">3 Enterprise BI Stacks</span>
+                    <div class="text-left md:w-3/5 md:order-1">
+                        <p class="hero-stagger hero-role"><span id="typing-role">Business &amp; Data Analyst</span><span class="typing-cursor" aria-hidden="true"></span> <span class="hero-role-location">&mdash; Hamburg</span></p>
+                        <h1 class="hero-name hero-stagger mt-3" id="hero-heading">Rushikesh Pawar</h1>
+                        <div class="hero-stagger hero-rule closing-rule mt-5" aria-hidden="true"></div>
+                        <p class="hero-stagger hero-tagline mt-6" data-i18n-key="hero_tagline">I cut manual reporting by 40% at Lecturio by building automated Power BI dashboards that finance and sales teams actually use.</p>
+                        <div class="hero-stagger hero-chips mt-6 flex items-center gap-3">
+                            <a class="hero-footnote" href="#impact"><sup aria-hidden="true">*</sup><span data-i18n-key="hero_chip_1">Production BI Dashboards</span></a>
+                            <a class="hero-footnote" href="#impact"><sup aria-hidden="true">&dagger;</sup><span data-i18n-key="hero_chip_2">Finance &amp; Sales Analytics</span></a>
+                            <a class="hero-footnote" href="#impact"><sup aria-hidden="true">&Dagger;</sup><span data-i18n-key="hero_chip_3">3 Enterprise BI Stacks</span></a>
                         </div>
-                        <div class="hero-stagger company-logos mt-5 flex items-center justify-center md:justify-start gap-4">
+                        <div class="hero-stagger company-logos mt-6 flex items-center gap-6">
                             <div class="flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
                                 <picture><source srcset="kpmg_logo_bw_circle.webp" type="image/webp" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="kpmg_logo_bw_circle.png" /></picture><picture><source srcset="kpmg_logo_color_circle.webp" type="image/webp" /><img alt="KPMG" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="kpmg_logo_color_circle.png" /></picture><span class="text-xs font-medium">KPMG</span>
                             </div>
@@ -171,7 +173,7 @@
                                 <picture><source srcset="lecturio_logo_bw_circle.webp" type="image/webp" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-light" width="32" height="32" src="lecturio_logo_bw_circle.png" /></picture><picture><source srcset="lecturio_logo_color_circle.webp" type="image/webp" /><img alt="Lecturio" class="h-8 w-8 rounded-full object-cover theme-dark" width="32" height="32" src="lecturio_logo_color_circle.png" /></picture><span class="text-xs font-medium">Lecturio</span>
                             </div>
                         </div>
-                        <div class="hero-stagger mt-8 flex flex-col sm:flex-row justify-center md:justify-start items-center gap-4">
+                        <div class="hero-stagger mt-8 flex flex-col sm:flex-row justify-start items-stretch sm:items-center gap-3">
                             <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" data-ga-event="cv_download" href="https://drive.google.com/file/d/1h5x2iMUSEM0KVWgJ6Z1KLcg8tByktmYt/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
                             <a class="ios-button secondary-btn w-full sm:w-auto" data-i18n-key="see_my_work_button" href="#dynamic-island-container">View Key Project</a>
                         </div>
@@ -182,50 +184,53 @@
                 </div>
             </section>
 
-            <!-- ── IMPACT SUMMARY ── -->
-            <section class="py-12 section-reveal" aria-label="Key impact metrics">
-                <div class="impact-grid max-w-4xl mx-auto">
-                    <div class="glass-card impact-card p-6 text-center stagger-item">
-                        <span class="impact-number metric-highlight text-4xl md:text-5xl font-bold text-[var(--accent-color)]">40%</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="impact_lecturio">Reduction in manual reporting hours at Lecturio</p>
+            <!-- ── IMPACT SUMMARY — the closing ledger ── -->
+            <section id="impact" class="py-12 section-reveal" aria-label="Key impact metrics">
+                <div class="impact-grid">
+                    <div class="impact-card stagger-item">
+                        <span class="impact-number metric-highlight">40%</span>
+                        <div class="closing-rule closing-rule--red" aria-hidden="true"></div>
+                        <p data-i18n-key="impact_lecturio">Reduction in manual reporting hours at Lecturio</p>
                     </div>
-                    <div class="glass-card impact-card p-6 text-center stagger-item">
-                        <span class="impact-number metric-highlight text-4xl md:text-5xl font-bold text-[var(--accent-color)]">300+</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="impact_authors">Content authors served by the automated quarterly royalty system at Lecturio</p>
+                    <div class="impact-card stagger-item">
+                        <span class="impact-number metric-highlight">300+</span>
+                        <div class="closing-rule closing-rule--red" aria-hidden="true"></div>
+                        <p data-i18n-key="impact_authors">Content authors served by the automated quarterly royalty system at Lecturio</p>
                     </div>
-                    <div class="glass-card impact-card p-6 text-center stagger-item">
-                        <span class="impact-number metric-highlight text-4xl md:text-5xl font-bold text-[var(--accent-color)]">5</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="impact_platforms">SQL platforms in production: PostgreSQL, MySQL, SQL Server, Athena, BigQuery</p>
+                    <div class="impact-card stagger-item">
+                        <span class="impact-number metric-highlight">5</span>
+                        <div class="closing-rule closing-rule--red" aria-hidden="true"></div>
+                        <p data-i18n-key="impact_platforms">SQL platforms in production: PostgreSQL, MySQL, SQL Server, Athena, BigQuery</p>
                     </div>
                 </div>
             </section>
 
             <!-- ── ABOUT ── -->
             <section aria-labelledby="about-heading" class="py-16 section-reveal reveal-left" id="about">
-                <h2 class="text-3xl font-bold mb-12 section-title text-[var(--heading-color)]" id="about-heading">
+                <h2 class="section-title mb-12" id="about-heading">
                     <span class="section-eyebrow" aria-hidden="true">01</span>
                     <span data-i18n-key="about_title">About Me</span>
                 </h2>
-                <p class="about-intro text-lg leading-relaxed max-w-3xl mb-10" data-i18n-key="about_intro">I'm a Senior Business Analyst at Lecturio GmbH, based in Hamburg and open to roles in Berlin or remote, with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.</p>
+                <p class="about-intro max-w-3xl mb-10" data-i18n-key="about_intro">I am a Senior Business Analyst at Lecturio GmbH, based in Hamburg and open to roles in Berlin or remote, with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.</p>
                 <div class="about-grid max-w-4xl">
                     <div class="about-stat stagger-item">
-                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">4+</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_years">Years of finance analytics across EdTech, Automotive & Consulting</p>
+                        <span class="impact-number metric-highlight">4+</span>
+                        <p class="mt-2" data-i18n-key="about_years">Years of finance analytics across EdTech, Automotive & Consulting</p>
                     </div>
                     <div class="about-stat stagger-item">
-                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">3</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_industries">Industries: Lecturio, CARIAD/VW, KPMG</p>
+                        <span class="impact-number metric-highlight">3</span>
+                        <p class="mt-2" data-i18n-key="about_industries">Industries: Lecturio, CARIAD/VW, KPMG</p>
                     </div>
                     <div class="about-stat stagger-item">
-                        <span class="impact-number metric-highlight text-3xl md:text-4xl font-bold text-[var(--accent-color)]">E2E</span>
-                        <p class="mt-2 text-sm text-[var(--text-color)]" data-i18n-key="about_builder">From Power BI dashboards to production RAG chatbots</p>
+                        <span class="impact-number metric-highlight">E2E</span>
+                        <p class="mt-2" data-i18n-key="about_builder">From Power BI dashboards to production RAG chatbots</p>
                     </div>
                 </div>
             </section>
 
             <!-- ── EXPERIENCE ── -->
             <section aria-labelledby="experience-heading" class="py-16 section-reveal reveal-right" id="experience">
-                <h2 class="text-3xl font-bold mb-12 section-title text-[var(--heading-color)]" id="experience-heading">
+                <h2 class="section-title mb-12" id="experience-heading">
                     <span class="section-eyebrow" aria-hidden="true">02</span>
                     <span data-i18n-key="experience_title">Work Experience</span>
                 </h2>
@@ -239,31 +244,28 @@
                                 <picture><source srcset="lecturio_logo_bw_circle.webp" type="image/webp" /><img alt="Lecturio logo" class="timeline-logo h-16 w-16 object-cover theme-light" loading="lazy" src="lecturio_logo_bw_circle.png" /></picture>
                                 <picture><source srcset="lecturio_logo_color_circle.webp" type="image/webp" /><img alt="Lecturio logo" class="timeline-logo h-16 w-16 object-cover theme-dark" loading="lazy" src="lecturio_logo_color_circle.png" /></picture>
                                 <div class="grow">
-                                    <h3 class="text-xl font-bold text-[var(--heading-color)]">Senior Business Analyst</h3>
-                                    <p class="text-md text-[var(--accent-color)] font-medium my-1">Lecturio GmbH</p>
-                                    <p class="text-sm opacity-80 mb-2">Sept 2023 – present</p>
+                                    <h3>Senior Business Analyst</h3>
+                                    <p class="exp-company my-1">Lecturio GmbH</p>
+                                    <p class="exp-dates mb-2" data-i18n-key="lecturio_dates">Sept 2023 – present</p>
                                 </div>
                             </div>
                             <div class="p-6 border-t border-[var(--glass-border)]">
-                                <ul class="space-y-4">
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-bullseye"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_challenge">Challenge</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="lecturio_challenge">Manual, time-consuming finance reporting across multiple data sources, lack of real-time sales insights, and a quarterly royalty distribution process for 300+ content authors that required end-to-end automation.</p></div>
+                                <ul>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_challenge">Challenge</h4>
+                                        <p class="text-sm" data-i18n-key="lecturio_challenge">Manual, time-consuming finance reporting across multiple data sources, lack of real-time sales insights, and a quarterly royalty distribution process for 300+ content authors that required end-to-end automation.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-lightbulb"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_solution">Solution</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="lecturio_solution">Built Power BI dashboards (DAX, Power Query, SQL) for Finance and Sales, designed a revenue gap analysis framework reconciling accounting systems with Salesforce CRM, and automated the end-to-end royalty distribution for 300+ authors. Leveraged N8n and Claude Code to replace manual workflows with scalable, AI-driven pipelines. Delivered strategic analyses to CFO and CEO.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_solution">Solution</h4>
+                                        <p class="text-sm" data-i18n-key="lecturio_solution">Built Power BI dashboards (DAX, Power Query, SQL) for Finance and Sales, designed a revenue gap analysis framework reconciling accounting systems with Salesforce CRM, and automated the end-to-end royalty distribution for 300+ authors. Leveraged N8n and Claude Code to replace manual workflows with scalable, AI-driven pipelines. Delivered strategic analyses to CFO and CEO.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-rocket"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_impact">Impact</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="lecturio_impact" data-i18n-html>Reduced reporting cycle time by <span class="metric-highlight">40%</span>, gave Finance, Sales, and Operations teams self-service access to consistent KPIs, and delivered an AI-powered RAG chatbot enabling natural-language queries on financial data.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_impact">Impact</h4>
+                                        <p class="text-sm" data-i18n-key="lecturio_impact" data-i18n-html>Reduced reporting cycle time by <span class="metric-highlight">40%</span>, gave Finance, Sales, and Operations teams self-service access to consistent KPIs, and delivered an AI-powered RAG chatbot enabling natural-language queries on financial data.</p></div>
                                     </li>
                                 </ul>
                                 <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
-                                    <h4 class="font-bold text-[var(--heading-color)] text-sm" data-i18n-key="exp_tech">Technologies:</h4>
+                                    <h4 class="tech-label" data-i18n-key="exp_tech">Technologies</h4>
                                     <div class="flex flex-wrap gap-2 mt-2">
                                         <span class="skill-tag-sm">Power BI</span><span class="skill-tag-sm">DAX</span><span class="skill-tag-sm">SQL</span><span class="skill-tag-sm">Python</span><span class="skill-tag-sm">Salesforce</span><span class="skill-tag-sm">N8n</span><span class="skill-tag-sm">Claude Code</span>
                                     </div>
@@ -279,31 +281,28 @@
                                 <picture><source srcset="cariad_logo_bw_circle.webp" type="image/webp" /><img alt="CARIAD logo" class="timeline-logo h-16 w-16 object-cover theme-light" loading="lazy" src="cariad_logo_bw_circle.png" /></picture>
                                 <picture><source srcset="cariad_logo_color_circle.webp" type="image/webp" /><img alt="CARIAD logo" class="timeline-logo h-16 w-16 object-cover theme-dark" loading="lazy" src="cariad_logo_color_circle.png" /></picture>
                                 <div class="grow">
-                                    <h3 class="text-xl font-bold text-[var(--heading-color)]" data-i18n-key="cariad_role">Working Student Data Analytics</h3>
-                                    <p class="text-md text-[var(--accent-color)] font-medium my-1">CARIAD SE — Volkswagen Group</p>
-                                    <p class="text-sm opacity-80 mb-2">Sept 2022 – Aug 2023</p>
+                                    <h3 data-i18n-key="cariad_role">Working Student Data Analytics</h3>
+                                    <p class="exp-company my-1">CARIAD SE — Volkswagen Group</p>
+                                    <p class="exp-dates mb-2">Sept 2022 – Aug 2023</p>
                                 </div>
                             </div>
                             <div class="p-6 border-t border-[var(--glass-border)]">
-                                <ul class="space-y-4">
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-bullseye"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_challenge">Challenge</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="cariad_challenge">Disparate data sources and fragmented reporting tools with unclear performance metrics across teams.</p></div>
+                                <ul>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_challenge">Challenge</h4>
+                                        <p class="text-sm" data-i18n-key="cariad_challenge">Disparate data sources and fragmented reporting tools with unclear performance metrics across teams.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-lightbulb"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_solution">Solution</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="cariad_solution">Centralized cross-functional analytics using Amazon Athena (SQL), Power BI, and AWS, replacing fragmented tools. Defined and tracked KPIs across Demand, Product, and Supply functions. Led end-to-end analytics project lifecycle — from requirements gathering to dashboard delivery.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_solution">Solution</h4>
+                                        <p class="text-sm" data-i18n-key="cariad_solution">Centralized cross-functional analytics using Amazon Athena (SQL), Power BI, and AWS, replacing fragmented tools. Defined and tracked KPIs across Demand, Product, and Supply functions. Led end-to-end analytics project lifecycle — from requirements gathering to dashboard delivery.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-rocket"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_impact">Impact</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="cariad_impact">Replaced fragmented reporting with unified, self-service KPI dashboards across Demand, Product, and Supply — improving data accessibility and cross-team collaboration.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_impact">Impact</h4>
+                                        <p class="text-sm" data-i18n-key="cariad_impact">Replaced fragmented reporting with unified, self-service KPI dashboards across Demand, Product, and Supply — improving data accessibility and cross-team collaboration.</p></div>
                                     </li>
                                 </ul>
                                 <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
-                                    <h4 class="font-bold text-[var(--heading-color)] text-sm" data-i18n-key="exp_tech">Technologies:</h4>
+                                    <h4 class="tech-label" data-i18n-key="exp_tech">Technologies</h4>
                                     <div class="flex flex-wrap gap-2 mt-2">
                                         <span class="skill-tag-sm">Power BI</span><span class="skill-tag-sm">AWS Athena</span><span class="skill-tag-sm">SQL</span>
                                     </div>
@@ -319,31 +318,28 @@
                                 <picture><source srcset="kpmg_logo_bw_circle.webp" type="image/webp" /><img alt="KPMG logo" class="timeline-logo h-16 w-16 object-cover theme-light" loading="lazy" src="kpmg_logo_bw_circle.png" /></picture>
                                 <picture><source srcset="kpmg_logo_color_circle.webp" type="image/webp" /><img alt="KPMG logo" class="timeline-logo h-16 w-16 object-cover theme-dark" loading="lazy" src="kpmg_logo_color_circle.png" /></picture>
                                 <div class="grow">
-                                    <h3 class="text-xl font-bold text-[var(--heading-color)]" data-i18n-key="kpmg_role">Working Student Data Analytics</h3>
-                                    <p class="text-md text-[var(--accent-color)] font-medium my-1">KPMG Deutschland</p>
-                                    <p class="text-sm opacity-80 mb-2">Mar 2022 – Aug 2022</p>
+                                    <h3 data-i18n-key="kpmg_role">Working Student Data Analytics</h3>
+                                    <p class="exp-company my-1">KPMG Deutschland</p>
+                                    <p class="exp-dates mb-2">Mar 2022 – Aug 2022</p>
                                 </div>
                             </div>
                             <div class="p-6 border-t border-[var(--glass-border)]">
-                                <ul class="space-y-4">
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-bullseye"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_challenge">Challenge</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="kpmg_challenge">Complex analysis of large SAP authorization datasets for compliance and audit insights, to be delivered within agile sprint cycles.</p></div>
+                                <ul>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_challenge">Challenge</h4>
+                                        <p class="text-sm" data-i18n-key="kpmg_challenge">Complex analysis of large SAP authorization datasets for compliance and audit insights, to be delivered within agile sprint cycles.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-lightbulb"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_solution">Solution</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="kpmg_solution">Analyzed SAP authorization datasets in Microsoft SQL Server and built and maintained Qlik Sense dashboards within agile (Scrum) sprint cycles.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_solution">Solution</h4>
+                                        <p class="text-sm" data-i18n-key="kpmg_solution">Analyzed SAP authorization datasets in Microsoft SQL Server and built and maintained Qlik Sense dashboards within agile (Scrum) sprint cycles.</p></div>
                                     </li>
-                                    <li class="flex items-start gap-3">
-                                        <svg class="icon text-[var(--accent-color)] mt-1" aria-hidden="true"><use href="#i-rocket"/></svg>
-                                        <div><h4 class="font-bold text-[var(--heading-color)]" data-i18n-key="exp_impact">Impact</h4>
-                                        <p class="text-sm -mt-1" data-i18n-key="kpmg_impact">Delivered actionable SAP authorization insights that supported compliance and improved audit accuracy.</p></div>
+                                    <li>
+                                        <div><h4 data-i18n-key="exp_impact">Impact</h4>
+                                        <p class="text-sm" data-i18n-key="kpmg_impact">Delivered actionable SAP authorization insights that supported compliance and improved audit accuracy.</p></div>
                                     </li>
                                 </ul>
                                 <div class="mt-4 pt-3 border-t border-[var(--glass-border)]">
-                                    <h4 class="font-bold text-[var(--heading-color)] text-sm" data-i18n-key="exp_tech">Technologies:</h4>
+                                    <h4 class="tech-label" data-i18n-key="exp_tech">Technologies</h4>
                                     <div class="flex flex-wrap gap-2 mt-2">
                                         <span class="skill-tag-sm">SQL Server</span><span class="skill-tag-sm">Qlik Sense</span><span class="skill-tag-sm">SAP</span><span class="skill-tag-sm">Agile</span>
                                     </div>
@@ -356,12 +352,12 @@
                     <div class="timeline-container left">
                         <div class="glass-card experience-card">
                             <div class="p-6 flex items-center gap-6">
-                                <img alt="S.M. Auto Engineering logo" class="timeline-logo h-16 w-16 object-cover theme-light" loading="lazy" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23eee8d5'/%3E%3Ctext x='50' y='50' font-family='sans-serif' font-size='40' fill='%23586e75' text-anchor='middle' dy='.3em'%3ES.M.%3C/text%3E%3C/svg%3E" />
-                                <img alt="S.M. Auto Engineering logo" class="timeline-logo h-16 w-16 object-cover theme-dark" loading="lazy" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%231f2937'/%3E%3Ctext x='50' y='50' font-family='sans-serif' font-size='40' fill='%23a3e635' text-anchor='middle' dy='.3em'%3ES.M.%3C/text%3E%3C/svg%3E" />
+                                <img alt="S.M. Auto Engineering logo" class="timeline-logo h-16 w-16 object-cover theme-light" loading="lazy" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48.5' fill='%23FEFBF4' stroke='%231C1A16' stroke-width='2'/%3E%3Ctext x='50' y='50' font-family='Georgia,serif' font-size='30' fill='%231C1A16' text-anchor='middle' dy='.34em'%3ES.M.%3C/text%3E%3C/svg%3E" />
+                                <img alt="S.M. Auto Engineering logo" class="timeline-logo h-16 w-16 object-cover theme-dark" loading="lazy" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48.5' fill='%231D1A15' stroke='%23ECE4D2' stroke-width='2'/%3E%3Ctext x='50' y='50' font-family='Georgia,serif' font-size='30' fill='%23ECE4D2' text-anchor='middle' dy='.34em'%3ES.M.%3C/text%3E%3C/svg%3E" />
                                 <div class="grow">
-                                    <h3 class="text-xl font-bold text-[var(--heading-color)]">Inventory Controller</h3>
-                                    <p class="text-md text-[var(--accent-color)] font-medium my-1">S.M. Auto Engineering</p>
-                                    <p class="text-sm opacity-80">Nov 2019 – May 2021</p>
+                                    <h3>Inventory Controller</h3>
+                                    <p class="exp-company my-1">S.M. Auto Engineering</p>
+                                    <p class="exp-dates">Nov 2019 – May 2021</p>
                                     <p class="text-sm mt-1" data-i18n-key="smauto_desc" data-i18n-html>Analyzed spare parts data to identify cost savings — achieved <span class="metric-highlight">0.2M&#8377;</span> savings in year one.</p>
                                 </div>
                             </div>
@@ -372,17 +368,17 @@
 
             <!-- ── PROJECTS ── -->
             <section aria-labelledby="projects-heading" class="py-16 section-reveal" id="projects">
-                <h2 class="text-3xl font-bold mb-12 section-title text-[var(--heading-color)]" id="projects-heading">
+                <h2 class="section-title mb-12" id="projects-heading">
                     <span class="section-eyebrow" aria-hidden="true">03</span>
                     <span data-i18n-key="projects_title">My Projects</span>
                 </h2>
                 <div class="bento-grid">
 
                     <!-- AI FINANCE BOT — Flagship -->
-                    <div class="md:col-span-2 lg:col-span-3 flex justify-center items-center w-full py-4">
+                    <div class="md:col-span-2 flex justify-center items-center w-full py-4">
                         <div class="collapsed" id="dynamic-island-container">
                             <div class="collapsed-content">
-                                <span class="font-semibold text-lg" style="color: var(--apple-text-primary);" data-i18n-key="bot_collapsed">AI Finance Bot Demo — Click to explore</span>
+                                <span data-i18n-key="bot_collapsed">AI Finance Bot Demo — Click to explore</span>
                                 <div class="waveform"><span></span><span></span><span></span><span></span></div>
                             </div>
                             <div class="expanded-content">
@@ -390,25 +386,25 @@
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 </button>
                                 <div class="text-center mb-8">
-                                    <h3 class="text-3xl md:text-4xl font-semibold mb-2" style="color: var(--apple-text-primary);">AI Finance Bot <span class="text-base font-normal opacity-60" data-i18n-key="bot_demo_tag">(Interactive Demo)</span></h3>
-                                    <p class="text-lg max-w-2xl mx-auto" style="color: var(--apple-text-secondary);" data-i18n-key="bot_subtitle">A simulation of the automated financial reporting solution I built with n8n and Generative AI. Select a question below to see the concept in action.</p>
+                                    <h3 class="text-3xl md:text-4xl mb-2">AI Finance Bot <span class="text-base text-[var(--text-color)]" data-i18n-key="bot_demo_tag">(Interactive Demo)</span></h3>
+                                    <p class="text-lg max-w-2xl mx-auto" data-i18n-key="bot_subtitle">A simulation of the automated financial reporting solution I built with n8n and Generative AI. Select a question below to see the concept in action.</p>
                                 </div>
-                                <div class="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+                                <div class="grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
                                     <div id="bot-simulation-window-apple">
                                         <div id="bot-messages-apple"></div>
                                         <div class="p-4 pt-2 border-t border-[var(--apple-card-border)] shrink-0" id="bot-question-prompts-apple"></div>
                                     </div>
                                     <div class="space-y-8">
                                         <div>
-                                            <h4 class="text-lg font-semibold mb-1" style="color: var(--apple-text-primary);" data-i18n-key="bot_challenge_h">The Challenge</h4>
-                                            <p class="text-sm leading-relaxed" style="color: var(--apple-text-secondary);" data-i18n-key="bot_challenge_p">Leadership required immediate financial metrics but found navigating complex BI dashboards inefficient for answering simple, repetitive questions.</p>
+                                            <h4 class="text-lg mb-1" data-i18n-key="bot_challenge_h">The Challenge</h4>
+                                            <p class="text-sm leading-relaxed" data-i18n-key="bot_challenge_p">Leadership required immediate financial metrics but found navigating complex BI dashboards inefficient for answering simple, repetitive questions.</p>
                                         </div>
                                         <div>
-                                            <h4 class="text-lg font-semibold mb-1" style="color: var(--apple-text-primary);" data-i18n-key="bot_solution_h">The Solution</h4>
-                                            <p class="text-sm leading-relaxed" style="color: var(--apple-text-secondary);" data-i18n-key="bot_solution_p" data-i18n-html>I engineered an intelligent bot using <strong>n8n</strong> and <strong>Generative AI</strong>. It automates the retrieval of visual data from <strong>Power BI</strong> via reliable <strong>API integrations</strong> and provides instant, conversational answers.</p>
+                                            <h4 class="text-lg mb-1" data-i18n-key="bot_solution_h">The Solution</h4>
+                                            <p class="text-sm leading-relaxed" data-i18n-key="bot_solution_p" data-i18n-html>I engineered an intelligent bot using <strong>n8n</strong> and <strong>Generative AI</strong>. It automates the retrieval of visual data from <strong>Power BI</strong> via reliable <strong>API integrations</strong> and provides instant, conversational answers.</p>
                                         </div>
                                         <div class="mt-6 pt-6 border-t border-[var(--apple-card-border)]">
-                                            <h4 class="font-semibold text-sm mb-3 text-gray-400" data-i18n-key="bot_coretech">Core Technologies</h4>
+                                            <h4 class="smallcaps text-xs mb-3 text-[var(--text-color)]" data-i18n-key="bot_coretech">Core Technologies</h4>
                                             <div class="flex flex-wrap gap-2">
                                                 <span class="skill-tag-sm-apple">Generative AI</span><span class="skill-tag-sm-apple">n8n</span><span class="skill-tag-sm-apple">Power BI</span><span class="skill-tag-sm-apple">API Integration</span>
                                             </div>
@@ -419,15 +415,15 @@
                         </div>
                     </div>
 
-                    <!-- Spotify Dashboard — with award badge -->
-                    <div class="glass-card overflow-hidden flex flex-col md:col-span-2 lg:col-span-3 stagger-item">
+                    <!-- Spotify Dashboard — with award note -->
+                    <div class="glass-card overflow-hidden flex flex-col md:col-span-2 stagger-item">
                         <div class="p-6 flex flex-col grow">
-                            <div class="flex items-start justify-between gap-4 mb-3">
-                                <div class="flex items-center gap-3">
-                                    <img src="tableau.webp" alt="" class="h-10 w-10 object-contain rounded-lg" width="40" height="40" loading="lazy" />
-                                    <h3 class="text-xl font-bold text-[var(--heading-color)]" data-i18n-key="spotify_title">Spotify Streaming Analytics</h3>
+                            <div class="flex items-baseline justify-between gap-4 mb-3">
+                                <div class="flex items-baseline gap-3">
+                                    <span class="exhibit-index" aria-hidden="true">3.1</span>
+                                    <h3 data-i18n-key="spotify_title">Spotify Streaming Analytics</h3>
                                 </div>
-                                <span class="award-badge shrink-0"><svg class="icon" aria-hidden="true"><use href="#i-trophy"/></svg> <span data-i18n-key="spotify_award">Runner-up · Onyx Data Challenge</span></span>
+                                <span class="award-badge"><svg class="icon" aria-hidden="true"><use href="#i-trophy"/></svg> <span data-i18n-key="spotify_award">Runner-up · Onyx Data Challenge</span></span>
                             </div>
                             <div class="grid md:grid-cols-2 gap-6 mt-2">
                                 <div>
@@ -442,8 +438,8 @@
                                     <h4 class="font-bold text-sm text-[var(--heading-color)] mb-1" data-i18n-key="spotify_result_h">The Result</h4>
                                     <p class="text-sm leading-relaxed" data-i18n-key="spotify_result_p" data-i18n-html>Finished <strong>Runner-up</strong> in the Onyx Data Challenge for dashboard design and aesthetics.</p>
                                 </div>
-                                <a href="https://public.tableau.com/app/profile/rushikesh.pawar/viz/Spotifychallenge/Dashboard1" rel="noopener noreferrer" target="_blank" class="block rounded-xl overflow-hidden min-h-[200px] group">
-                                    <picture><source srcset="spotify_dashboard.webp" type="image/webp" /><img src="spotify_dashboard.png" alt="Spotify Streaming Analytics Dashboard" class="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105" loading="lazy" width="600" height="400" /></picture>
+                                <a href="https://public.tableau.com/app/profile/rushikesh.pawar/viz/Spotifychallenge/Dashboard1" rel="noopener noreferrer" target="_blank" class="plate-mount block overflow-hidden min-h-[200px]">
+                                    <picture><source srcset="spotify_dashboard.webp" type="image/webp" /><img src="spotify_dashboard.png" alt="Spotify Streaming Analytics Dashboard" class="w-full h-full object-cover" loading="lazy" width="600" height="400" /></picture>
                                 </a>
                             </div>
                             <div class="mt-4 pt-4 border-t border-[var(--glass-border)] flex flex-wrap gap-2">
@@ -455,9 +451,9 @@
                     <!-- RAG Chatbot — real AI project -->
                     <div class="glass-card overflow-hidden flex flex-col stagger-item">
                         <div class="p-6 flex flex-col grow">
-                            <div class="flex items-center gap-3 mb-2">
-                                <svg class="icon text-xl text-[var(--accent-color)]" aria-hidden="true"><use href="#i-brain"/></svg>
-                                <h3 class="text-lg font-bold text-[var(--heading-color)]" data-i18n-key="rag_title">AI-Powered Finance Chatbot</h3>
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="exhibit-index" aria-hidden="true">3.2</span>
+                                <h3 class="text-lg" data-i18n-key="rag_title">AI-Powered Finance Chatbot</h3>
                             </div>
                             <p class="mb-3 text-sm leading-relaxed grow" data-i18n-key="rag_desc">Built a production RAG (Retrieval-Augmented Generation) chatbot that automates extraction of Power BI financial reports using LLMs, stores embeddings in a Pinecone vector database, and enables stakeholders to query financial insights in natural language via a Google Apps Script UI.</p>
                             <div class="arch-diagram my-3">
@@ -498,9 +494,9 @@
                     <!-- Invoice Maker Automation — case study style -->
                     <div class="glass-card overflow-hidden flex flex-col stagger-item">
                         <div class="p-6 flex flex-col grow">
-                            <div class="flex items-center gap-3 mb-2">
-                                <svg class="icon text-xl text-[var(--accent-color)]" aria-hidden="true"><use href="#i-project-diagram"/></svg>
-                                <h3 class="text-lg font-bold text-[var(--heading-color)]" data-i18n-key="invoice_title">Invoice Automation Pipeline</h3>
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="exhibit-index" aria-hidden="true">3.3</span>
+                                <h3 class="text-lg" data-i18n-key="invoice_title">Invoice Automation Pipeline</h3>
                             </div>
                             <p class="mb-3 text-sm leading-relaxed grow" data-i18n-key="project_invoice_desc">Built an app using AI-assisted vibe coding that takes CSV/Excel exports from a Power BI dashboard, auto-generates PDF invoices, and uploads them to pingen.de for physical mail delivery — eliminating hours of manual processing per batch.</p>
                             <div class="arch-diagram my-3">
@@ -543,44 +539,35 @@
 
             <!-- ── SKILLS ── -->
             <section aria-labelledby="skills-heading" class="py-16 section-reveal reveal-left" id="skills">
-                <h2 class="text-3xl font-bold mb-12 section-title text-[var(--heading-color)]" id="skills-heading">
+                <h2 class="section-title mb-12" id="skills-heading">
                     <span class="section-eyebrow" aria-hidden="true">04</span>
                     <span data-i18n-key="toolbelt_title">My Tech Toolbelt</span>
                 </h2>
-                <div class="max-w-3xl mx-auto space-y-6">
-                    <div class="glass-card skill-card-core p-5 stagger-item">
-                        <div class="flex items-center gap-3 mb-3">
-                            <svg class="icon text-[var(--accent-color)]" aria-hidden="true"><use href="#i-chart-bar"/></svg>
-                            <h3 class="font-semibold text-[var(--heading-color)]" data-i18n-key="skill_viz_title">Data Visualization & BI</h3>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
+                <div class="max-w-4xl space-y-12">
+                    <div class="skill-group stagger-item">
+                        <h3 class="skill-group-heading"><span data-i18n-key="skill_viz_title">Data Visualization & BI</span></h3>
+                        <div class="skill-matrix">
                             <span class="skill-chip"><img src="powerbi.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />Power BI</span>
                             <span class="skill-chip"><img src="tableau.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />Tableau</span>
                             <span class="skill-chip"><img src="dax.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />DAX</span>
                             <span class="skill-chip">Qlik Sense</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70" data-i18n-key="skill_viz_note" data-i18n-html>Production dashboards across finance & sales &middot; <span class="metric-highlight">4+</span> years daily use</p>
+                        <p class="skill-note" data-i18n-key="skill_viz_note" data-i18n-html>Production dashboards across finance & sales &middot; <span class="metric-highlight">4+</span> years daily use</p>
                     </div>
-                    <div class="glass-card skill-card-core p-5 stagger-item">
-                        <div class="flex items-center gap-3 mb-3">
-                            <svg class="icon text-[var(--accent-color)]" aria-hidden="true"><use href="#i-database"/></svg>
-                            <h3 class="font-semibold text-[var(--heading-color)]" data-i18n-key="skill_eng_title">Data Engineering & Analytics</h3>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
+                    <div class="skill-group stagger-item">
+                        <h3 class="skill-group-heading"><span data-i18n-key="skill_eng_title">Data Engineering & Analytics</span></h3>
+                        <div class="skill-matrix">
                             <span class="skill-chip"><img src="sql.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />SQL</span>
                             <span class="skill-chip"><img src="python.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />Python</span>
                             <span class="skill-chip"><img src="aws.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />AWS Athena</span>
                             <span class="skill-chip">BigQuery</span>
                             <span class="skill-chip">Airflow</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70" data-i18n-key="skill_eng_note" data-i18n-html>Complex queries, data modeling, ETL/ELT pipelines &middot; <span class="metric-highlight">5</span> database platforms</p>
+                        <p class="skill-note" data-i18n-key="skill_eng_note" data-i18n-html>Complex queries, data modeling, ETL/ELT pipelines &middot; <span class="metric-highlight">5</span> database platforms</p>
                     </div>
-                    <div class="glass-card skill-card-highlight p-5 stagger-item">
-                        <div class="flex items-center gap-3 mb-3">
-                            <svg class="icon text-[var(--accent-secondary)]" aria-hidden="true"><use href="#i-robot"/></svg>
-                            <h3 class="font-semibold skill-highlight-title" data-i18n-key="skill_ai_title">Automation & AI</h3>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
+                    <div class="skill-group skill-group--key stagger-item">
+                        <h3 class="skill-group-heading"><span data-i18n-key="skill_ai_title">Automation & AI</span></h3>
+                        <div class="skill-matrix">
                             <span class="skill-chip"><img src="n8n.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />n8n</span>
                             <span class="skill-chip"><img src="ai-agents.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />AI Agents</span>
                             <span class="skill-chip">Claude Code</span>
@@ -588,19 +575,16 @@
                             <span class="skill-chip">LLMs</span>
                             <span class="skill-chip">Prompt Engineering</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70" data-i18n-key="skill_ai_note">Built production RAG chatbot &middot; Automated data pipelines &middot; Daily AI tool use</p>
+                        <p class="skill-note" data-i18n-key="skill_ai_note">Built production RAG chatbot &middot; Automated data pipelines &middot; Daily AI tool use</p>
                     </div>
-                    <div class="glass-card p-5 stagger-item">
-                        <div class="flex items-center gap-3 mb-3">
-                            <svg class="icon text-[var(--accent-color)]" aria-hidden="true"><use href="#i-server"/></svg>
-                            <h3 class="font-semibold text-[var(--heading-color)]" data-i18n-key="skill_platforms_title">Platforms</h3>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
+                    <div class="skill-group stagger-item">
+                        <h3 class="skill-group-heading"><span data-i18n-key="skill_platforms_title">Platforms</span></h3>
+                        <div class="skill-matrix">
                             <span class="skill-chip"><img src="salesforce.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />Salesforce</span>
                             <span class="skill-chip"><img src="aws.webp" alt="" class="skill-chip-icon" width="20" height="20" loading="lazy" />AWS</span>
                             <span class="skill-chip">GitHub Pages</span>
                         </div>
-                        <p class="text-xs text-[var(--text-color)] mt-3 opacity-70" data-i18n-key="skill_platforms_note">Enterprise integrations & cloud infrastructure</p>
+                        <p class="skill-note" data-i18n-key="skill_platforms_note">Enterprise integrations & cloud infrastructure</p>
                     </div>
                 </div>
             </section>
@@ -608,109 +592,116 @@
             <!-- ── EDUCATION & CERTIFICATIONS (combined) ── -->
             <section aria-labelledby="education-heading" class="py-16 section-reveal reveal-right" id="education">
                 <div>
-                    <h2 class="text-3xl font-bold mb-12 section-title text-[var(--heading-color)]" id="education-heading">
+                    <h2 class="section-title mb-12" id="education-heading">
                         <span class="section-eyebrow" aria-hidden="true">05</span>
                         <span data-i18n-key="education_title">Education</span>
                     </h2>
-                    <div class="max-w-4xl grid md:grid-cols-2 gap-x-12 gap-y-8 mb-12">
-                        <div class="flex items-start gap-4">
+                    <div class="edu-rows max-w-4xl mb-14">
+                        <div class="edu-row grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto] gap-x-5 gap-y-1 items-center">
                             <div class="shrink-0">
-                                <picture><source srcset="htw_bw.webp" type="image/webp" /><img alt="HTW Berlin Logo" class="h-14 w-14 object-cover rounded-full theme-light" loading="lazy" src="htw_bw.png" /></picture>
-                                <picture><source srcset="htw_color.webp" type="image/webp" /><img alt="HTW Berlin Logo" class="h-14 w-14 object-cover rounded-full theme-dark" loading="lazy" src="htw_color.png" /></picture>
+                                <picture><source srcset="htw_bw.webp" type="image/webp" /><img alt="HTW Berlin Logo" class="h-12 w-12 object-cover rounded-full theme-light" loading="lazy" src="htw_bw.png" /></picture>
+                                <picture><source srcset="htw_color.webp" type="image/webp" /><img alt="HTW Berlin Logo" class="h-12 w-12 object-cover rounded-full theme-dark" loading="lazy" src="htw_color.png" /></picture>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-[var(--heading-color)]" data-i18n-key="edu_masters">Master of Business Administration & Engineering</h3>
-                                <p class="font-medium">HTW Berlin — Hochschule f&uuml;r Technik und Wirtschaft</p>
-                                <p class="text-sm opacity-80">Oct 2021 – Oct 2023</p>
+                                <h3 data-i18n-key="edu_masters">Master of Business Administration & Engineering</h3>
+                                <p class="text-sm">HTW Berlin — Hochschule f&uuml;r Technik und Wirtschaft</p>
                             </div>
+                            <p class="edu-dates col-start-2 md:col-start-3">Oct 2021 – Oct 2023</p>
                         </div>
-                        <div class="flex items-start gap-4">
+                        <div class="edu-row grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto] gap-x-5 gap-y-1 items-center">
                             <div class="shrink-0">
-                                <picture><source srcset="jspm_bw.webp" type="image/webp" /><img alt="JSPM Logo" class="h-14 w-14 object-cover rounded-full theme-light" loading="lazy" src="jspm_bw.png" /></picture>
-                                <picture><source srcset="jspm_color.webp" type="image/webp" /><img alt="JSPM Logo" class="h-14 w-14 object-cover rounded-full theme-dark" loading="lazy" src="jspm_color.png" /></picture>
+                                <picture><source srcset="jspm_bw.webp" type="image/webp" /><img alt="JSPM Logo" class="h-12 w-12 object-cover rounded-full theme-light" loading="lazy" src="jspm_bw.png" /></picture>
+                                <picture><source srcset="jspm_color.webp" type="image/webp" /><img alt="JSPM Logo" class="h-12 w-12 object-cover rounded-full theme-dark" loading="lazy" src="jspm_color.png" /></picture>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-[var(--heading-color)]" data-i18n-key="edu_bachelors">Bachelor of Mechanical Engineering</h3>
-                                <p class="font-medium">Savitribai Phule Pune University</p>
-                                <p class="text-sm opacity-80">Aug 2015 – Aug 2019</p>
+                                <h3 data-i18n-key="edu_bachelors">Bachelor of Mechanical Engineering</h3>
+                                <p class="text-sm">Savitribai Phule Pune University</p>
                             </div>
+                            <p class="edu-dates col-start-2 md:col-start-3">Aug 2015 – Aug 2019</p>
                         </div>
                     </div>
 
-                    <h3 class="text-2xl font-bold mb-6 text-[var(--heading-color)]">
+                    <h3 class="text-xl mb-6">
                         <span data-i18n-key="certs_title">Certifications</span>
                     </h3>
-                    <div class="max-w-4xl flex flex-wrap gap-4" id="certifications">
-                        <a class="ios-button primary-btn" data-i18n-key="cert_google" href="https://drive.google.com/file/d/1zWBZDnMuiKehHhP_uWX7pVWObOEtuwBC/view?usp=sharing" rel="noopener noreferrer" target="_blank">Google Data Analytics</a>
-                        <a class="ios-button primary-btn" data-i18n-key="cert_sql" href="https://drive.google.com/file/d/1WKw3hjShdDCC-Sho-uJq_jn-V8kqP3wq/view?usp=sharing" rel="noopener noreferrer" target="_blank">SQL</a>
-                        <a class="ios-button primary-btn" data-i18n-key="cert_tableau" href="https://drive.google.com/file/d/1yTXY2LCsGzr7CBaqN_oQID57LLtw11sP/view?usp=sharing" rel="noopener noreferrer" target="_blank">Tableau</a>
-                        <a class="ios-button primary-btn" data-i18n-key="cert_python" href="https://drive.google.com/file/d/12IPlolJ5brzkTGLlm7W3einKu6XDloe0/view?usp=sharing" rel="noopener noreferrer" target="_blank">Python</a>
+                    <div class="max-w-4xl flex flex-wrap gap-3" id="certifications">
+                        <a class="cert-stub" data-i18n-key="cert_google" href="https://drive.google.com/file/d/1zWBZDnMuiKehHhP_uWX7pVWObOEtuwBC/view?usp=sharing" rel="noopener noreferrer" target="_blank">Google Data Analytics</a>
+                        <a class="cert-stub" data-i18n-key="cert_sql" href="https://drive.google.com/file/d/1WKw3hjShdDCC-Sho-uJq_jn-V8kqP3wq/view?usp=sharing" rel="noopener noreferrer" target="_blank">SQL</a>
+                        <a class="cert-stub" data-i18n-key="cert_tableau" href="https://drive.google.com/file/d/1yTXY2LCsGzr7CBaqN_oQID57LLtw11sP/view?usp=sharing" rel="noopener noreferrer" target="_blank">Tableau</a>
+                        <a class="cert-stub" data-i18n-key="cert_python" href="https://drive.google.com/file/d/12IPlolJ5brzkTGLlm7W3einKu6XDloe0/view?usp=sharing" rel="noopener noreferrer" target="_blank">Python</a>
                     </div>
                 </div>
             </section>
 
             <!-- ── CONTACT ── -->
             <section aria-labelledby="contact-heading" class="py-16 section-reveal reveal-left" id="contact">
-                <div class="glass-card p-8 md:p-12">
-                    <h2 class="text-3xl font-bold mb-6 section-title text-[var(--heading-color)]" id="contact-heading">
-                        <span class="section-eyebrow" aria-hidden="true">06</span>
-                        <span data-i18n-key="contact_title">Let&rsquo;s Work Together</span>
-                    </h2>
-                    <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
-                        <span class="quick-fact"><svg class="icon text-[var(--accent-color)]" aria-hidden="true"><use href="#i-map-marker-alt"/></svg> <span data-i18n-key="contact_location">Hamburg, Germany · open to Berlin & remote</span></span>
-                        <span class="quick-fact"><svg class="icon text-[var(--accent-color)]" aria-hidden="true"><use href="#i-clock"/></svg> <span data-i18n-key="contact_response">Response within 24h</span></span>
-                        <span class="contact-available-badge"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg> <span data-i18n-key="contact_available">Open to opportunities</span></span>
+                <h2 class="section-title mb-12" id="contact-heading">
+                    <span class="section-eyebrow" aria-hidden="true">06</span>
+                    <span data-i18n-key="contact_title">Let&rsquo;s Work Together</span>
+                </h2>
+                <div class="grid md:grid-cols-5 gap-10 md:gap-16 max-w-5xl">
+                    <div class="md:col-span-2">
+                        <p class="text-sm mb-6" data-i18n-key="contact_availability">Currently a Senior Business Analyst at Lecturio GmbH, based in Hamburg — open to new opportunities in data analytics, BI, and AI-powered reporting, in Berlin or remote.</p>
+                        <div class="flex flex-col items-start gap-2 mb-8">
+                            <span class="quick-fact"><svg class="icon" aria-hidden="true"><use href="#i-map-marker-alt"/></svg> <span data-i18n-key="contact_location">Hamburg, Germany · open to Berlin & remote</span></span>
+                            <span class="quick-fact"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> <span data-i18n-key="contact_response">Response within 24h</span></span>
+                            <span class="contact-available-badge"><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg> <span data-i18n-key="contact_available">Open to opportunities</span></span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <a class="contact-email-link" href="mailto:rushikeshpawar197@gmail.com">rushikeshpawar197@gmail.com</a>
+                            <button aria-label="Copy email" class="copy-email-btn ios-button secondary-btn btn-compact" data-email="rushikeshpawar197@gmail.com">
+                                <svg class="icon mr-1" aria-hidden="true"><use href="#i-copy-r"/></svg>Copy
+                            </button>
+                        </div>
                     </div>
-                    <p class="text-center text-sm mb-6 text-[var(--text-color)]" data-i18n-key="contact_availability">Currently a Senior Business Analyst at Lecturio GmbH, based in Hamburg — open to new opportunities in data analytics, BI, and AI-powered reporting, in Berlin or remote.</p>
-                    <div class="flex items-center justify-center gap-3 mb-8">
-                        <a class="text-[var(--accent-color)] font-mono text-sm" href="mailto:rushikeshpawar197@gmail.com">rushikeshpawar197@gmail.com</a>
-                        <button aria-label="Copy email" class="copy-email-btn ios-button secondary-btn btn-compact" data-email="rushikeshpawar197@gmail.com">
-                            <svg class="icon mr-1" aria-hidden="true"><use href="#i-copy-r"/></svg>Copy
-                        </button>
-                    </div>
-                    <form class="max-w-xl mx-auto mb-12" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+                    <form class="md:col-span-3" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
                         <input type="hidden" name="access_key" value="10a00cc5-0ec3-420f-9ad1-6650a00f9f56" />
                         <input type="hidden" name="subject" value="New message from your portfolio contact form" />
                         <input type="hidden" name="from_name" value="Portfolio Contact Form" />
                         <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
                         <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
-                        <div class="mb-5 stagger-item">
-                            <label class="sr-only" data-i18n-key="form_name_label" for="name">Name</label>
-                            <input class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_name_placeholder" id="name" name="name" placeholder="Your Name" required type="text" />
+                        <div class="mb-6 stagger-item contact-field">
+                            <label class="form-label" data-i18n-key="form_name_label" for="name">Name</label>
+                            <input class="contact-input w-full" data-i18n-key="form_name_placeholder" id="name" name="name" placeholder="Your Name" required type="text" />
                         </div>
-                        <div class="mb-5 stagger-item">
-                            <label class="sr-only" data-i18n-key="form_email_label" for="email">Email</label>
-                            <input class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_email_placeholder" id="email" name="email" placeholder="Your Email" required type="email" />
+                        <div class="mb-6 stagger-item contact-field">
+                            <label class="form-label" data-i18n-key="form_email_label" for="email">Email</label>
+                            <input class="contact-input w-full" data-i18n-key="form_email_placeholder" id="email" name="email" placeholder="Your Email" required type="email" />
                         </div>
-                        <div class="mb-6 stagger-item">
-                            <label class="sr-only" data-i18n-key="form_message_label" for="message">Message</label>
-                            <textarea class="contact-input w-full px-4 py-3 rounded-xl" data-i18n-key="form_message_placeholder" id="message" name="message" placeholder="Your Message" required rows="4"></textarea>
+                        <div class="mb-8 stagger-item contact-field">
+                            <label class="form-label" data-i18n-key="form_message_label" for="message">Message</label>
+                            <textarea class="contact-input w-full" data-i18n-key="form_message_placeholder" id="message" name="message" placeholder="Your Message" required rows="4"></textarea>
                         </div>
-                        <div class="text-center stagger-item">
-                            <button class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="form_send_button" type="submit">Send Message</button>
+                        <div class="stagger-item">
+                            <button class="ios-button primary-btn w-full" data-i18n-key="form_send_button" type="submit">Send Message</button>
                         </div>
+                        <div class="closing-rule mt-10" aria-hidden="true"></div>
                     </form>
                 </div>
             </section>
         </main>
 
-        <!-- ════════ FOOTER ════════ -->
-        <footer class="py-12">
-            <div class="container mx-auto px-6 text-center">
-                <div class="flex justify-center items-center space-x-6 mb-5 text-2xl">
-                    <a aria-label="GitHub" class="footer-social" href="https://github.com/rushikeshpawar007" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg></a>
-                    <a aria-label="LinkedIn" class="footer-social" href="https://www.linkedin.com/in/rushikesh-pawar-261b9215b/" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg></a>
-                    <a aria-label="Email" class="footer-social" href="mailto:rushikeshpawar197@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-envelope-r"/></svg></a>
-                    <a aria-label="Blog" class="footer-social" href="https://rushikeshpawar.hashnode.dev/" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-blog"/></svg></a>
+        <!-- ════════ FOOTER — the colophon ════════ -->
+        <footer class="py-12 mt-8">
+            <div class="container mx-auto px-6">
+                <div class="closing-rule mb-10" aria-hidden="true"></div>
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
+                    <div>
+                        <p class="smallcaps text-sm text-[var(--heading-color)]">Rushikesh Pawar</p>
+                        <p class="colophon mt-2">Hamburg, DE &middot; &copy; <span id="copyright-year"></span></p>
+                    </div>
+                    <div class="flex items-center gap-1 text-xl">
+                        <a aria-label="GitHub" class="footer-social" href="https://github.com/rushikeshpawar007" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg></a>
+                        <a aria-label="LinkedIn" class="footer-social" href="https://www.linkedin.com/in/rushikesh-pawar-261b9215b/" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg></a>
+                        <a aria-label="Email" class="footer-social" href="mailto:rushikeshpawar197@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-envelope-r"/></svg></a>
+                        <a aria-label="Blog" class="footer-social" href="https://rushikeshpawar.hashnode.dev/" rel="noopener noreferrer" target="_blank"><svg class="icon" aria-hidden="true"><use href="#i-blog"/></svg></a>
+                    </div>
+                    <div class="colophon md:text-right">
+                        <p>Typeset in Zodiak, Switzer &amp; Fragment Mono</p>
+                        <p class="mt-1">Vanilla JS &middot; Tailwind v4 &middot; Playwright-tested &middot; GitHub Pages</p>
+                    </div>
                 </div>
-                <div class="flex flex-wrap justify-center gap-2 mb-5">
-                    <span class="skill-tag-sm">Vanilla JS</span>
-                    <span class="skill-tag-sm">Tailwind CSS v4</span>
-                    <span class="skill-tag-sm">Playwright E2E Tests</span>
-                    <span class="skill-tag-sm">GitHub Pages</span>
-                </div>
-                <p class="text-sm text-[var(--text-color)]">&copy; <span id="copyright-year"></span> Rushikesh Pawar</p>
-                <p class="text-xs text-[var(--text-color)] mt-3 opacity-80">
+                <p class="text-xs text-[var(--text-color)] mt-6">
                     <a href="privacy.html" data-i18n-key="footer_privacy" class="hover:underline">Privacy Policy</a>
                     <span aria-hidden="true"> · </span>
                     <a href="impressum.html" data-i18n-key="footer_impressum" class="hover:underline">Impressum</a>
@@ -722,18 +713,18 @@
     </div>
 
     <!-- Scroll to top -->
-    <button aria-label="Scroll to top" class="fixed bottom-20 right-4 p-3 bg-[var(--accent-color)] rounded-full shadow-lg text-white z-50" id="scrollTopBtn" style="display: none;">&uarr;</button>
+    <button aria-label="Scroll to top" class="fixed bottom-20 right-4 p-3 z-50" id="scrollTopBtn" style="display: none;">&uarr;</button>
 
     <!-- Toast container -->
     <div aria-live="polite" id="toast-container"></div>
 
     <!-- Mobile bottom nav -->
     <nav aria-label="Mobile navigation" role="navigation" id="bottom-nav">
-        <a href="#about"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>About</span></a>
-        <a href="#experience"><svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg><span>Work</span></a>
-        <a href="#skills"><svg class="icon" aria-hidden="true"><use href="#i-tools"/></svg><span>Skills</span></a>
-        <a href="#projects"><svg class="icon" aria-hidden="true"><use href="#i-folder-open"/></svg><span>Projects</span></a>
-        <a href="#contact"><svg class="icon" aria-hidden="true"><use href="#i-envelope"/></svg><span>Contact</span></a>
+        <a href="#about"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span data-i18n-key="nav_about">About</span></a>
+        <a href="#experience"><svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg><span data-i18n-key="nav_experience">Experience</span></a>
+        <a href="#projects"><svg class="icon" aria-hidden="true"><use href="#i-folder-open"/></svg><span data-i18n-key="nav_projects">Projects</span></a>
+        <a href="#skills"><svg class="icon" aria-hidden="true"><use href="#i-tools"/></svg><span data-i18n-key="nav_skills">Skills</span></a>
+        <a href="#contact"><svg class="icon" aria-hidden="true"><use href="#i-envelope"/></svg><span data-i18n-key="nav_contact">Contact</span></a>
     </nav>
 
     <!-- ════════ TRANSLATIONS ════════ -->
@@ -757,7 +748,7 @@
         "resume_button": "My Resume",
         "see_my_work_button": "View Key Project",
         "about_title": "About Me",
-        "about_intro": "I'm a Senior Business Analyst at Lecturio GmbH, based in Hamburg and open to roles in Berlin or remote, with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.",
+        "about_intro": "I am a Senior Business Analyst at Lecturio GmbH, based in Hamburg and open to roles in Berlin or remote, with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.",
         "education_title": "Education",
         "experience_title": "Work Experience",
         "cariad_role": "Working Student Data Analytics",
@@ -796,7 +787,8 @@
         "exp_challenge": "Challenge",
         "exp_solution": "Solution",
         "exp_impact": "Impact",
-        "exp_tech": "Technologies:",
+        "exp_tech": "Technologies",
+        "lecturio_dates": "Sept 2023 – present",
         "lecturio_challenge": "Manual, time-consuming finance reporting across multiple data sources, lack of real-time sales insights, and a quarterly royalty distribution process for 300+ content authors that required end-to-end automation.",
         "lecturio_solution": "Built Power BI dashboards (DAX, Power Query, SQL) for Finance and Sales, designed a revenue gap analysis framework reconciling accounting systems with Salesforce CRM, and automated the end-to-end royalty distribution for 300+ authors. Leveraged N8n and Claude Code to replace manual workflows with scalable, AI-driven pipelines. Delivered strategic analyses to CFO and CEO.",
         "lecturio_impact": "Reduced reporting cycle time by <span class=\"metric-highlight\">40%</span>, gave Finance, Sales, and Operations teams self-service access to consistent KPIs, and delivered an AI-powered RAG chatbot enabling natural-language queries on financial data.",
@@ -901,7 +893,8 @@
         "exp_challenge": "Herausforderung",
         "exp_solution": "L\u00f6sung",
         "exp_impact": "Wirkung",
-        "exp_tech": "Technologien:",
+        "exp_tech": "Technologien",
+        "lecturio_dates": "Sept. 2023 \u2013 heute",
         "lecturio_challenge": "Manuelles, zeitaufw\u00e4ndiges Finanzreporting aus mehreren Datenquellen, fehlende Echtzeit-Vertriebseinblicke und ein quartalsweiser Lizenzabrechnungsprozess f\u00fcr 300+ Content-Autoren, der durchg\u00e4ngige Automatisierung erforderte.",
         "lecturio_solution": "Power-BI-Dashboards (DAX, Power Query, SQL) f\u00fcr Finance und Sales gebaut, ein Umsatzl\u00fccken-Framework zur Abstimmung von Buchhaltungssystemen mit Salesforce CRM entworfen und die Lizenzabrechnung f\u00fcr 300+ Autoren durchg\u00e4ngig automatisiert. N8n und Claude Code eingesetzt, um manuelle Abl\u00e4ufe durch skalierbare, KI-gest\u00fctzte Pipelines zu ersetzen. Strategische Analysen f\u00fcr CFO und CEO geliefert.",
         "lecturio_impact": "Berichtszyklus um <span class=\"metric-highlight\">40%</span> verk\u00fcrzt, Finance-, Sales- und Operations-Teams Self-Service-Zugriff auf einheitliche KPIs erm\u00f6glicht und einen KI-gest\u00fctzten RAG-Chatbot f\u00fcr nat\u00fcrlichsprachige Abfragen von Finanzdaten geliefert.",

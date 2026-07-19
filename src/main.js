@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             try { localStorage.setItem('lang', currentLang); } catch {}
             translatePage();
             syncTypingRole();
+            // data-i18n-html re-renders replace .metric-highlight spans,
+            // detaching them from the count-up observer — re-observe.
+            observeMetrics();
         }
 
         const throttledToggleLang = throttled('lang', toggleLanguage);
@@ -81,9 +84,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── THEME TOGGLE ──────────────────────────────────── */
 
+        // Keep the mobile browser chrome tinted like the sheet
+        function syncThemeColor(next) {
+            document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+            const meta = document.createElement('meta');
+            meta.name = 'theme-color';
+            meta.content = next === 'dark' ? '#151310' : '#FAF4EA';
+            document.head.appendChild(meta);
+        }
+
         function setTheme(next) {
-            document.documentElement.setAttribute('data-theme', next);
-            try { localStorage.setItem('theme', next); } catch {}
+            const apply = () => {
+                document.documentElement.setAttribute('data-theme', next);
+                try { localStorage.setItem('theme', next); } catch {}
+                syncThemeColor(next);
+            };
+            // Cross-fade the whole sheet like turning a page (progressive enhancement)
+            if (document.startViewTransition && !prefersReducedMotion) {
+                document.documentElement.classList.add('theme-switching');
+                const vt = document.startViewTransition(apply);
+                vt.finished.finally(() => document.documentElement.classList.remove('theme-switching'));
+            } else {
+                apply();
+            }
         }
 
         const themeToggle = document.getElementById('theme-toggle');
@@ -92,6 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             }));
         }
+
+        // Reconcile browser-chrome tint with the ACTIVE theme (a saved theme
+        // can oppose the OS scheme the static media-based metas key on)
+        syncThemeColor(document.documentElement.getAttribute('data-theme') || 'light');
 
         /* ── MOBILE MENU ───────────────────────────────────── */
 
@@ -116,22 +143,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const navLinks = document.querySelectorAll('header nav ul li a');
         const bottomNavLinks = document.querySelectorAll('#bottom-nav a');
 
+        // A fixed band at ~35-45% of the viewport decides the active section:
+        // a 50%-visibility threshold is unreachable for sections taller than
+        // twice the viewport (Experience, Projects), and unlinked sections
+        // (#impact, #education) must not wipe the highlight.
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => {
-                        link.classList.remove('active-link');
-                        if (link.getAttribute('href') === `#${id}`) link.classList.add('active-link');
-                    });
-                    bottomNavLinks.forEach(link =>
-                        link.classList.toggle('active-bottom', link.getAttribute('href') === `#${id}`)
-                    );
-                }
+                if (!entry.isIntersecting) return;
+                const id = entry.target.getAttribute('id');
+                navLinks.forEach(link =>
+                    link.classList.toggle('active-link', link.getAttribute('href') === `#${id}`)
+                );
+                bottomNavLinks.forEach(link =>
+                    link.classList.toggle('active-bottom', link.getAttribute('href') === `#${id}`)
+                );
             });
-        }, { rootMargin: '0px', threshold: 0.5 });
+        }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
 
-        sections.forEach(s => navObserver.observe(s));
+        const linkedIds = new Set([...navLinks, ...bottomNavLinks].map(a => a.getAttribute('href')));
+        sections.forEach(s => { if (linkedIds.has(`#${s.id}`)) navObserver.observe(s); });
 
         /* ── SCROLL HANDLER (rAF-throttled) ────────────────── */
 
@@ -299,9 +329,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('.copy-email-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.disabled) return;
                 const email = btn.dataset.email;
+                if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                    showToast(email, false);
+                    return;
+                }
+                // Snapshot + disable BEFORE the async write so a double-click
+                // can't capture the mutated "Copied!" state as the original.
+                btn.disabled = true;
+                const origNodes = Array.from(btn.childNodes).map(n => n.cloneNode(true));
                 navigator.clipboard.writeText(email).then(() => {
-                    const origNodes = Array.from(btn.childNodes).map(n => n.cloneNode(true));
                     btn.textContent = '';
                     const svgNS = 'http://www.w3.org/2000/svg';
                     const icon = document.createElementNS(svgNS, 'svg');
@@ -312,13 +350,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     icon.appendChild(use);
                     btn.appendChild(icon);
                     btn.appendChild(document.createTextNode('Copied!'));
-                    btn.disabled = true;
                     setTimeout(() => {
                         btn.textContent = '';
                         origNodes.forEach(n => btn.appendChild(n));
                         btn.disabled = false;
                     }, 2000);
-                }).catch(() => showToast(email, false));
+                }).catch(() => {
+                    btn.disabled = false;
+                    showToast(email, false);
+                });
             });
         });
 
@@ -337,15 +377,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const target = parseInt(match[1], 10);
                 const suffix = match[2] || '';
                 const start = performance.now();
+                // Quintic ease-out: the figure tallies, decelerates, then the unit is posted last
                 const tick = (now) => {
                     const t = Math.min((now - start) / 1200, 1);
-                    el.textContent = Math.round((1 - Math.pow(1 - t, 3)) * target) + suffix;
-                    if (t < 1) requestAnimationFrame(tick);
+                    if (t < 1) {
+                        el.textContent = String(Math.round((1 - Math.pow(1 - t, 5)) * target));
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = target + suffix;
+                    }
                 };
                 requestAnimationFrame(tick);
             });
         }, { threshold: 0.5 });
-        document.querySelectorAll('.metric-highlight').forEach(el => countUpObs.observe(el));
+        // hoisted so toggleLanguage (defined earlier, runs post-init) can call it
+        function observeMetrics() {
+            document.querySelectorAll('.metric-highlight').forEach(el => countUpObs.observe(el));
+        }
+        observeMetrics();
 
         // Timeline scroll progress
         const expSection = document.getElementById('experience');
@@ -362,7 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!isExp || tlTicking) return;
                 requestAnimationFrame(() => {
                     const rect = expSection.getBoundingClientRect();
-                    const progress = Math.max(0, Math.min(1, -rect.top / (rect.height - window.innerHeight)));
+                    // guard: section shorter than viewport would divide by <= 0
+                    const denom = Math.max(1, rect.height - window.innerHeight);
+                    const progress = Math.max(0, Math.min(1, -rect.top / denom));
                     timelineProgress.style.height = `${progress * 100}%`;
                     tlTicking = false;
                 });
@@ -401,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── KEYBOARD SHORTCUTS ────────────────────────────── */
 
         document.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
             const active = document.activeElement;
             if (!active || active.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
             if (e.key === 't' || e.key === 'T') {
