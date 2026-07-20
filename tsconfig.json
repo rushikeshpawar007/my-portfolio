@@ -1,0 +1,17 @@
+{
+  "// note": "Check-only. TypeScript is used purely as a type checker over JSDoc-annotated .js — no emit, no build step, files stay .js and GitHub Pages serves them unchanged.",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.js", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "styles", "tests"]
+}

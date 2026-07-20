@@ -23,6 +23,7 @@
     <!-- Preload above-the-fold self-hosted fonts -->
     <link rel="preload" as="font" type="font/woff2" href="fonts/zodiak-700.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="fonts/switzer-400.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="fonts/switzer-500.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="fonts/fragment-mono-latin.woff2" crossorigin />
     <title>Rushikesh Pawar - Data Analytics Portfolio</title>
     <meta content="Portfolio of Rushikesh Pawar, a Senior Business Analyst based in Hamburg (open to Berlin & remote) — Power BI, SQL, Python, AI/LLMs. Ex-KPMG, ex-CARIAD (VW)." name="description" />
@@ -46,6 +47,8 @@
     <meta content="https://rushikeshpawar007.github.io/my-portfolio/social_preview.png" name="twitter:image" />
     <link rel="canonical" href="https://rushikeshpawar007.github.io/my-portfolio/" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAF4EA" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#151310" />
     <!-- Structured Data -->
@@ -148,8 +151,8 @@
                 <div class="flex flex-col md:flex-row md:items-center md:gap-12 lg:gap-20">
                     <div class="shrink-0 flex justify-center md:justify-end mb-10 md:mb-0 md:w-2/5 md:order-2">
                         <div class="profile-ring-glow">
-                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover" height="288" width="288" src="profile_bw_effect.png" loading="lazy" /></picture>
-                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover hidden" height="288" width="288" src="profile_circle_color.png" loading="lazy" /></picture>
+                            <picture><source srcset="profile_bw_effect.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-light w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover" height="288" width="288" src="profile_bw_effect.png" /></picture>
+                            <picture><source srcset="profile_circle_color.webp" type="image/webp" /><img alt="Profile picture of Rushikesh Pawar" class="theme-dark w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover hidden" height="288" width="288" src="profile_circle_color.png" /></picture>
                         </div>
                     </div>
                     <div class="text-left md:w-3/5 md:order-1">
@@ -174,7 +177,7 @@
                             </div>
                         </div>
                         <div class="hero-stagger mt-8 flex flex-col sm:flex-row justify-start items-stretch sm:items-center gap-3">
-                            <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" data-ga-event="cv_download" href="https://drive.google.com/file/d/1h5x2iMUSEM0KVWgJ6Z1KLcg8tByktmYt/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
+                            <a class="ios-button primary-btn w-full sm:w-auto" data-i18n-key="resume_button" data-ga-event="cv_download" href="https://drive.google.com/file/d/1GxAnTCnOBy5o4jBTl9kz6w9Iqd-oI2gY/view?usp=sharing" rel="noopener noreferrer" target="_blank">My Resume</a>
                             <a class="ios-button secondary-btn w-full sm:w-auto" data-i18n-key="see_my_work_button" href="#dynamic-island-container">View Key Project</a>
                         </div>
                     </div>
@@ -212,7 +215,7 @@
                     <span data-i18n-key="about_title">About Me</span>
                 </h2>
                 <p class="about-intro max-w-3xl mb-10" data-i18n-key="about_intro">I am a Senior Business Analyst at Lecturio GmbH, based in Hamburg and open to roles in Berlin or remote, with 4+ years of experience in finance analytics, royalty distribution, and process automation across EdTech, automotive (Volkswagen/CARIAD), and consulting (KPMG). I build Power BI dashboards, design revenue reconciliation frameworks, and automate end-to-end data pipelines using Python, N8n, and AI tools like Claude Code. I recently built a production RAG chatbot that enables stakeholders to query financial data in natural language.</p>
-                <div class="about-grid max-w-4xl">
+                <div class="about-grid max-w-6xl">
                     <div class="about-stat stagger-item">
                         <span class="impact-number metric-highlight">4+</span>
                         <p class="mt-2" data-i18n-key="about_years">Years of finance analytics across EdTech, Automotive & Consulting</p>
@@ -543,7 +546,7 @@
                     <span class="section-eyebrow" aria-hidden="true">04</span>
                     <span data-i18n-key="toolbelt_title">My Tech Toolbelt</span>
                 </h2>
-                <div class="max-w-4xl space-y-12">
+                <div class="max-w-6xl space-y-12">
                     <div class="skill-group stagger-item">
                         <h3 class="skill-group-heading"><span data-i18n-key="skill_viz_title">Data Visualization & BI</span></h3>
                         <div class="skill-matrix">
@@ -596,7 +599,7 @@
                         <span class="section-eyebrow" aria-hidden="true">05</span>
                         <span data-i18n-key="education_title">Education</span>
                     </h2>
-                    <div class="edu-rows max-w-4xl mb-14">
+                    <div class="edu-rows max-w-6xl mb-14">
                         <div class="edu-row grid grid-cols-[auto_1fr] md:grid-cols-[auto_1fr_auto] gap-x-5 gap-y-1 items-center">
                             <div class="shrink-0">
                                 <picture><source srcset="htw_bw.webp" type="image/webp" /><img alt="HTW Berlin Logo" class="h-12 w-12 object-cover rounded-full theme-light" loading="lazy" src="htw_bw.png" /></picture>
@@ -624,7 +627,7 @@
                     <h3 class="text-xl mb-6">
                         <span data-i18n-key="certs_title">Certifications</span>
                     </h3>
-                    <div class="max-w-4xl flex flex-wrap gap-3" id="certifications">
+                    <div class="max-w-6xl flex flex-wrap gap-3" id="certifications">
                         <a class="cert-stub" data-i18n-key="cert_google" href="https://drive.google.com/file/d/1zWBZDnMuiKehHhP_uWX7pVWObOEtuwBC/view?usp=sharing" rel="noopener noreferrer" target="_blank">Google Data Analytics</a>
                         <a class="cert-stub" data-i18n-key="cert_sql" href="https://drive.google.com/file/d/1WKw3hjShdDCC-Sho-uJq_jn-V8kqP3wq/view?usp=sharing" rel="noopener noreferrer" target="_blank">SQL</a>
                         <a class="cert-stub" data-i18n-key="cert_tableau" href="https://drive.google.com/file/d/1yTXY2LCsGzr7CBaqN_oQID57LLtw11sP/view?usp=sharing" rel="noopener noreferrer" target="_blank">Tableau</a>
@@ -639,7 +642,7 @@
                     <span class="section-eyebrow" aria-hidden="true">06</span>
                     <span data-i18n-key="contact_title">Let&rsquo;s Work Together</span>
                 </h2>
-                <div class="grid md:grid-cols-5 gap-10 md:gap-16 max-w-5xl">
+                <div class="grid md:grid-cols-5 gap-10 md:gap-16 max-w-6xl">
                     <div class="md:col-span-2">
                         <p class="text-sm mb-6" data-i18n-key="contact_availability">Currently a Senior Business Analyst at Lecturio GmbH, based in Hamburg — open to new opportunities in data analytics, BI, and AI-powered reporting, in Berlin or remote.</p>
                         <div class="flex flex-col items-start gap-2 mb-8">

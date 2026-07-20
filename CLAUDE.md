@@ -9,6 +9,7 @@ Always use Context7 MCP when I need library/API documentation, code generation, 
 - **Build CSS**: `npm run build:css` — compiles `src/input.css` → `styles/tailwind.css` via Tailwind CSS v4 CLI
 - **Tests (E2E)**: `npm test` (alias for `npx playwright test`) — runs Playwright against local `file://` path to `index.html`
 - **Lint**: `npm run lint` — ESLint over `src/`, `tests/`, and config files (CI runs this too)
+- **Type-check**: `npm run typecheck` — `tsc --noEmit` type-checks `src/**/*.js` via JSDoc + `tsconfig.json` (check-only; no build output, files stay `.js`). CI runs this. Annotate DOM lookups with `/** @type {HTMLInputElement} */ (…)` casts when adding code.
 - **Single E2E test**: `npx playwright test -g "test name"` — run by grep pattern
 - **Install Playwright browsers**: `npx playwright install` (required before first E2E run)
 

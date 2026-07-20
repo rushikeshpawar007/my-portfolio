@@ -162,14 +162,15 @@ body::before {
     mix-blend-mode: var(--grain-blend);
 }
 
-/* The ledger margin line — one vertical red rule at the left of the grid */
+/* The ledger margin line — one vertical red rule at the left of the grid.
+   Offset = half the container max-width so it tracks the content's left edge. */
 @media (min-width: 1200px) {
     .content-wrapper::before {
         content: '';
         position: fixed;
         top: 0;
         bottom: 0;
-        left: max(24px, calc(50% - 596px));
+        left: max(24px, calc(50% - 750px));
         width: 1px;
         background: var(--margin-rule);
         pointer-events: none;
@@ -239,8 +240,10 @@ sup {
 
 .content-wrapper { position: relative; z-index: 1; overflow-x: clip; }
 
-/* Report measure: content column narrower than Tailwind's default container */
-.container { max-width: 1192px; }
+/* Report measure: wider on large screens to reduce side whitespace; stays
+   fluid (Tailwind's width:100%) below this ceiling. Half of this = the
+   ledger-margin-line offset above (keep them in sync). */
+.container { max-width: 1500px; }
 
 /* Small caps utility (uppercase + tracking — no true smcp needed) */
 .smallcaps {
@@ -825,7 +828,9 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     left: 0 !important;
     transform: none;
     filter: none;
-    opacity: 0.55;
+    /* 0.75 is the AA floor: body ink blends to 4.55:1 light / 5.57:1 dark
+       (0.55 measured 2.79:1 — an accessibility failure) */
+    opacity: 0.75;
     transition: opacity 0.35s ease;
     z-index: 1;
     contain: layout style;
@@ -1276,10 +1281,12 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 /* the floating scroll-top stub must not sit on the open transcript's controls */
 body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !important; }
 
-.collapsed .collapsed-content { opacity: 1; }
-.collapsed .expanded-content { opacity: 0; pointer-events: none; }
-.expanded .collapsed-content { opacity: 0; pointer-events: none; }
-.expanded .expanded-content { opacity: 1; pointer-events: auto; }
+/* visibility (not just opacity) so the hidden state leaves the
+   accessibility tree — opacity:0 text is still read by screen readers */
+.collapsed .collapsed-content { opacity: 1; visibility: visible; }
+.collapsed .expanded-content { opacity: 0; visibility: hidden; pointer-events: none; }
+.expanded .collapsed-content { opacity: 0; visibility: hidden; pointer-events: none; }
+.expanded .expanded-content { opacity: 1; visibility: visible; pointer-events: auto; }
 
 .expanded .expanded-content > * {
     opacity: 0;
@@ -1904,6 +1911,9 @@ footer p a:first-child { padding-left: 0; }
 
     header nav.container { padding-left: 1.25rem; padding-right: 1.25rem; }
     button, a.ios-button { min-width: 44px; min-height: 44px; }
+    /* masthead controls meet the 44px touch target on touch layouts
+       (the #id selectors would otherwise pin them at 36px) */
+    #theme-toggle, #lang-toggle-header, #mobile-menu-button { width: 2.75rem; height: 2.75rem; }
 }
 
 @media (max-width: 640px) {

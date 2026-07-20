@@ -8,8 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── UTILITIES ─────────────────────────────────────── */
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        /** @type {Record<string, boolean>} */
         const _throttleFlags = {};
+        /**
+         * @param {string} key
+         * @param {(...args: any[]) => void} fn
+         * @param {number} [delay]
+         */
         function throttled(key, fn, delay = 150) {
+            /** @this {any} @param {any[]} args */
             return function (...args) {
                 if (_throttleFlags[key]) return;
                 _throttleFlags[key] = true;
@@ -18,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
+        /** @param {string} message @param {boolean} [isError] */
         function showToast(message, isError = false) {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -34,9 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── I18N / TRANSLATIONS ───────────────────────────── */
 
+        /** @type {Record<string, Record<string, string>>} */
         let translations = {};
         try {
-            translations = JSON.parse(document.getElementById('translations-data').textContent);
+            translations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}');
         } catch (e) {
             console.error("Failed to parse translations.", e);
             translations = { en: {}, de: {} };
@@ -49,10 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         function translatePage() {
             document.querySelectorAll("[data-i18n-key]").forEach(el => {
                 const key = el.getAttribute("data-i18n-key");
+                if (!key) return;
                 const t = translations[currentLang]?.[key];
                 if (!t) return;
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = t;
+                    (/** @type {HTMLInputElement} */ (el)).placeholder = t;
                 } else if (el.hasAttribute('data-i18n-html')) {
                     // Author-controlled translation strings only (safe, static markup like <span>/<strong>)
                     el.innerHTML = t;
@@ -73,8 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
             translatePage();
             syncTypingRole();
             // data-i18n-html re-renders replace .metric-highlight spans,
-            // detaching them from the count-up observer — re-observe.
-            observeMetrics();
+            // detaching them from the count-up observer — re-observe, but skip
+            // any currently on screen so visible numbers don't reset-and-retally.
+            observeMetrics(true);
         }
 
         const throttledToggleLang = throttled('lang', toggleLanguage);
@@ -85,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── THEME TOGGLE ──────────────────────────────────── */
 
         // Keep the mobile browser chrome tinted like the sheet
+        /** @param {string} next */
         function syncThemeColor(next) {
             document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
             const meta = document.createElement('meta');
@@ -93,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(meta);
         }
 
+        /** @param {string} next */
         function setTheme(next) {
             const apply = () => {
                 document.documentElement.setAttribute('data-theme', next);
@@ -191,9 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.matchMedia('(hover: hover)').matches && !prefersReducedMotion) {
             document.querySelectorAll('.glass-card').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                    const el = /** @type {HTMLElement} */ (card);
+                    const me = /** @type {MouseEvent} */ (e);
+                    const rect = el.getBoundingClientRect();
+                    el.style.setProperty('--mouse-x', `${me.clientX - rect.left}px`);
+                    el.style.setProperty('--mouse-y', `${me.clientY - rect.top}px`);
                 });
             });
         }
@@ -223,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' });
                 loadAnalytics();
             }
+            /** @param {boolean} granted */
             const setConsent = (granted) => {
                 try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch {}
                 if (typeof gtag === 'function') {
@@ -239,11 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── GA EVENT TRACKING (data-ga-event) ─────────────── */
 
         document.querySelectorAll('[data-ga-event]').forEach((el) => {
-            el.addEventListener('click', () => {
+            const a = /** @type {HTMLAnchorElement} */ (el);
+            a.addEventListener('click', () => {
                 if (typeof gtag === 'function') {
-                    gtag('event', el.dataset.gaEvent, {
-                        link_url: el.href || '',
-                        link_text: (el.textContent || '').trim().slice(0, 80),
+                    gtag('event', a.dataset.gaEvent, {
+                        link_url: a.href || '',
+                        link_text: (a.textContent || '').trim().slice(0, 80),
                     });
                 }
             });
@@ -251,16 +268,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── CONTACT FORM ──────────────────────────────────── */
 
-        const contactForm = document.getElementById('contact-form');
+        const contactForm = /** @type {HTMLFormElement | null} */ (document.getElementById('contact-form'));
         if (contactForm) {
             let isSubmitting = false;
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 if (isSubmitting) return;
 
-                const name = contactForm.querySelector('#name').value.trim();
-                const email = contactForm.querySelector('#email').value.trim();
-                const message = contactForm.querySelector('#message').value.trim();
+                const nameEl = /** @type {HTMLInputElement | null} */ (contactForm.querySelector('#name'));
+                const emailEl = /** @type {HTMLInputElement | null} */ (contactForm.querySelector('#email'));
+                const messageEl = /** @type {HTMLTextAreaElement | null} */ (contactForm.querySelector('#message'));
+                const submitButton = /** @type {HTMLButtonElement | null} */ (contactForm.querySelector('button[type="submit"]'));
+                if (!nameEl || !emailEl || !messageEl || !submitButton) return;
+
+                const name = nameEl.value.trim();
+                const email = emailEl.value.trim();
+                const message = messageEl.value.trim();
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
                 if (!name || !email || !message) {
@@ -274,7 +297,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 isSubmitting = true;
                 const formData = new FormData(contactForm);
-                const submitButton = contactForm.querySelector('button[type="submit"]');
                 const origText = submitButton.textContent;
 
                 submitButton.disabled = true;
@@ -290,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 // Fallback: until a Web3Forms access key is configured, open a pre-filled email draft.
-                const accessKey = (contactForm.querySelector('[name="access_key"]')?.value || '').trim();
+                const accessKey = ((/** @type {HTMLInputElement | null} */ (contactForm.querySelector('[name="access_key"]')))?.value || '').trim();
                 if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
                     const subject = encodeURIComponent(`Portfolio contact from ${name}`);
                     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
@@ -327,10 +349,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── COPY EMAIL ────────────────────────────────────── */
 
-        document.querySelectorAll('.copy-email-btn').forEach(btn => {
+        document.querySelectorAll('.copy-email-btn').forEach(el => {
+            const btn = /** @type {HTMLButtonElement} */ (el);
             btn.addEventListener('click', () => {
                 if (btn.disabled) return;
-                const email = btn.dataset.email;
+                const email = btn.dataset.email || '';
                 if (!navigator.clipboard || !navigator.clipboard.writeText) {
                     showToast(email, false);
                     return;
@@ -368,16 +391,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const countUpObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
-                const el = entry.target;
+                const el = /** @type {HTMLElement} */ (entry.target);
                 // Respect reduced-motion: leave the final value as-is (no count-up)
                 obs.unobserve(el);
+                el.dataset.counted = '1'; // this instance has tallied — never again
                 if (prefersReducedMotion) return;
-                const match = el.textContent.trim().match(/^(\d+)(%|x|\+)?$/);
+                const match = (el.textContent || '').trim().match(/^(\d+)(%|x|\+)?$/);
                 if (!match) return;
                 const target = parseInt(match[1], 10);
                 const suffix = match[2] || '';
                 const start = performance.now();
                 // Quintic ease-out: the figure tallies, decelerates, then the unit is posted last
+                /** @param {number} now */
                 const tick = (now) => {
                     const t = Math.min((now - start) / 1200, 1);
                     if (t < 1) {
@@ -390,15 +415,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestAnimationFrame(tick);
             });
         }, { threshold: 0.5 });
-        // hoisted so toggleLanguage (defined earlier, runs post-init) can call it
-        function observeMetrics() {
-            document.querySelectorAll('.metric-highlight').forEach(el => countUpObs.observe(el));
+        // hoisted so toggleLanguage (defined earlier, runs post-init) can call it.
+        // skipInView: on a language toggle, never reset a number the user is
+        // currently looking at — that reset-and-re-tally was a visible glitch.
+        /** @param {boolean} [skipInView] */
+        function observeMetrics(skipInView) {
+            document.querySelectorAll('.metric-highlight').forEach(node => {
+                const el = /** @type {HTMLElement} */ (node);
+                if (el.dataset.counted) return; // already tallied this instance
+                if (skipInView) {
+                    const r = el.getBoundingClientRect();
+                    if (r.top < window.innerHeight && r.bottom > 0) return;
+                }
+                countUpObs.observe(el);
+            });
         }
-        observeMetrics();
+        observeMetrics(false);
 
         // Timeline scroll progress
         const expSection = document.getElementById('experience');
-        const timelineProgress = document.querySelector('.timeline-progress');
+        const timelineProgress = /** @type {HTMLElement | null} */ (document.querySelector('.timeline-progress'));
         if (expSection && timelineProgress) {
             let isExp = false;
             const expObs = new IntersectionObserver(entries => {
@@ -453,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('keydown', (e) => {
             if (e.repeat) return;
-            const active = document.activeElement;
+            const active = /** @type {HTMLElement | null} */ (document.activeElement);
             if (!active || active.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
             if (e.key === 't' || e.key === 'T') {
                 const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -472,11 +508,13 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── TYPING SUBTITLE ────────────────────────────────── */
 
         const typingEl = document.getElementById('typing-role');
+        /** @type {Record<string, string[]>} */
         const roleList = {
             en: ['Business & Data Analyst', 'Dashboard Builder', 'Automation Specialist'],
             de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsspezialist']
         };
         let roleIdx = 0;
+        /** @type {number[]} */
         let typingTimers = [];
 
         function clearTypingTimers() {
@@ -492,12 +530,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (typingEl && !prefersReducedMotion) {
+            const el = typingEl; // narrowed to non-null for the closures below
             function typeRole() {
                 clearTypingTimers();
                 const list = roleList[currentLang] || roleList.en;
                 roleIdx = (roleIdx + 1) % list.length;
                 const target = list[roleIdx];
-                const current = typingEl.textContent;
+                const current = el.textContent || '';
                 let i = current.length;
 
                 // Delete
@@ -507,14 +546,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         let j = 0;
                         // Type
                         const typeTimer = setInterval(() => {
-                            typingEl.textContent = target.slice(0, j + 1);
+                            el.textContent = target.slice(0, j + 1);
                             j++;
                             if (j >= target.length) clearInterval(typeTimer);
                         }, 60);
                         typingTimers.push(typeTimer);
                     } else {
                         i--;
-                        typingEl.textContent = current.slice(0, i);
+                        el.textContent = current.slice(0, i);
                     }
                 }, 30);
                 typingTimers.push(delTimer);
@@ -527,10 +566,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initFinanceBot();
 
+        // "View Key Project" promises the project, not a teaser — expand the
+        // demo on arrival so the CTA delivers what it says.
+        document.querySelectorAll('a[href="#dynamic-island-container"]').forEach(link => {
+            link.addEventListener('click', () => {
+                const island = document.getElementById('dynamic-island-container');
+                if (island && island.classList.contains('collapsed')) island.click();
+            });
+        });
+
         /* ── COPYRIGHT YEAR ────────────────────────────────── */
 
         const yearEl = document.getElementById('copyright-year');
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
+        if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
     } catch (error) {
         console.error("Page init error:", error);
@@ -545,10 +593,13 @@ function initFinanceBot() {
     if (!islandContainer) return;
 
     const closeButton = document.getElementById('close-island-btn');
-    const messagesContainer = document.getElementById('bot-messages-apple');
-    const promptsContainer = document.getElementById('bot-question-prompts-apple');
+    // Cast to non-null after the guard below: the nested helpers are closures,
+    // so TS can't carry the null-narrowing into them.
+    const messagesContainer = /** @type {HTMLElement} */ (document.getElementById('bot-messages-apple'));
+    const promptsContainer = /** @type {HTMLElement} */ (document.getElementById('bot-question-prompts-apple'));
     if (!messagesContainer || !promptsContainer) return;
     let isBotTyping = false;
+    /** @type {number[]} */
     let botTimers = [];
 
     function clearBotTimers() {
@@ -557,16 +608,26 @@ function initFinanceBot() {
         isBotTyping = false;
     }
 
+    /** @type {Record<string, { question: string, answer: string }>} */
     const simData = {
         'q1': { question: "What was our Q3 revenue vs. budget?", answer: "In Q3, we achieved a revenue of \u20AC1.2M, which is 105% of our \u20AC1.14M budget. Great work by the team!" },
         'q2': { question: "What are our top 5 expenses this month?", answer: "Top 5 expenses: Salaries (\u20AC250k), Marketing (\u20AC120k), Cloud Services (\u20AC85k), Office Rent (\u20AC45k), Software Licenses (\u20AC30k)." },
         'q3': { question: "How is the sales funnel health?", answer: "Sales funnel is healthy \u2014 15% increase in qualified leads. However, MQL\u2192SQL conversion rate dropped 5%, worth investigating." }
     };
 
+    // The ticket is a div — make it a keyboard-operable disclosure control
+    islandContainer.setAttribute('role', 'button');
+    islandContainer.setAttribute('tabindex', '0');
+    islandContainer.setAttribute('aria-expanded', 'false');
+
     const expand = () => {
         if (islandContainer.classList.contains('collapsed')) {
             islandContainer.classList.remove('collapsed');
             islandContainer.classList.add('expanded');
+            // open panel holds real buttons — it must not itself be a button
+            islandContainer.removeAttribute('role');
+            islandContainer.setAttribute('tabindex', '-1');
+            islandContainer.setAttribute('aria-expanded', 'true');
             initBotUI();
         }
     };
@@ -575,13 +636,26 @@ function initFinanceBot() {
         if (islandContainer.classList.contains('expanded')) {
             islandContainer.classList.remove('expanded');
             islandContainer.classList.add('collapsed');
+            islandContainer.setAttribute('role', 'button');
+            islandContainer.setAttribute('tabindex', '0');
+            islandContainer.setAttribute('aria-expanded', 'false');
             clearBotTimers();
         }
     };
 
     islandContainer.addEventListener('click', expand);
+    islandContainer.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && islandContainer.classList.contains('collapsed')) {
+            e.preventDefault();
+            expand();
+        } else if (e.key === 'Escape' && islandContainer.classList.contains('expanded')) {
+            collapse();
+            islandContainer.focus();
+        }
+    });
     if (closeButton) closeButton.addEventListener('click', (e) => { e.stopPropagation(); collapse(); });
 
+    /** @param {string} sender @param {string} content */
     function addMsg(sender, content) {
         const wrapper = document.createElement('div');
         wrapper.className = `bot-message-wrapper ${sender}-message`;
@@ -593,6 +667,7 @@ function initFinanceBot() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    /** @param {string} sender @param {Node} element */
     function addMsgElement(sender, element) {
         const wrapper = document.createElement('div');
         wrapper.className = `bot-message-wrapper ${sender}-message`;
@@ -604,6 +679,7 @@ function initFinanceBot() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    /** @param {boolean} show */
     function showTyping(show) {
         const existing = document.getElementById('bot-typing-indicator');
         if (existing) existing.remove();
@@ -623,10 +699,11 @@ function initFinanceBot() {
         }
     }
 
+    /** @param {string} key */
     function handleQ(key) {
         if (isBotTyping) return;
         isBotTyping = true;
-        promptsContainer.querySelectorAll('button').forEach(b => b.disabled = true);
+        promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = true; });
         const d = simData[key];
         addMsg('user', d.question);
 
@@ -660,7 +737,7 @@ function initFinanceBot() {
 
         botTimers.push(setTimeout(() => {
             const anim = messagesContainer.querySelector('.analysis-animation');
-            if (anim) anim.closest('.bot-message-wrapper').remove();
+            if (anim) anim.closest('.bot-message-wrapper')?.remove();
             showTyping(true);
         }, 2500));
 
@@ -668,7 +745,7 @@ function initFinanceBot() {
             showTyping(false);
             addMsg('bot', d.answer);
             isBotTyping = false;
-            promptsContainer.querySelectorAll('button').forEach(b => b.disabled = false);
+            promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = false; });
         }, 3500));
     }
 
