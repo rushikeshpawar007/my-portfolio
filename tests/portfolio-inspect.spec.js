@@ -1,8 +1,5 @@
 const { test, expect } = require('@playwright/test');
-const path = require('path');
-
-const FILE_URL =
-  'file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/');
+const FILE_URL = '/';
 
 /* ═══════════════════════════════════════════════════════════════════
    1. PAGE LOAD & CONSOLE ERRORS
@@ -48,7 +45,7 @@ test.describe('Page Load & Console', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
-   2. STRUCTURAL INTEGRITY — all sections exist
+   2. STRUCTURAL INTEGRITY - all sections exist
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('Section Structure', () => {
   test.beforeEach(async ({ page }) => {
@@ -98,12 +95,15 @@ test.describe('Section Structure', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
-   3. IMAGES — local images load (src is not empty, naturalWidth > 0)
+   3. IMAGES - local images load (src is not empty, naturalWidth > 0)
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('Images', () => {
   test('all local images load successfully', async ({ page }) => {
     await page.goto(FILE_URL);
     await page.waitForTimeout(2000);
+
+    // Inspect images in the expandable case studies as well as visible previews.
+    await page.locator('details.case-details').evaluateAll(elements => elements.forEach(el => { el.open = true; }));
 
     // Scroll through the page so lazy-loaded images are fetched
     // (behavior:'instant' overrides the page's smooth scrolling, which would
@@ -156,7 +156,7 @@ test.describe('Images', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
-   4. NAVIGATION — links, anchors, and menus
+   4. NAVIGATION - links, anchors, and menus
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('Navigation', () => {
   test.beforeEach(async ({ page }) => {
@@ -190,8 +190,8 @@ test.describe('Navigation', () => {
     expect(missing).toEqual([]);
   });
 
-  test('mobile menu toggles on button click', async ({ browser }) => {
-    const ctx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  test('tablet menu toggles on button click', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 } });
     const page = await ctx.newPage();
     await page.goto(FILE_URL);
     await page.waitForTimeout(500);
@@ -205,8 +205,8 @@ test.describe('Navigation', () => {
     await ctx.close();
   });
 
-  test('mobile menu links close the menu', async ({ browser }) => {
-    const ctx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  test('tablet menu links close the menu', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 } });
     const page = await ctx.newPage();
     await page.goto(FILE_URL);
     await page.waitForTimeout(500);
@@ -739,23 +739,23 @@ test.describe('Scroll Behaviors', () => {
    16. KEYBOARD SHORTCUTS
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('Keyboard Shortcuts', () => {
-  test('pressing T toggles theme', async ({ page }) => {
+  test('pressing T does not trigger a global character shortcut', async ({ page }) => {
     await page.goto(FILE_URL);
     await page.waitForTimeout(500);
     const initial = await page.locator('html').getAttribute('data-theme');
     await page.keyboard.press('t');
     await page.waitForTimeout(200);
     const after = await page.locator('html').getAttribute('data-theme');
-    expect(after).not.toEqual(initial);
+    expect(after).toEqual(initial);
   });
 
-  test('pressing ? opens AI bot (if collapsed)', async ({ page }) => {
+  test('pressing ? does not open the demo globally', async ({ page }) => {
     await page.goto(FILE_URL);
     await page.waitForTimeout(500);
     await page.keyboard.press('?');
     await page.waitForTimeout(500);
     const island = page.locator('#dynamic-island-container');
-    await expect(island).toHaveClass(/expanded/);
+    await expect(island).toHaveClass(/collapsed/);
   });
 
   test('keyboard shortcut does not fire when typing in input', async ({ page }) => {
@@ -830,7 +830,7 @@ test.describe('Accessibility', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
-   18. CSS CUSTOM PROPERTIES — verify they resolve
+   18. CSS CUSTOM PROPERTIES - verify they resolve
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('CSS Custom Properties', () => {
   test('core theme variables resolve to non-empty values', async ({ page }) => {
@@ -860,7 +860,7 @@ test.describe('CSS Custom Properties', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
-   19. RESPONSIVE — mobile viewport
+   19. RESPONSIVE - mobile viewport
    ═══════════════════════════════════════════════════════════════════ */
 test.describe('Mobile Viewport', () => {
   test.use({ viewport: { width: 375, height: 812 } });
@@ -871,9 +871,9 @@ test.describe('Mobile Viewport', () => {
     await expect(desktopNav).toBeHidden();
   });
 
-  test('mobile menu button is visible', async ({ page }) => {
+  test('phone navigation does not duplicate the bottom tabs with a menu', async ({ page }) => {
     await page.goto(FILE_URL);
-    await expect(page.locator('#mobile-menu-button')).toBeVisible();
+    await expect(page.locator('#mobile-menu-button')).toBeHidden();
   });
 
   test('bottom nav is visible on mobile', async ({ page }) => {

@@ -22,7 +22,7 @@ Three self-hosted families (`fonts/*.woff2`, no CDNs, CSP `font-src 'self'`):
 |---|---|---|---|
 | **Zodiak** | Fontshare, ITF free license | 400, 700 | Display serif: hero name (700), section headings, project/degree titles, drop cap, email link |
 | **Switzer** | Fontshare, ITF free license | 400, 500, 600 | Running text, labels, buttons, nav. Small-caps effects = uppercase + 0.06–0.1em tracking at 0.6875–0.8125rem, weight 500 |
-| **Fragment Mono** | Google Fonts, OFL | 400 (latin + latin-ext subsets) | **All data**: numerals, dates, indices, footnote markers, typing role, tech tags, chat transcript, diagram nodes |
+| **Fragment Mono** | Google Fonts, OFL | 400 (latin + latin-ext subsets) | **All data**: numerals, dates, indices, footnote markers, role line, tech tags, chat transcript, diagram nodes |
 
 Core discipline: **if it is data, it is mono.** Numerals always get
 `font-variant-numeric: tabular-nums`.
@@ -33,53 +33,37 @@ Scale: hero name `clamp(3rem, 8vw, 6.5rem)` Zodiak 700, line-height 0.98, ink
 (`01`–`06`). Body Switzer 400 at 1.0625rem/1.65. Metric numerals
 `clamp(3rem, 6vw, 5rem)` Fragment Mono in red ink.
 
-## Color — one ink, two states
+## Color — ivory, charcoal, sage, and terracotta
 
-Red ink is the **only** color, and it means *data* (numerals, indices, rules,
-focus). Scanning the page for color is scanning it for data.
+The page keeps its printed-report identity with a more neutral ivory sheet,
+charcoal ink, and terracotta for results, indices, and focus. Muted sage is
+reserved for the featured before/after comparison. White panels distinguish
+project previews from the page without gradients or shadows.
 
-### Light — "the page in daylight" (all pairs verified AA)
-
-The paper stock is **"Softwhite"** (`#FAF4EA`, hue ≈37.5°, ~95% L). The original
-`#F6F1E7` sat at hue 40° (the yellow/khaki zone) at 93.5% L — a lightness
-dead-zone that reads dingy: too dark to be white, too light to be sepia.
-Softwhite nudges the hue toward orange-pink and lifts lightness out of the
-zone. Do not darken the paper below ~94.5% L or shift its hue past 40°.
-
-| Role | Hex | Contrast on paper |
+| Role | Light | Dark |
 |---|---|---|
-| Paper (bg) | `#FAF4EA` | — |
-| Raised surface | `#FEFBF4` | panels, fields, plate mats |
-| Ink (headings, strong rules) | `#1C1A16` | 15.9:1 |
-| Body ink | `#4A4334` | 9.0:1 |
-| Caption ink | `#57503F` | 7.3:1 |
-| Hairline | `#DDD3C2` | structural rules only |
-| Red ink (accent + small text) | `#9E2B14` | 6.8:1 |
-| Red pressed (hover) | `#7C2110` | 9.2:1 |
+| Page | #F8F7F4 | #181C19 |
+| Surface | #FFFFFF | #222823 |
+| Heading ink | #242824 | #F3F2EA |
+| Body ink | #454B45 | #CCD1C7 |
+| Caption ink | #596059 | #B1BAAF |
+| Hairline | #D8DDD5 | #404A41 |
+| Accent text / data | #A4432E | #EF987E |
+| Accent hover | #843323 | #FFB69D |
+| Featured surface | #EDF1E9 | #2B352D |
+| Featured ink | #354A39 | #D4E1CF |
 
-### Dark — "the page as its own ink negative"
-| Role | Hex | Contrast on bg |
-|---|---|---|
-| Deep ink (bg) | `#151310` | warm near-black, never navy |
-| Raised surface | `#1D1A15` | — |
-| Cream (headings) | `#ECE4D2` | 14.7:1 |
-| Body cream | `#BFB49D` | 8.8:1 |
-| Caption cream | `#A89E89` | 7.0:1 |
-| Hairline | `#3A342A` | — |
-| Red display (`--accent-color`) | `#E0532E` | 4.8:1 — large text/rules ONLY |
-| Red small-text (`--accent-text`) | `#EF7048` | 6.3:1 (5.9:1 on raised) |
-
-**Rule:** in dark mode, small red text must use `--accent-text`, never
-`--accent-color` (which is only 4.50:1 on raised surfaces — a failed AA pass
-for body sizes).
-
-Legacy variable aliases (`--glass-bg` → surface, `--glass-border` → hairline,
-etc.) are kept so Tailwind arbitrary values in markup keep resolving.
+Measured text contrast: body on page 8.36:1 light / 11.09:1 dark;
+captions on surface 6.48:1 / 7.53:1; accent on the featured surface
+5.37:1 / 5.74:1; featured ink on featured surface 8.38:1 / 9.38:1.
+Semantic color pairs have browser regression coverage at a 4.5:1 minimum.
+Legacy aliases resolve to these tokens. The default root palette is light,
+so the no-JavaScript page retains intentional styling.
 
 ## Atmosphere
 
 - Paper grain: one inline-SVG `feTurbulence` tile on `body::before`, fixed,
-  2.5% multiply (light) / 4% screen (dark). Never stronger.
+  1.2% multiply (light) / 1.8% screen (dark). Never stronger.
 - The ledger margin line: a single fixed 1px red vertical rule at the left
   edge of the content grid, ≥1200px only (`.content-wrapper::before`).
 - **No** gradients, glows, radial washes, backdrop blur, or box shadows.
@@ -91,7 +75,7 @@ etc.) are kept so Tailwind arbitrary values in markup keep resolving.
 - **Masthead**: solid paper, hairline bottom rule, name mark in small caps,
   nav links with CSS-generated mono red indices (`01`–`05`), active section =
   2px red overline. Toggles are square hairline-bordered typographic buttons.
-- **Hero**: asymmetric spread — mono red role line (typing caret), Zodiak name,
+- **Hero**: asymmetric spread — stable mono role line, Zodiak name,
   closing rule, tagline, chips as footnote entries (`¹ ² ³` superscripts that
   anchor to `#impact`), employer logos in a hairline-ruled row (grayscale at
   rest), rectangular CTAs (ink-filled / hairline outline; hover inverts).
@@ -101,7 +85,7 @@ etc.) are kept so Tailwind arbitrary values in markup keep resolving.
 - **Experience**: single-column ruled ledger ("Schedule of Operations").
   Challenge / Solution / Impact as a three-column mini-table with mono red
   column headers; dates in mono red; thin red progress rail on the left
-  (JS-driven `.timeline-progress`); inactive rows at 55% opacity, logos
+  (JS-driven `.timeline-progress`); rows at full opacity, logos
   grayscale until active.
 - **Projects**: exhibits with mono figure indices (3.0–3.3). Bot demo is a
   full-width rectangular ticket (`3.0 … +`) expanding into a report-appendix
@@ -132,7 +116,25 @@ Rules lead, content follows: each section's top hairline draws in
 strictly typographic: fill inversion, underline slide, logos regaining color —
 nothing scales past 1.05, nothing glows, no parallax.
 `prefers-reduced-motion`: everything pre-drawn and fully legible as a still
-document; typing caret static; count-ups skipped.
+document; count-ups skipped.
+
+### "The report, plotted" — richer motion layer
+The same restrained language, extended so the page reads as an annual report being
+drawn/typeset. All added on top of the existing reveal classes; all forced to their
+end-state under `prefers-reduced-motion` (so nothing that starts hidden stays hidden):
+- **Closing rules draw** left→right (`scaleX 0→1`, `.closing-rule.drawn`, added by a
+  `ruleObs` observer). The three metric rules draw *after* the count-up settles (drawn
+  from the count-up's final frame) — the audit line ruled under the total.
+- **Section headings "set"** via a top-down `clip-path` reveal on the title text span
+  (eyebrow index excluded); the hero name uses a matching clip+fade (`hero-name-set`).
+- **Architecture diagrams assemble** — `.arch-layer`/`.arch-connector` stagger in on the
+  card's `.visible`.
+- **Folio ink line** — the left-margin rule fills top→down with scroll progress via
+  `--folio` (set in the scroll handler) driving `.content-wrapper::after` `scaleY`.
+- **Ledger rows** un-dim + take a faint accent wash on hover.
+Guardrail: initial hidden states (`scaleX(0)`, clipped) depend on JS adding the trigger
+class, consistent with the existing `.section-reveal` contract; reduced-motion overrides
+make them visible regardless.
 
 ## Anti-slop rules (enforced in review)
 
@@ -140,7 +142,7 @@ document; typing caret static; count-ups skipped.
   links, icons, and backgrounds all go red, the ledger becomes a promo flyer.
 - The closing double rule appears at exactly four ledger moments (six rule
   elements). Never add a fifth moment.
-- No cards where a rule will do; no shadows ever; no backdrop blur; no pills.
+- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows, backdrop blur, or pills.
 - No decorative icons glued to headings; ornaments (indices, footnote markers)
   live in `aria-hidden` spans or CSS pseudo-elements, **never inside
   `data-i18n-key` nodes** (the i18n renderer overwrites textContent).
@@ -192,3 +194,25 @@ document; typing caret static; count-ups skipped.
   dries slow); `:active` = 1px translateY, never scale. Form caret is red ink.
 - Count-up uses quintic ease-out and posts the unit (%/+) only on the final
   frame; `.metric-highlight` text contract unchanged.
+
+
+## Portfolio review — September 2026
+
+- Reading order: hero, impact, selected projects (01), about (02), experience (03), skills (04), education (05), contact (06).
+- The role line is stable: Senior Business Analyst · Finance BI & Automation. Mobile uses a small portrait and places the finance case-study action before the CV link.
+- Month-end report preparation fell from approximately 10 hours to 5 minutes per month (about 99%); this measures manual preparation for that report, not total reporting operations or maintenance.
+- Project exhibits 1.0–1.4 cover monthly reporting, royalties, the finance chatbot, invoice automation, and Spotify. Case-study facts use ruled definition lists.
+- The chatbot is a predefined, bilingual demonstration using explicitly fictional figures and a visible source table. It shows both a calculation and an unavailable-data response.
+- No global character-key shortcuts. Demo disclosure retains Enter/Space and Escape with focus restoration.
+- Reveal animations are gated by successful initialization through .motion-ready; default and failed-script rendering remains readable.
+- At mobile sizes, the cookie banner sits above the bottom navigation. The expanded demo has no fixed height limit.
+- Browser tests run through the local HTTP server, with regression coverage for translations, script failure, sources, and responsive layouts.
+
+## Compact project presentation — September 2026
+
+- Content measure: 1280px. The compact desktop hero and impact strip fit within the first 900px viewport at 1440px width.
+- The reporting project leads with a sage before/after panel, large mono values, and a terracotta top rule. Its measurement scope remains in the expandable case study.
+- Four supporting previews form a two-column desktop grid and a single phone column. Native details disclose the full case studies and work without JavaScript.
+- Each disclosure references its project title for assistive technology. Deep links open the relevant case study; print opens all studies and restores their previous state afterward.
+- Phone navigation uses the bottom tabs only. The menu button is retained at tablet widths (768–1023px); desktop uses the masthead links. Theme and language controls remain available at every size.
+- Product screenshots are deferred. The existing Spotify image is retained inside its case study.

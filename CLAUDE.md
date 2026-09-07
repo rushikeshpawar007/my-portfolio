@@ -7,7 +7,7 @@ Always use Context7 MCP when I need library/API documentation, code generation, 
 ## Build & Test Commands
 
 - **Build CSS**: `npm run build:css` — compiles `src/input.css` → `styles/tailwind.css` via Tailwind CSS v4 CLI
-- **Tests (E2E)**: `npm test` (alias for `npx playwright test`) — runs Playwright against local `file://` path to `index.html`
+- **Tests (E2E)**: `npm test` (alias for `npx playwright test`) — runs Playwright against the local HTTP server at `http://127.0.0.1:4173`
 - **Lint**: `npm run lint` — ESLint over `src/`, `tests/`, and config files (CI runs this too)
 - **Type-check**: `npm run typecheck` — `tsc --noEmit` type-checks `src/**/*.js` via JSDoc + `tsconfig.json` (check-only; no build output, files stay `.js`). CI runs this. Annotate DOM lookups with `/** @type {HTMLInputElement} */ (…)` casts when adding code.
 - **Single E2E test**: `npx playwright test -g "test name"` — run by grep pattern
@@ -19,7 +19,7 @@ Static single-page portfolio site deployed on GitHub Pages.
 
 **Frontend** — No framework. Vanilla HTML/CSS/JS:
 - `index.html` — entire site in one file (~60KB), includes embedded i18n JSON translations (EN/DE)
-- `src/main.js` — all interactive behavior: theme toggle, i18n switching, scroll animations (IntersectionObserver), contact form submission, AI Finance Bot UI, keyboard shortcuts
+- `src/main.js` — all interactive behavior: theme toggle, i18n switching, scroll animations (IntersectionObserver), contact form submission, AI Finance Bot UI and keyboard focus management
 - `styles/main.css` — custom styles with CSS custom properties for theming (light/dark)
 - `styles/tailwind.css` — compiled Tailwind output (generated, do not edit)
 - `src/input.css` — Tailwind entry point (`@import "tailwindcss"`)
@@ -31,7 +31,7 @@ Static single-page portfolio site deployed on GitHub Pages.
 
 ## Testing
 
-E2E tests in `tests/portfolio-inspect.spec.js` (81 tests) cover: page structure, navigation, theme/language toggles, scroll behaviors, AI bot interactions, accessibility, mobile viewport, and keyboard shortcuts. Playwright is configured to test via `file://` protocol against the local `index.html` (no dev server needed).
+E2E tests in `tests/portfolio-inspect.spec.js` and `tests/portfolio-review.spec.js` (99 tests) cover: page structure, navigation, theme/language toggles, scroll behaviors, AI bot interactions, accessibility, mobile viewport, and keyboard shortcuts. Playwright starts `tests/server.js` automatically and tests HTTP-served content. Regression coverage includes complete marked translations, no-JavaScript and blocked-script fallbacks, mobile overlap, and fictional-source demo behavior.
 
 ## Deployment
 

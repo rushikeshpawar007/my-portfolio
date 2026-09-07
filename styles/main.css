@@ -1,13 +1,13 @@
 /* ============================================================
-   PORTFOLIO — "The Closing Ledger" design system
-   Rushikesh Pawar — Data Analytics Portfolio
+   PORTFOLIO - "The Closing Ledger" design system
+   Rushikesh Pawar - Data Analytics Portfolio
 
    The page is typeset as a printed, audited annual report:
    warm paper / deep ink, 1px hairline rules instead of cards,
    an editorial serif (Zodiak) for headlines, a Swiss grotesque
    (Switzer) for running text, and a monospace (Fragment Mono)
-   reserved exclusively for data — numerals, dates, indices.
-   Signature: the accountant's closing double rule — six rules at
+   reserved exclusively for data - numerals, dates, indices.
+   Signature: the accountant's closing double rule - six rules at
    four ledger moments (hero, the metrics ledger ×3, the contact
    form, the footer) and nowhere else.
    ============================================================ */
@@ -21,7 +21,7 @@
 @font-face{font-family:'Fragment Mono';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/fragment-mono-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
 @font-face{font-family:'Fragment Mono';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/fragment-mono-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
 
-/* ===== Inline SVG icons — size by font-size like FA glyphs ===== */
+/* ===== Inline SVG icons - size by font-size like FA glyphs ===== */
 .icon {
     width: 1em;
     height: 1em;
@@ -41,24 +41,26 @@
     --font-mono: 'Fragment Mono', 'Courier New', monospace;
 }
 
-html[data-theme='light'] {
-    /* paper & ink — "Softwhite" stock: hue nudged off the khaki zone,
+:root, html[data-theme='light'] {
+    /* paper & ink - "Softwhite" stock: hue nudged off the khaki zone,
        lifted to ~95% L so it reads as bright uncoated paper, not tan */
-    --bg-color: #FAF4EA;            /* warm paper */
-    --surface: #FEFBF4;             /* raised surface: panels, fields, mats */
-    --heading-color: #1C1A16;       /* ink */
-    --ink: #1C1A16;
-    --text-primary: #4A4334;        /* body ink (9.0:1) */
-    --text-color: #57503F;          /* captions, labels (7.3:1) */
-    --hairline: #DDD3C2;            /* all structural 1px rules */
-    --hairline-strong: #1C1A16;     /* strong rules = full ink */
-    /* red ink — the only color; data, indices, rules */
-    --accent-color: #9E2B14;        /* 6.6:1 on paper */
-    --accent-text: #9E2B14;         /* small-text red (same in light) */
-    --accent-hover: #7C2110;
-    --accent-rgb: 158, 43, 20;
-    --accent-secondary: #9E2B14;    /* legacy alias — one ink only */
-    --accent-secondary-rgb: 158, 43, 20;
+    --feature-surface: #EDF1E9;
+    --feature-ink: #354A39;
+    --bg-color: #F8F7F4;            /* warm paper */
+    --surface: #FFFFFF;             /* raised surface: panels, fields, mats */
+    --heading-color: #242824;       /* ink */
+    --ink: #242824;
+    --text-primary: #454B45;        /* body ink: 8.36:1 on page */
+    --text-color: #596059;          /* captions: 6.48:1 on surface */
+    --hairline: #D8DDD5;            /* all structural 1px rules */
+    --hairline-strong: #242824;     /* strong rules = full ink */
+    /* terracotta ink: data, indices, rules */
+    --accent-color: #A4432E;        /* terracotta data ink */
+    --accent-text: #A4432E;         /* small-text red (same in light) */
+    --accent-hover: #843323;
+    --accent-rgb: 164, 67, 46;
+    --accent-secondary: #A4432E;    /* legacy alias - one ink only */
+    --accent-secondary-rgb: 164, 67, 46;
     /* legacy aliases kept for markup compatibility */
     --glass-bg: var(--surface);
     --glass-border: var(--hairline);
@@ -67,13 +69,13 @@ html[data-theme='light'] {
     --form-bg: var(--surface);
     --logo-filter: grayscale(100%) opacity(80%);
     --logo-active-filter: none;
-    --accent-fallback-bg-15: rgba(158, 43, 20, 0.08);
-    --accent-fallback-bg-20: rgba(158, 43, 20, 0.12);
-    --accent-100: rgba(158, 43, 20, 0.08);
-    --accent-200: rgba(158, 43, 20, 0.12);
-    --grain-opacity: 0.025;
+    --accent-fallback-bg-15: rgba(164, 67, 46, 0.08);
+    --accent-fallback-bg-20: rgba(164, 67, 46, 0.12);
+    --accent-100: rgba(164, 67, 46, 0.08);
+    --accent-200: rgba(164, 67, 46, 0.12);
+    --grain-opacity: 0.012;
     --grain-blend: multiply;
-    --margin-rule: rgba(158, 43, 20, 0.14);
+    --margin-rule: rgba(164, 67, 46, 0.14);
     /* AI bot / transcript panel */
     --apple-bg: var(--bg-color);
     --apple-card-bg: var(--surface);
@@ -88,20 +90,22 @@ html[data-theme='light'] {
 
 html[data-theme='dark'] {
     /* the page as its own ink negative */
-    --bg-color: #151310;            /* deep warm ink, never navy */
-    --surface: #1D1A15;
-    --heading-color: #ECE4D2;       /* cream */
-    --ink: #ECE4D2;
-    --text-primary: #BFB49D;        /* body (8.8:1) */
-    --text-color: #A89E89;          /* captions (7.0:1) */
-    --hairline: #3A342A;
-    --hairline-strong: #ECE4D2;
-    --accent-color: #E0532E;        /* display-size red: numerals, rules */
-    --accent-text: #EF7048;         /* small-text red — AA on raised (5.9:1) */
-    --accent-hover: #F58B66;
-    --accent-rgb: 224, 83, 46;
-    --accent-secondary: #E0532E;
-    --accent-secondary-rgb: 224, 83, 46;
+    --feature-surface: #2B352D;
+    --feature-ink: #D4E1CF;
+    --bg-color: #181C19;            /* deep warm ink, never navy */
+    --surface: #222823;
+    --heading-color: #F3F2EA;       /* cream */
+    --ink: #F3F2EA;
+    --text-primary: #CCD1C7;        /* body: 11.09:1 on page */
+    --text-color: #B1BAAF;          /* captions: 7.53:1 on surface */
+    --hairline: #404A41;
+    --hairline-strong: #F3F2EA;
+    --accent-color: #EF987E;        /* display-size red: numerals, rules */
+    --accent-text: #EF987E;         /* 5.74:1 on the featured surface */
+    --accent-hover: #FFB69D;
+    --accent-rgb: 239, 152, 126;
+    --accent-secondary: #EF987E;
+    --accent-secondary-rgb: 239, 152, 126;
     --glass-bg: var(--surface);
     --glass-border: var(--hairline);
     --glass-fallback-bg: var(--surface);
@@ -109,13 +113,13 @@ html[data-theme='dark'] {
     --form-bg: var(--surface);
     --logo-filter: grayscale(100%) opacity(65%);
     --logo-active-filter: none;
-    --accent-fallback-bg-15: rgba(224, 83, 46, 0.10);
-    --accent-fallback-bg-20: rgba(224, 83, 46, 0.14);
-    --accent-100: rgba(224, 83, 46, 0.10);
-    --accent-200: rgba(224, 83, 46, 0.14);
-    --grain-opacity: 0.04;
+    --accent-fallback-bg-15: rgba(239, 152, 126, 0.10);
+    --accent-fallback-bg-20: rgba(239, 152, 126, 0.14);
+    --accent-100: rgba(239, 152, 126, 0.10);
+    --accent-200: rgba(239, 152, 126, 0.14);
+    --grain-opacity: 0.018;
     --grain-blend: screen;
-    --margin-rule: rgba(224, 83, 46, 0.12);
+    --margin-rule: rgba(239, 152, 126, 0.12);
     --apple-bg: var(--bg-color);
     --apple-card-bg: var(--surface);
     --apple-card-border: var(--hairline);
@@ -150,7 +154,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Paper grain — one SVG noise tile, nearly invisible, fixed */
+/* Paper grain - one SVG noise tile, nearly invisible, fixed */
 body::before {
     content: '';
     position: fixed;
@@ -162,7 +166,7 @@ body::before {
     mix-blend-mode: var(--grain-blend);
 }
 
-/* The ledger margin line — one vertical red rule at the left of the grid.
+/* The ledger margin line - one vertical red rule at the left of the grid.
    Offset = half the container max-width so it tracks the content's left edge. */
 @media (min-width: 1200px) {
     .content-wrapper::before {
@@ -176,13 +180,29 @@ body::before {
         pointer-events: none;
         z-index: 0;
     }
+    /* the margin line "inks in" from the top as you read - a solid-red fill
+       (--folio, 0→1) rides the same offset over the faint rule above */
+    .content-wrapper::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: max(24px, calc(50% - 750px));
+        width: 1px;
+        height: 100vh;
+        background: var(--accent-color);
+        opacity: 0.55;
+        transform: scaleY(var(--folio, 0));
+        transform-origin: top;
+        pointer-events: none;
+        z-index: 0;
+    }
 }
 
 /* Only visitors with a saved non-default language wait for JS translation;
    default (EN) visitors and crawlers get an immediate first paint.
    The 3s animation is a pure-CSS failsafe: if main.js ever fails to run,
    the page still becomes visible instead of staying blank forever. */
-html[lang='de'] body:not(.lang-loaded) {
+html.motion-ready[lang='de'] body:not(.lang-loaded) {
     visibility: hidden;
     animation: lang-reveal 0s 3s forwards;
 }
@@ -204,7 +224,7 @@ h1, h2, h3, .section-title, .hero-tagline { text-wrap: balance; }
 p, li { text-wrap: pretty; }
 .hero-name, .mono-data, .edu-dates, .impact-number { text-wrap: initial; }
 
-/* German hyphenation — what a German print shop does by default */
+/* German hyphenation - what a German print shop does by default */
 html[lang='de'] p,
 html[lang='de'] li {
     hyphens: auto;
@@ -245,7 +265,7 @@ sup {
    ledger-margin-line offset above (keep them in sync). */
 .container { max-width: 1500px; }
 
-/* Small caps utility (uppercase + tracking — no true smcp needed) */
+/* Small caps utility (uppercase + tracking - no true smcp needed) */
 .smallcaps {
     font-family: var(--font-body);
     font-weight: 500;
@@ -261,13 +281,18 @@ sup {
 
 /* ── THE SIGNATURE: accountant's closing double rule ──
    1px hairline + 4px double rule. Six rules at four ledger
-   moments (hero, metrics ×3, contact, footer) — never more. */
+   moments (hero, metrics ×3, contact, footer) - never more. */
 .closing-rule {
     height: 7px;
     border-top: 1px solid var(--hairline-strong);
     border-bottom: 4px double var(--hairline-strong);
     margin-top: 0.75rem;
+    /* plots left→right when it enters view (JS adds .drawn) - the audit line */
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.closing-rule.drawn { transform: scaleX(1); }
 .closing-rule--red {
     border-top-color: var(--accent-color);
     border-bottom-color: var(--accent-color);
@@ -290,7 +315,7 @@ sup {
     color: var(--heading-color);
 }
 
-/* the rule that leads the section — draws in on reveal */
+/* the rule that leads the section - draws in on reveal */
 .section-title::before {
     content: '';
     position: absolute;
@@ -306,6 +331,15 @@ sup {
 .section-reveal.revealed .section-title::before,
 .section-title.revealed::before { transform: scaleX(1); }
 
+/* heading text "sets" as the section reveals - a top-down clip, like type
+   being printed onto the page (the eyebrow index is excluded) */
+.section-title > span:not(.section-eyebrow) {
+    clip-path: inset(0 0 110% 0);
+    transition: clip-path 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+}
+.section-reveal.revealed .section-title > span:not(.section-eyebrow),
+.section-title.revealed > span:not(.section-eyebrow) { clip-path: inset(0 0 0 0); }
+
 .section-eyebrow {
     display: inline-block;
     font-family: var(--font-mono);
@@ -316,7 +350,7 @@ sup {
     color: var(--accent-text);
 }
 
-/* --- FOCUS VISIBLE — unmissable on paper and ink --- */
+/* --- FOCUS VISIBLE - unmissable on paper and ink --- */
 :focus-visible {
     outline: 2px solid var(--accent-text);
     outline-offset: 3px;
@@ -371,7 +405,7 @@ header nav ul li:nth-child(1) a::before { content: '01'; }
 header nav ul li:nth-child(2) a::before { content: '02'; }
 header nav ul li:nth-child(3) a::before { content: '03'; }
 header nav ul li:nth-child(4) a::before { content: '04'; }
-/* Contact is section 06 (Education 05 has no nav entry) — indices are data
+/* Contact is section 06 (Education 05 has no nav entry) - indices are data
    and must be correct data */
 header nav ul li:nth-child(5) a::before { content: '06'; }
 header nav ul li a::before {
@@ -454,7 +488,7 @@ nav a.active-link::after { transform: scaleX(1); }
 
 .glass-card:hover { border-color: var(--text-color); }
 
-/* --- BUTTONS — rectangular, typographic, inversion on hover --- */
+/* --- BUTTONS - rectangular, typographic, inversion on hover --- */
 .ios-button {
     border-radius: 2px;
     font-family: var(--font-body);
@@ -490,7 +524,7 @@ nav a.active-link::after { transform: scaleX(1); }
     color: var(--bg-color);
 }
 
-/* --- HERO — asymmetric editorial spread --- */
+/* --- HERO - asymmetric editorial spread --- */
 #hero { position: relative; }
 
 /* typing role line above the name */
@@ -519,7 +553,19 @@ nav a.active-link::after { transform: scaleX(1); }
     -webkit-text-fill-color: currentColor;
 }
 
-/* the first closing rule — under the name, ink, full text-block width
+/* the name "sets" on load - clip + fade, replacing the generic stagger fade
+   for this one element (transform reset so no residual stagger offset) */
+.hero-name.hero-stagger {
+    opacity: 0;
+    transform: none;
+    clip-path: inset(0 0 108% 0);
+    animation: hero-name-set 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+}
+@keyframes hero-name-set {
+    to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+/* the first closing rule - under the name, ink, full text-block width
    (a fixed width can fall optically short of the name's edge) */
 
 .hero-tagline {
@@ -555,7 +601,7 @@ nav a.active-link::after { transform: scaleX(1); }
     padding-left: 0.75rem;
 }
 
-/* when the chips wrap, a line-leading divider looks accidental — drop them */
+/* when the chips wrap, a line-leading divider looks accidental - drop them */
 @media (max-width: 1279px) {
     .hero-footnote + .hero-footnote { border-left: 0; padding-left: 0; }
 }
@@ -580,7 +626,7 @@ nav a.active-link::after { transform: scaleX(1); }
     transform: scale(1.05);
 }
 
-/* dark theme: grayscaled dark logo discs vanish on the ink background —
+/* dark theme: grayscaled dark logo discs vanish on the ink background -
    invert them so they read as printed marks; color returns on hover/active.
    (data-URI logos are already token-correct and excluded) */
 html[data-theme='dark'] .company-logos img,
@@ -601,7 +647,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     color: var(--text-color);
 }
 
-/* portrait: plate mount — single hairline ring, offset */
+/* portrait: plate mount - single hairline ring, offset */
 .profile-ring-glow {
     position: relative;
     display: inline-block;
@@ -638,7 +684,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Typing caret — 1px red rule */
+/* Typing caret - 1px red rule */
 .typing-cursor {
     display: inline-block;
     width: 1px;
@@ -666,7 +712,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     50% { transform: translateY(6px); opacity: 0.7; }
 }
 
-/* --- IMPACT — the centerpiece ledger table --- */
+/* --- IMPACT - the centerpiece ledger table --- */
 .impact-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -739,7 +785,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     .impact-card p { text-align: right; margin-top: 0; grid-column: 2; grid-row: 1 / span 2; }
 }
 
-/* --- ABOUT — editorial spread with drop cap --- */
+/* --- ABOUT - editorial spread with drop cap --- */
 .about-intro {
     font-size: 1.0625rem;
     line-height: 1.75;
@@ -794,7 +840,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     .hero-chips { gap: 0.5rem; }
 }
 
-/* --- EXPERIENCE — the schedule of operations (ruled ledger) --- */
+/* --- EXPERIENCE - the schedule of operations (ruled ledger) --- */
 .timeline {
     position: relative;
     max-width: none;
@@ -829,12 +875,15 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     transform: none;
     filter: none;
     /* 0.75 is the AA floor: body ink blends to 4.55:1 light / 5.57:1 dark
-       (0.55 measured 2.79:1 — an accessibility failure) */
+       (0.55 measured 2.79:1 - an accessibility failure) */
     opacity: 0.75;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.35s ease, background-color 0.2s ease;
     z-index: 1;
     contain: layout style;
 }
+
+/* hovering a row brings it into focus (un-dim) with a barely-there wash */
+.timeline-container:hover { opacity: 1; background-color: rgba(var(--accent-rgb), 0.04); }
 
 .timeline-container.timeline-card-active {
     transform: none;
@@ -943,7 +992,7 @@ html[data-theme='dark'] .edu-row:hover img { filter: none; opacity: 1; }
     }
 }
 
-/* --- DATA TAGS — mono stubs in hairline rectangles --- */
+/* --- DATA TAGS - mono stubs in hairline rectangles --- */
 .skill-tag-sm {
     background: transparent;
     color: var(--text-color);
@@ -979,7 +1028,7 @@ html[data-theme='light'] .skill-tag-sm:hover { color: var(--bg-color); }
     letter-spacing: 0.04em;
 }
 
-/* --- METRIC HIGHLIGHT — red ink figures, no pill --- */
+/* --- METRIC HIGHLIGHT - red ink figures, no pill --- */
 .metric-highlight {
     font-family: var(--font-mono);
     font-weight: 400;
@@ -991,7 +1040,7 @@ html[data-theme='light'] .skill-tag-sm:hover { color: var(--bg-color); }
     font-variant-numeric: tabular-nums;
 }
 
-/* --- ARCHITECTURE DIAGRAM — ruled flows --- */
+/* --- ARCHITECTURE DIAGRAM - ruled flows --- */
 .arch-diagram {
     display: flex;
     flex-direction: column;
@@ -1000,6 +1049,21 @@ html[data-theme='light'] .skill-tag-sm:hover { color: var(--bg-color); }
 }
 
 .arch-layer { width: 100%; }
+
+/* the pipeline assembles step-by-step when its card reveals */
+.arch-diagram > .arch-layer,
+.arch-diagram > .arch-connector {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.stagger-item.visible .arch-diagram > .arch-layer,
+.stagger-item.visible .arch-diagram > .arch-connector { opacity: 1; transform: none; }
+.stagger-item.visible .arch-diagram > *:nth-child(1) { transition-delay: 0.05s; }
+.stagger-item.visible .arch-diagram > *:nth-child(2) { transition-delay: 0.12s; }
+.stagger-item.visible .arch-diagram > *:nth-child(3) { transition-delay: 0.19s; }
+.stagger-item.visible .arch-diagram > *:nth-child(4) { transition-delay: 0.26s; }
+.stagger-item.visible .arch-diagram > *:nth-child(5) { transition-delay: 0.33s; }
 
 .arch-layer-label {
     font-family: var(--font-mono);
@@ -1069,7 +1133,7 @@ html[data-theme='light'] .skill-tag-sm:hover { color: var(--bg-color); }
     opacity: 0.7;
 }
 
-/* --- AWARD NOTE — small caps with red marker, no amber pill --- */
+/* --- AWARD NOTE - small caps with red marker, no amber pill --- */
 .award-badge {
     display: inline-flex;
     align-items: center;
@@ -1135,7 +1199,7 @@ html[data-theme='dark'] #theme-icon-dark { display: none; }
 html[data-theme='light'] #theme-icon-light { display: none; }
 html[data-theme='light'] #theme-icon-dark { display: block; }
 
-/* --- CERTIFICATIONS — hairline stub buttons with red ↗ --- */
+/* --- CERTIFICATIONS - hairline stub buttons with red ↗ --- */
 .cert-stub {
     display: inline-flex;
     align-items: center;
@@ -1170,7 +1234,9 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 .edu-row {
     border-top: 1px solid var(--hairline);
     padding: 1.5rem 0;
+    transition: background-color 0.2s ease;
 }
+.edu-row:hover { background-color: rgba(var(--accent-rgb), 0.04); }
 
 .edu-rows { border-bottom: 1px solid var(--hairline); }
 
@@ -1192,7 +1258,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 .edu-row img { filter: grayscale(1); transition: filter 0.25s ease; }
 .edu-row:hover img { filter: none; }
 
-/* --- AI BOT — appendix transcript ticket --- */
+/* --- AI BOT - appendix transcript ticket --- */
 #dynamic-island-container {
     position: relative;
     transition: all 0.35s cubic-bezier(0.3, 0, 0.2, 1);
@@ -1244,7 +1310,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 
 /* mono ledger index before the label */
 .collapsed-content::before {
-    content: '3.0';
+    content: '1.2';
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     color: var(--accent-text);
@@ -1282,7 +1348,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !important; }
 
 /* visibility (not just opacity) so the hidden state leaves the
-   accessibility tree — opacity:0 text is still read by screen readers */
+   accessibility tree - opacity:0 text is still read by screen readers */
 .collapsed .collapsed-content { opacity: 1; visibility: visible; }
 .collapsed .expanded-content { opacity: 0; visibility: hidden; pointer-events: none; }
 .expanded .collapsed-content { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -1422,7 +1488,7 @@ body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !impo
     50% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* --- SKILLS — the index matrix --- */
+/* --- SKILLS - the index matrix --- */
 .skill-group {
     position: relative;
     border-top: 1px solid var(--hairline);
@@ -1509,7 +1575,7 @@ body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !impo
     letter-spacing: 0.02em;
 }
 
-/* --- QUICK FACTS — red square bullets, no pills --- */
+/* --- QUICK FACTS - red square bullets, no pills --- */
 .quick-fact {
     display: inline-flex;
     align-items: center;
@@ -1556,7 +1622,7 @@ body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !impo
 .contact-available-badge .icon { display: none; }
 .quick-fact .icon { display: none; }
 
-/* --- CONTACT — the paper filing form --- */
+/* --- CONTACT - the paper filing form --- */
 .contact-email-link {
     font-family: var(--font-display);
     font-size: 1.25rem;
@@ -1625,7 +1691,7 @@ textarea.contact-input { resize: none; }
     -webkit-text-fill-color: var(--heading-color);
 }
 
-/* --- FOOTER — the colophon (closing double rule lives in the markup) --- */
+/* --- FOOTER - the colophon (closing double rule lives in the markup) --- */
 .footer-social {
     color: var(--text-color);
     transition: color 0.25s ease;
@@ -1750,7 +1816,7 @@ footer p a:first-child { padding-left: 0; }
 .toast.toast-error { border-color: var(--accent-text); color: var(--accent-text); }
 .toast.show { opacity: 1; transform: translateY(0); }
 
-/* --- SCROLL TO TOP — a mono stub --- */
+/* --- SCROLL TO TOP - a mono stub --- */
 #scrollTopBtn {
     background: var(--bg-color) !important;
     border: 1px solid var(--hairline-strong);
@@ -1763,7 +1829,7 @@ footer p a:first-child { padding-left: 0; }
 
 #scrollTopBtn:hover { background: var(--ink) !important; color: var(--bg-color) !important; }
 
-/* --- MOBILE BOTTOM NAV — a paper tab rail --- */
+/* --- MOBILE BOTTOM NAV - a paper tab rail --- */
 #bottom-nav { display: none; }
 
 @media (max-width: 767px) {
@@ -1812,7 +1878,7 @@ footer p a:first-child { padding-left: 0; }
     }
 
     #scrollTopBtn { bottom: 72px !important; }
-    /* clear the fixed tab bar with the FOOTER, not main — the colophon
+    /* clear the fixed tab bar with the FOOTER, not main - the colophon
        (privacy/impressum links) sits outside <main> and was obscured */
     main.container { padding-bottom: 0; }
     footer.py-12 { padding-bottom: calc(3rem + 76px + env(safe-area-inset-bottom)); }
@@ -1921,10 +1987,10 @@ footer p a:first-child { padding-left: 0; }
     .skill-matrix { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* --- VERTICAL RHYTHM — 96px chapter breaks; hero cites its metrics --- */
+/* --- VERTICAL RHYTHM - 96px chapter breaks; hero cites its metrics --- */
 @media (min-width: 768px) {
     main section[id] { padding-top: 6rem; padding-bottom: 6rem; }
-    /* the footnote chips ¹²³ cite the metrics — proximity makes the citation legible */
+    /* the footnote chips ¹²³ cite the metrics - proximity makes the citation legible */
     #hero { padding-bottom: 2rem; }
     #impact { padding-top: 1.5rem; padding-bottom: 6rem; }
     footer.py-12 { padding-top: 4rem; margin-top: 3rem; }
@@ -1935,7 +2001,7 @@ footer p a:first-child { padding-left: 0; }
     #impact { padding-top: 1rem; }
 }
 
-/* --- PRESS PHYSICS — stamp hits fast, ink dries slow --- */
+/* --- PRESS PHYSICS - stamp hits fast, ink dries slow --- */
 .ios-button { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 .cert-stub, .skill-chip { transition: background-color 0.3s ease, color 0.3s ease; }
 .ios-button:hover, .cert-stub:hover, .skill-chip:hover { transition-duration: 0.08s; }
@@ -1944,7 +2010,7 @@ footer p a:first-child { padding-left: 0; }
     transform: translateY(1px);
 }
 
-/* --- THEME CROSS-FADE — turning the sheet over (View Transitions API) --- */
+/* --- THEME CROSS-FADE - turning the sheet over (View Transitions API) --- */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation-duration: 0.26s;
@@ -1956,7 +2022,7 @@ footer p a:first-child { padding-left: 0; }
 .theme-switching *::before,
 .theme-switching *::after { transition: none !important; }
 
-/* --- REDUCED MOTION — the page must read as a still document --- */
+/* --- REDUCED MOTION - the page must read as a still document --- */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -1980,6 +2046,12 @@ footer p a:first-child { padding-left: 0; }
     .hero-stagger { opacity: 1; transform: none; animation: none; }
     .typing-cursor { animation: none; opacity: 1; }
     .scroll-indicator { animation: none; }
+    /* new motion: force end-states so nothing stays hidden without the trigger */
+    .closing-rule { transform: none; }
+    .section-title > span:not(.section-eyebrow) { clip-path: none; }
+    .hero-name.hero-stagger { opacity: 1; clip-path: none; }
+    .arch-diagram > .arch-layer,
+    .arch-diagram > .arch-connector { opacity: 1; transform: none; }
     /* JS already skips the View Transition under reduced motion at load;
        this covers an OS setting changed mid-session (the universal
        selector above cannot match ::view-transition-* pseudo-elements) */
@@ -2002,9 +2074,13 @@ footer p a:first-child { padding-left: 0; }
         transform: none;
     }
     .section-title::before { transform: scaleX(1); }
+    .closing-rule { transform: none; }
+    .section-title > span:not(.section-eyebrow) { clip-path: none; }
+    .arch-diagram > .arch-layer,
+    .arch-diagram > .arch-connector { opacity: 1; transform: none; }
 }
 
-/* --- PRINT — the annual report actually prints --- */
+/* --- PRINT - the annual report actually prints --- */
 @media print {
     header, #bottom-nav, #read-progress, #scrollTopBtn, #toast-container,
     #cookie-consent-banner, #mobile-menu, .scroll-indicator { display: none !important; }
@@ -2028,30 +2104,31 @@ footer p a:first-child { padding-left: 0; }
     #bot-question-prompts-apple { display: none !important; }
 
     body::before { display: none; }              /* grain */
-    .content-wrapper::before { display: none; }  /* fixed red margin line */
+    .content-wrapper::before,
+    .content-wrapper::after { display: none; }  /* fixed red margin line + folio ink */
 
     /* dark-mode readers print the daylight sheet */
     html[data-theme='dark'] {
         --bg-color: #ffffff;
         --surface: #ffffff;
-        --heading-color: #1C1A16;
-        --ink: #1C1A16;
-        --text-primary: #4A4334;
-        --text-color: #57503F;
-        --hairline: #DDD3C2;
-        --hairline-strong: #1C1A16;
-        --accent-color: #9E2B14;
-        --accent-text: #9E2B14;
-        --accent-hover: #7C2110;
-        --accent-rgb: 158, 43, 20;
+        --heading-color: #242824;
+        --ink: #242824;
+        --text-primary: #454B45;
+        --text-color: #596059;
+        --hairline: #D8DDD5;
+        --hairline-strong: #242824;
+        --accent-color: #A4432E;
+        --accent-text: #A4432E;
+        --accent-hover: #843323;
+        --accent-rgb: 164, 67, 46;
         --glass-bg: #ffffff;
-        --glass-border: #DDD3C2;
+        --glass-border: #D8DDD5;
         --glass-fallback-bg: #ffffff;
         --logo-filter: none;
         --apple-card-bg: #ffffff;
-        --apple-card-border: #DDD3C2;
-        --apple-text-primary: #1C1A16;
-        --apple-text-secondary: #57503F;
+        --apple-card-border: #D8DDD5;
+        --apple-text-primary: #242824;
+        --apple-text-secondary: #596059;
     }
     :root { --bg-color: #ffffff; --surface: #ffffff; --grain-opacity: 0; }
     html, body { background: #ffffff !important; }
@@ -2076,4 +2153,150 @@ footer p a:first-child { padding-left: 0; }
     }
 
     @page { margin: 18mm 16mm; }
+}
+
+/* Portfolio review: content is readable until interaction initialization succeeds. */
+html:not(.motion-ready) .section-reveal,
+html:not(.motion-ready) .stagger-item,
+html:not(.motion-ready) .hero-stagger,
+html:not(.motion-ready) .arch-layer,
+html:not(.motion-ready) .arch-connector {
+    opacity: 1; transform: none; animation: none; clip-path: none;
+}
+html:not(.motion-ready) .closing-rule,
+html:not(.motion-ready) .section-title::before { transform: scaleX(1); }
+html:not(.motion-ready) .section-title > span { clip-path: none; }
+html:not(.motion-ready) .timeline-container { opacity: 1; }
+.hero-role { white-space: normal; }
+.hero-link, .case-link { display: inline-block; color: var(--heading-color); text-decoration: underline; text-underline-offset: 4px; padding: 0.6rem 0; }
+.hero-link { margin-top: 0.5rem; }
+.case-study { padding: 1.5rem; }
+.case-study h3 { margin: 0.5rem 0 1rem; font-size: clamp(1.25rem, 2vw, 1.6rem); }
+.case-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin: 1.5rem 0; padding-top: 1rem; border-top: 1px solid var(--hairline); }
+.case-facts dt { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.case-facts dd { font-size: 0.9375rem; line-height: 1.65; margin: 0; }
+.case-study .exhibit-index { display: block; }
+.case-scope { font-size: 0.875rem; max-width: 85ch; }
+#dynamic-island-container.expanded { max-height: none; }
+#demo-source:focus-visible, .demo-source summary:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.demo-source { margin-top: 1rem; text-align: left; border-top: 1px solid var(--hairline); padding: 1rem 0; }
+.demo-source summary { cursor: pointer; text-decoration: underline; text-underline-offset: 4px; min-height: 44px; }
+.demo-source table { border-collapse: collapse; width: 100%; table-layout: fixed; margin: 1rem 0; }
+.demo-source th, .demo-source td { text-align: left; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--hairline); overflow-wrap: anywhere; font-size: 0.875rem; }
+.demo-source caption { text-align: left; margin-bottom: 0.75rem; }
+.demo-source p { font-size: 0.875rem; }
+#finance-case-study, #royalty-case-study, #demo-source { scroll-margin-top: 6rem; }
+@media (max-width: 767px) {
+    main.container { padding-top: 1.5rem; }
+    #hero { padding-top: 0.75rem; }
+    #hero > .flex > .shrink-0 { margin-bottom: 1.25rem; justify-content: flex-start; }
+    #hero .profile-ring-glow img { width: 80px; height: 80px; }
+    #hero .profile-ring-glow { padding: 4px; }
+    #hero .hero-role { font-size: 0.75rem; line-height: 1.6; }
+    #hero .hero-name { font-size: clamp(2.5rem, 11vw, 3.2rem); }
+    #hero .hero-tagline { margin-top: 1rem; }
+    #hero .hero-actions { margin-top: 1rem; }
+    #hero .hero-chips { margin-top: 1rem; }
+    #hero .scroll-indicator { display: none; }
+    .cookie-banner { bottom: calc(68px + env(safe-area-inset-bottom)); padding: 0.75rem 1rem; }
+    #bottom-nav a { font-size: 11px; padding: 10px 4px; letter-spacing: 0; }
+    .case-facts { grid-template-columns: 1fr; gap: 1rem; }
+    .expanded-content { padding: 3.5rem 1rem 1rem; }
+    #bot-simulation-window-apple { height: auto; max-height: none; }
+    #bot-messages-apple { min-height: 150px; max-height: 320px; }
+}
+
+/* Editorial refinement: compact hierarchy, native disclosures, and a measured result. */
+.container { max-width: 1280px; }
+.timeline-container, .company-logos > div { opacity: 1; }
+@media (min-width: 1200px) {
+    .content-wrapper::before, .content-wrapper::after { left: max(24px, calc(50% - 640px)); }
+}
+@media (min-width: 768px) {
+    main.container { padding-top: 1.25rem; }
+    main #hero { padding-top: 2rem; padding-bottom: 1.75rem; }
+    #hero > .flex { gap: 3rem; }
+    #hero .hero-name { font-size: clamp(3.5rem, 6.5vw, 5.5rem); }
+    #hero .hero-tagline { font-size: 1.0625rem; line-height: 1.65; }
+    #hero .hero-actions { margin-top: 1.5rem; }
+    #hero .hero-chips, #hero .company-logos { margin-top: 1rem; }
+    #hero .hero-link { margin-top: 0; }
+    #hero .scroll-indicator { display: none; }
+    #hero > .flex > .shrink-0 { width: 30%; }
+    #hero > .flex > .text-left { width: calc(70% - 3rem); }
+    #hero .profile-ring-glow img { width: 240px; height: 240px; }
+    main #impact { padding-top: 0; padding-bottom: 2.5rem; }
+    .impact-card { padding: 1.5rem !important; }
+    .impact-number { font-size: clamp(2.5rem, 4vw, 3.5rem); }
+    main #projects { padding-top: 2.5rem; }
+}
+#projects .section-title { margin-bottom: 1rem; }
+.section-intro { margin-bottom: 2rem; max-width: 60ch; color: var(--text-color); }
+#projects .bento-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: start; }
+.featured-project { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--hairline); background: var(--surface); border-top: 3px solid var(--accent-text); }
+.feature-copy { padding: 2rem; align-self: center; }
+.project-kicker { font-family: var(--font-mono); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-color); margin-bottom: 1rem; }
+.feature-copy h3 { font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.2; margin-bottom: 1rem; max-width: 17ch; }
+.project-description { font-size: 1rem; line-height: 1.65; margin: 0.75rem 0 1rem; max-width: 58ch; }
+.project-tools { font-family: var(--font-mono); color: var(--text-color); font-size: 0.6875rem; line-height: 1.7; }
+.report-comparison { background: var(--feature-surface); padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+.report-comparison > p:first-child { font-size: 0.8125rem; color: var(--feature-ink); margin-bottom: 1.5rem; }
+.comparison-values { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+.comparison-label { font-size: 0.75rem; color: var(--feature-ink); display: block; margin-bottom: 0.5rem; }
+.comparison-number { display: block; font-family: var(--font-mono); font-weight: 400; font-size: clamp(1.25rem, 2.1vw, 1.8rem); line-height: 1.3; white-space: nowrap; }
+.before-number { color: var(--feature-ink); }
+.after-number { color: var(--accent-text); }
+.comparison-arrow { color: var(--feature-ink); font-size: 1.5rem; }
+.comparison-result { color: var(--feature-ink); font-size: 0.875rem; font-weight: 600; border-top: 1px solid var(--hairline); padding-top: 1rem; margin-top: 1.5rem; }
+.project-preview { padding: 1.5rem; min-width: 0; border: 1px solid var(--hairline); background: var(--surface); transition: border-color 160ms ease; }
+.project-preview:hover, .project-preview:focus-within { border-color: var(--text-color); }
+.project-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.6875rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-color); }
+.project-preview h3 { font-size: 1.4rem; line-height: 1.35; }
+.project-preview .project-description { min-height: 3.3em; }
+.case-details { margin-top: 1.25rem; border-top: 1px solid var(--hairline); }
+.case-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 48px; padding: 0.85rem 0; font-size: 0.875rem; font-weight: 500; color: var(--heading-color); cursor: pointer; list-style: none; }
+.case-details > summary::-webkit-details-marker { display: none; }
+.case-details > summary:hover .detail-read, .case-details > summary:hover .detail-close { text-decoration: underline; text-underline-offset: 4px; }
+.case-details > summary:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 4px; }
+.detail-indicator { font-family: var(--font-mono); font-size: 1.25rem; line-height: 1; transition: transform 160ms ease; }
+.case-details[open] > summary .detail-indicator { transform: rotate(45deg); }
+.detail-close, .case-details[open] > summary .detail-read { display: none; }
+.case-details[open] > summary .detail-close { display: inline; }
+.case-body { padding: 0.75rem 0 0.5rem; }
+.case-body p, .case-body li { font-size: 0.9375rem; }
+.project-preview .case-facts { grid-template-columns: 1fr; gap: 1rem; }
+.project-preview .case-body .grid { display: flex; flex-direction: column; }
+.project-preview .case-body .plate-mount { min-height: 0; }
+.project-preview .case-body .plate-mount img { width: 100%; height: auto; object-fit: contain; }
+.featured-project > .case-details { grid-column: 1 / -1; margin: 0; padding: 0 2rem; }
+.featured-project .case-facts { margin-top: 0; border-top: 0; }
+.project-extra { padding-top: 0.5rem; border-top: 1px solid var(--hairline); }
+.project-extra .case-link { font-size: 0.875rem; }
+.demo-exhibit { grid-column: 1 / -1; padding-top: 0.5rem; }
+#dynamic-island-container.collapsed { max-width: none; }
+@media (max-width: 1023px) and (min-width: 768px) {
+    .featured-project { grid-template-columns: 1fr; }
+    #hero .profile-ring-glow img { width: 175px; height: 175px; }
+}
+@media (max-width: 767px) {
+    #mobile-menu-button, #mobile-menu { display: none !important; }
+    header nav.container > div { gap: 0.5rem; }
+    #projects .bento-grid, .featured-project { grid-template-columns: 1fr; }
+    .feature-copy, .report-comparison { padding: 1.25rem; }
+    .featured-project > .case-details { padding: 0 1.25rem; }
+    .feature-copy h3 { font-size: 1.9rem; max-width: 18ch; }
+    .comparison-values { gap: 0.5rem; }
+    .comparison-number { font-size: clamp(1.15rem, 5vw, 1.65rem); }
+    .project-preview { padding: 1.25rem; }
+    .project-preview .project-description { min-height: 0; }
+    #hero .hero-chips { font-size: 0.75rem; }
+}
+@media print {
+    .featured-project, .project-preview, .report-comparison { background: transparent; color: #242824; }
+    .case-details > summary { display: none; }
+    .case-details::details-content { content-visibility: visible; }
+}
+@media (max-width: 359px) {
+    .comparison-values { grid-template-columns: 1fr; gap: 0.75rem; }
+    .comparison-arrow { justify-self: start; transform: rotate(90deg); }
 }

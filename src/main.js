@@ -1,6 +1,6 @@
 /* ============================================================
-   PORTFOLIO — Main JavaScript
-   Rushikesh Pawar — Data Analytics Portfolio
+   PORTFOLIO - Main JavaScript
+   Rushikesh Pawar - Data Analytics Portfolio
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -52,6 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let currentLang = document.documentElement.lang || 'en';
+        try {
+            const savedLang = localStorage.getItem('lang');
+            if (savedLang === 'en' || savedLang === 'de') currentLang = savedLang;
+        } catch { /* The default English content remains usable without storage. */ }
         const langToggleHeader = document.getElementById("lang-toggle-header");
         const langToggleMobile = document.getElementById("lang-toggle-mobile");
 
@@ -74,6 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = translations[currentLang]?.['lang_toggle_title'];
             if (langToggleHeader) { langToggleHeader.textContent = next; if (title) langToggleHeader.title = title; }
             if (langToggleMobile) { langToggleMobile.textContent = next; if (title) langToggleMobile.title = title; }
+            document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+                const key = el.getAttribute('data-i18n-aria');
+                if (key && translations[currentLang]?.[key]) el.setAttribute('aria-label', translations[currentLang][key]);
+            });
             document.documentElement.lang = currentLang;
         }
 
@@ -81,9 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = currentLang === 'de' ? 'en' : 'de';
             try { localStorage.setItem('lang', currentLang); } catch {}
             translatePage();
-            syncTypingRole();
+            document.dispatchEvent(new Event('portfolio:languagechange'));
             // data-i18n-html re-renders replace .metric-highlight spans,
-            // detaching them from the count-up observer — re-observe, but skip
+            // detaching them from the count-up observer - re-observe, but skip
             // any currently on screen so visible numbers don't reset-and-retally.
             observeMetrics(true);
         }
@@ -101,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
             const meta = document.createElement('meta');
             meta.name = 'theme-color';
-            meta.content = next === 'dark' ? '#151310' : '#FAF4EA';
+            meta.content = next === 'dark' ? '#181C19' : '#F8F7F4';
             document.head.appendChild(meta);
         }
 
@@ -187,10 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestAnimationFrame(() => {
                     if (header) header.classList.toggle('scrolled', window.scrollY > 8);
                     if (scrollTopBtn) scrollTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-                    if (readProgress) {
-                        const h = document.documentElement.scrollHeight - window.innerHeight;
-                        readProgress.style.width = h > 0 ? `${(window.scrollY / h) * 100}%` : '0%';
-                    }
+                    const h = document.documentElement.scrollHeight - window.innerHeight;
+                    const ratio = h > 0 ? window.scrollY / h : 0;
+                    if (readProgress) readProgress.style.width = `${ratio * 100}%`;
+                    // drive the left-margin "folio ink" fill (CSS scaleY(var(--folio)))
+                    document.documentElement.style.setProperty('--folio', String(ratio));
                     scrollTicking = false;
                 });
                 scrollTicking = true;
@@ -287,11 +296,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
                 if (!name || !email || !message) {
-                    showToast(translations[currentLang]?.form_error_message || 'Please fill in all fields.', true);
+                    showToast(translations[currentLang]?.form_required || 'Please fill in all fields.', true);
                     return;
                 }
                 if (!emailPattern.test(email)) {
-                    showToast('Please enter a valid email address.', true);
+                    showToast(translations[currentLang].form_invalid_email, true);
                     return;
                 }
 
@@ -337,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch((err) => {
                     if (err.name === 'AbortError') {
-                        showToast('Request timed out. Please try again.', true);
+                        showToast(translations[currentLang].form_timeout, true);
                     } else {
                         console.error('Form error:', err);
                         showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
@@ -372,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     use.setAttribute('href', '#i-check');
                     icon.appendChild(use);
                     btn.appendChild(icon);
-                    btn.appendChild(document.createTextNode('Copied!'));
+                    btn.appendChild(document.createTextNode(translations[currentLang].copied));
                     setTimeout(() => {
                         btn.textContent = '';
                         origNodes.forEach(n => btn.appendChild(n));
@@ -394,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const el = /** @type {HTMLElement} */ (entry.target);
                 // Respect reduced-motion: leave the final value as-is (no count-up)
                 obs.unobserve(el);
-                el.dataset.counted = '1'; // this instance has tallied — never again
+                el.dataset.counted = '1'; // this instance has tallied - never again
                 if (prefersReducedMotion) return;
                 const match = (el.textContent || '').trim().match(/^(\d+)(%|x|\+)?$/);
                 if (!match) return;
@@ -410,6 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         requestAnimationFrame(tick);
                     } else {
                         el.textContent = target + suffix;
+                        // draw the audit line under the total, after it settles
+                        const card = el.closest('.impact-card');
+                        const rule = card && card.querySelector('.closing-rule');
+                        if (rule) rule.classList.add('drawn');
                     }
                 };
                 requestAnimationFrame(tick);
@@ -417,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.5 });
         // hoisted so toggleLanguage (defined earlier, runs post-init) can call it.
         // skipInView: on a language toggle, never reset a number the user is
-        // currently looking at — that reset-and-re-tally was a visible glitch.
+        // currently looking at - that reset-and-re-tally was a visible glitch.
         /** @param {boolean} [skipInView] */
         function observeMetrics(skipInView) {
             document.querySelectorAll('.metric-highlight').forEach(node => {
@@ -431,6 +444,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         observeMetrics(false);
+
+        // Closing rules "draw" left→right when they enter view. The three
+        // metric rules are drawn by the count-up above (audit-line-after-total),
+        // so exclude them here.
+        const ruleObs = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('drawn');
+                obs.unobserve(entry.target);
+            });
+        }, { threshold: 0.6 });
+        document.querySelectorAll('.closing-rule').forEach(el => {
+            if (el.closest('.impact-card')) return;
+            ruleObs.observe(el);
+        });
 
         // Timeline scroll progress
         const expSection = document.getElementById('experience');
@@ -481,93 +509,49 @@ document.addEventListener('DOMContentLoaded', () => {
                     obs.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        // Long case-study sections must reveal even when only their leading edge fits.
+        }, { threshold: 0, rootMargin: '0px 0px -50px 0px' });
 
         document.querySelectorAll('.section-reveal, .stagger-item').forEach(el => revealObs.observe(el));
-
-        /* ── KEYBOARD SHORTCUTS ────────────────────────────── */
-
-        document.addEventListener('keydown', (e) => {
-            if (e.repeat) return;
-            const active = /** @type {HTMLElement | null} */ (document.activeElement);
-            if (!active || active.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
-            if (e.key === 't' || e.key === 'T') {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                setTheme(next);
-                showToast(`Theme: ${next === 'dark' ? 'Dark' : 'Light'}`);
-            } else if (e.key === '?') {
-                const island = document.getElementById('dynamic-island-container');
-                if (island && island.classList.contains('collapsed')) {
-                    island.click();
-                    island.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    showToast('AI Finance Bot opened');
-                }
-            }
-        });
-
-        /* ── TYPING SUBTITLE ────────────────────────────────── */
-
-        const typingEl = document.getElementById('typing-role');
-        /** @type {Record<string, string[]>} */
-        const roleList = {
-            en: ['Business & Data Analyst', 'Dashboard Builder', 'Automation Specialist'],
-            de: ['Business & Data Analyst', 'Dashboard-Entwickler', 'Automatisierungsspezialist']
-        };
-        let roleIdx = 0;
-        /** @type {number[]} */
-        let typingTimers = [];
-
-        function clearTypingTimers() {
-            typingTimers.forEach(clearInterval);
-            typingTimers = [];
-        }
-
-        function syncTypingRole() {
-            if (!typingEl) return;
-            clearTypingTimers();
-            const list = roleList[currentLang] || roleList.en;
-            typingEl.textContent = list[roleIdx] || list[0];
-        }
-
-        if (typingEl && !prefersReducedMotion) {
-            const el = typingEl; // narrowed to non-null for the closures below
-            function typeRole() {
-                clearTypingTimers();
-                const list = roleList[currentLang] || roleList.en;
-                roleIdx = (roleIdx + 1) % list.length;
-                const target = list[roleIdx];
-                const current = el.textContent || '';
-                let i = current.length;
-
-                // Delete
-                const delTimer = setInterval(() => {
-                    if (i <= 0) {
-                        clearInterval(delTimer);
-                        let j = 0;
-                        // Type
-                        const typeTimer = setInterval(() => {
-                            el.textContent = target.slice(0, j + 1);
-                            j++;
-                            if (j >= target.length) clearInterval(typeTimer);
-                        }, 60);
-                        typingTimers.push(typeTimer);
-                    } else {
-                        i--;
-                        el.textContent = current.slice(0, i);
-                    }
-                }, 30);
-                typingTimers.push(delTimer);
-            }
-
-            setInterval(typeRole, 4000);
-        }
 
         /* ── AI FINANCE BOT ────────────────────────────────── */
 
         initFinanceBot();
+        document.documentElement.classList.add('motion-ready');
 
-        // "View Key Project" promises the project, not a teaser — expand the
-        // demo on arrival so the CTA delivers what it says.
+        // Native disclosures keep supporting projects compact, including without JS.
+        // Direct case-study links reveal their details before the anchor scrolls.
+        /** @param {string} hash */
+        function revealLinkedCase(hash) {
+            let id;
+            try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+            const target = document.getElementById(id);
+            if (!target) return;
+            const details = target.matches('.featured-project, .project-preview')
+                ? target.querySelector('details.case-details')
+                : target.closest('details.case-details');
+            if (details instanceof HTMLDetailsElement) details.open = true;
+        }
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', () => revealLinkedCase(link.getAttribute('href') || ''));
+        });
+        window.addEventListener('hashchange', () => revealLinkedCase(window.location.hash));
+        revealLinkedCase(window.location.hash);
+
+        /** @type {HTMLDetailsElement[]} */
+        let printDisclosures = [];
+        window.addEventListener('beforeprint', () => {
+            printDisclosures = [...document.querySelectorAll('details.case-details')]
+                .filter(el => el instanceof HTMLDetailsElement && !el.open)
+                .map(el => /** @type {HTMLDetailsElement} */ (el));
+            printDisclosures.forEach(el => { el.open = true; });
+        });
+        window.addEventListener('afterprint', () => {
+            printDisclosures.forEach(el => { el.open = false; });
+            printDisclosures = [];
+        });
+
+        // Open the disclosure when visitors follow the case study's demo link.
         document.querySelectorAll('a[href="#dynamic-island-container"]').forEach(link => {
             link.addEventListener('click', () => {
                 const island = document.getElementById('dynamic-island-container');
@@ -581,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
     } catch (error) {
+        document.documentElement.classList.remove('motion-ready');
         console.error("Page init error:", error);
     } finally {
         document.body.classList.add('lang-loaded');
@@ -608,14 +593,16 @@ function initFinanceBot() {
         isBotTyping = false;
     }
 
-    /** @type {Record<string, { question: string, answer: string }>} */
-    const simData = {
-        'q1': { question: "What was our Q3 revenue vs. budget?", answer: "In Q3, we achieved a revenue of \u20AC1.2M, which is 105% of our \u20AC1.14M budget. Great work by the team!" },
-        'q2': { question: "What are our top 5 expenses this month?", answer: "Top 5 expenses: Salaries (\u20AC250k), Marketing (\u20AC120k), Cloud Services (\u20AC85k), Office Rent (\u20AC45k), Software Licenses (\u20AC30k)." },
-        'q3': { question: "How is the sales funnel health?", answer: "Sales funnel is healthy \u2014 15% increase in qualified leads. However, MQL\u2192SQL conversion rate dropped 5%, worth investigating." }
-    };
+    /** @type {Record<string, Record<string, string>>} */
+    const demoTranslations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}');
+    /** @param {string} key */
+    const tr = key => (demoTranslations[document.documentElement.lang] || demoTranslations.en)[key];
+    const questionKeys = ['q1', 'q2', 'q3'];
+    document.addEventListener('portfolio:languagechange', () => {
+        if (islandContainer.classList.contains('expanded')) initBotUI();
+    });
 
-    // The ticket is a div — make it a keyboard-operable disclosure control
+    // The ticket is a div - make it a keyboard-operable disclosure control
     islandContainer.setAttribute('role', 'button');
     islandContainer.setAttribute('tabindex', '0');
     islandContainer.setAttribute('aria-expanded', 'false');
@@ -624,11 +611,12 @@ function initFinanceBot() {
         if (islandContainer.classList.contains('collapsed')) {
             islandContainer.classList.remove('collapsed');
             islandContainer.classList.add('expanded');
-            // open panel holds real buttons — it must not itself be a button
+            // open panel holds real buttons - it must not itself be a button
             islandContainer.removeAttribute('role');
             islandContainer.setAttribute('tabindex', '-1');
             islandContainer.setAttribute('aria-expanded', 'true');
             initBotUI();
+            closeButton?.focus({ preventScroll: true });
         }
     };
 
@@ -653,7 +641,7 @@ function initFinanceBot() {
             islandContainer.focus();
         }
     });
-    if (closeButton) closeButton.addEventListener('click', (e) => { e.stopPropagation(); collapse(); });
+    if (closeButton) closeButton.addEventListener('click', (e) => { e.stopPropagation(); collapse(); islandContainer.focus({ preventScroll: true }); });
 
     /** @param {string} sender @param {string} content */
     function addMsg(sender, content) {
@@ -679,87 +667,42 @@ function initFinanceBot() {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    /** @param {boolean} show */
-    function showTyping(show) {
-        const existing = document.getElementById('bot-typing-indicator');
-        if (existing) existing.remove();
-        if (show) {
-            const el = document.createElement('div');
-            el.id = 'bot-typing-indicator';
-            el.className = 'bot-message-wrapper bot-message';
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.className = 'bot-message-bubble';
-            const indicator = document.createElement('div');
-            indicator.className = 'typing-indicator-apple';
-            for (let i = 0; i < 3; i++) indicator.appendChild(document.createElement('span'));
-            bubbleDiv.appendChild(indicator);
-            el.appendChild(bubbleDiv);
-            messagesContainer.appendChild(el);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-    }
-
     /** @param {string} key */
     function handleQ(key) {
         if (isBotTyping) return;
         isBotTyping = true;
         promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = true; });
-        const d = simData[key];
-        addMsg('user', d.question);
-
+        addMsg('user', tr('demo_' + key));
+        messagesContainer.setAttribute('aria-busy', 'true');
         botTimers.push(setTimeout(() => {
-            const svgNS = 'http://www.w3.org/2000/svg';
-            const animDiv = document.createElement('div');
-            animDiv.className = 'analysis-animation';
-            const svg = document.createElementNS(svgNS, 'svg');
-            svg.setAttribute('viewBox', '0 0 100 50');
-            const path = document.createElementNS(svgNS, 'path');
-            path.setAttribute('d', 'M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10');
-            path.setAttribute('stroke', 'var(--apple-blue)');
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-width', '3');
-            path.setAttribute('stroke-linecap', 'round');
-            const animate = document.createElementNS(svgNS, 'animate');
-            animate.setAttribute('attributeName', 'd');
-            animate.setAttribute('values', 'M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10;M 10 20 C 20 40, 30 40, 40 15 S 60 10, 70 30 S 90 40, 90 40;M 10 40 C 20 10, 30 10, 40 25 S 60 40, 70 20 S 90 10, 90 10');
-            animate.setAttribute('dur', '2s');
-            animate.setAttribute('repeatCount', 'indefinite');
-            path.appendChild(animate);
-            svg.appendChild(path);
-            const p = document.createElement('p');
-            p.className = 'text-xs';
-            p.style.color = 'var(--apple-text-secondary)';
-            p.textContent = 'Analyzing data...';
-            animDiv.appendChild(svg);
-            animDiv.appendChild(p);
-            addMsgElement('bot', animDiv);
-        }, 500));
-
-        botTimers.push(setTimeout(() => {
-            const anim = messagesContainer.querySelector('.analysis-animation');
-            if (anim) anim.closest('.bot-message-wrapper')?.remove();
-            showTyping(true);
-        }, 2500));
-
-        botTimers.push(setTimeout(() => {
-            showTyping(false);
-            addMsg('bot', d.answer);
+            addMsg('bot', tr('demo_a' + key.slice(1)));
+            const sourceLink = document.createElement('a');
+            sourceLink.href = '#demo-source';
+            sourceLink.className = 'case-link';
+            sourceLink.textContent = tr('demo_citation');
+            sourceLink.addEventListener('click', () => {
+                const source = /** @type {HTMLDetailsElement | null} */ (document.getElementById('demo-source'));
+                if (source) source.open = true;
+            });
+            addMsgElement('bot', sourceLink);
             isBotTyping = false;
+            messagesContainer.setAttribute('aria-busy', 'false');
             promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = false; });
-        }, 3500));
+        }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 350));
     }
 
     function initBotUI() {
         clearBotTimers();
         while (messagesContainer.firstChild) messagesContainer.firstChild.remove();
         while (promptsContainer.firstChild) promptsContainer.firstChild.remove();
-        addMsg('bot', 'Hello! I\'m a simulation of the Finance Bot. Select a question below to see how I work.');
+        messagesContainer.setAttribute('aria-busy', 'false');
+        addMsg('bot', tr('demo_greeting'));
         const svgNS = 'http://www.w3.org/2000/svg';
-        Object.keys(simData).forEach(key => {
+        questionKeys.forEach(key => {
             const btn = document.createElement('button');
             btn.className = 'prompt-button';
             const spanEl = document.createElement('span');
-            spanEl.textContent = simData[key].question;
+            spanEl.textContent = tr('demo_' + key);
             const svg = document.createElementNS(svgNS, 'svg');
             svg.setAttribute('class', 'w-4 h-4');
             svg.setAttribute('fill', 'none');

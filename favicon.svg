@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    .p{fill:#FAF4EA}.i{fill:#1C1A16}.r{fill:#9E2B14}
-    @media (prefers-color-scheme:dark){.p{fill:#151310}.i{fill:#ECE4D2}.r{fill:#E0532E}}
+    .p{fill:#F8F7F4}.i{fill:#242824}.r{fill:#A4432E}
+    @media (prefers-color-scheme:dark){.p{fill:#181C19}.i{fill:#F3F2EA}.r{fill:#EF987E}}
   </style>
   <rect class="p" width="32" height="32"/>
   <text x="16" y="14" class="i" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="700" text-anchor="middle" dominant-baseline="central">RP</text>
