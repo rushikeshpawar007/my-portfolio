@@ -85,6 +85,15 @@ for (const width of [320, 375, 768, 1440]) {
         expect(banner.y + banner.height).toBeLessThanOrEqual(nav.y);
       }
       await page.locator('#cookie-decline').click();
+      const skillSizes = await page.locator('.skill-chip').evaluateAll(elements => elements.map(el => {
+        const bounds = el.getBoundingClientRect();
+        return { width: bounds.width, height: bounds.height, clipped: el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth };
+      }));
+      for (const size of skillSizes) {
+        expect(Math.abs(size.width - skillSizes[0].width)).toBeLessThan(1);
+        expect(size.height).toBe(skillSizes[0].height);
+        expect(size.clipped).toBe(false);
+      }
       if (width < 768) {
         const cta = await page.locator('[data-i18n-key="see_my_work_button"]').boundingBox();
         expect(cta.y + cta.height).toBeLessThanOrEqual(812);
@@ -124,13 +133,17 @@ test('native case studies work without scripts and print restores disclosure sta
   await staticPage.goto('http://127.0.0.1:4173');
   await staticPage.locator('#report-details > summary').click();
   await expect(staticPage.locator('#report-details .case-facts')).toBeVisible();
+  await staticPage.locator('#lecturio-role-details > summary').click();
+  await expect(staticPage.locator('#lecturio-role-details .role-body')).toBeVisible();
   await context.close();
   await page.goto('/');
   await page.locator('#report-details > summary').click();
   await page.evaluate(() => dispatchEvent(new Event('beforeprint')));
   await expect(page.locator('details.case-details[open]')).toHaveCount(5);
+  await expect(page.locator('details.experience-details[open]')).toHaveCount(3);
   await page.evaluate(() => dispatchEvent(new Event('afterprint')));
   await expect(page.locator('details.case-details[open]')).toHaveCount(1);
+  await expect(page.locator('details.experience-details[open]')).toHaveCount(0);
   await expect(page.locator('#report-details')).toHaveAttribute('open', '');
 });
 

@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         /* ── UTILITIES ─────────────────────────────────────── */
 
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let prefersReducedMotion = motionPreference.matches;
+        motionPreference.addEventListener('change', event => { prefersReducedMotion = event.matches; });
         /** @type {Record<string, boolean>} */
         const _throttleFlags = {};
         /**
@@ -82,6 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const key = el.getAttribute('data-i18n-aria');
                 if (key && translations[currentLang]?.[key]) el.setAttribute('aria-label', translations[currentLang][key]);
             });
+            document.querySelectorAll('[data-i18n-alt]').forEach(el => {
+                const key = el.getAttribute('data-i18n-alt');
+                if (key && translations[currentLang]?.[key]) el.setAttribute('alt', translations[currentLang][key]);
+            });
             document.documentElement.lang = currentLang;
         }
 
@@ -146,23 +152,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
-                const open = !mobileMenu.classList.toggle('hidden');
+            /** @param {boolean} open */
+            const setMenuOpen = open => {
+                mobileMenu.classList.toggle('hidden', !open);
                 mobileMenuButton.setAttribute('aria-expanded', String(open));
+            };
+            mobileMenuButton.addEventListener('click', () => {
+                setMenuOpen(mobileMenu.classList.contains('hidden'));
             });
-            mobileMenu.querySelectorAll('a, button').forEach(link =>
+            mobileMenu.querySelectorAll('a[href^="#"]').forEach(link =>
                 link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                    setMenuOpen(false);
+                    const target = document.getElementById((link.getAttribute('href') || '').slice(1));
+                    if (target) {
+                        target.setAttribute('tabindex', '-1');
+                        target.focus({ preventScroll: true });
+                    }
                 })
             );
+            document.addEventListener('keydown', event => {
+                if (event.key !== 'Escape' || mobileMenu.classList.contains('hidden')) return;
+                setMenuOpen(false);
+                mobileMenuButton.focus({ preventScroll: true });
+            });
+            document.addEventListener('pointerdown', event => {
+                if (event.target instanceof Node && !mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    setMenuOpen(false);
+                }
+            });
+            document.addEventListener('focusin', event => {
+                if (event.target instanceof Node && !mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                    setMenuOpen(false);
+                }
+            });
+            // Reset the disclosure when the desktop links or phone tabs take over.
+            window.matchMedia('(min-width: 1024px), (max-width: 767px)').addEventListener('change', event => {
+                if (!event.matches) return;
+                const focusWasInMenu = mobileMenu.contains(document.activeElement) || document.activeElement === mobileMenuButton;
+                setMenuOpen(false);
+                if (focusWasInMenu) langToggleHeader?.focus({ preventScroll: true });
+            });
         }
 
         /* ── NAV HIGHLIGHTING (unified desktop + mobile) ──── */
 
         const sections = document.querySelectorAll('main section[id]');
-        const navLinks = document.querySelectorAll('header nav ul li a');
+        const navLinks = document.querySelectorAll('header nav ul li a, #mobile-menu a');
         const bottomNavLinks = document.querySelectorAll('#bottom-nav a');
+
+        /** @param {Element} link @param {string | null} id @param {string} activeClass */
+        function updateNavLink(link, id, activeClass) {
+            const active = link.getAttribute('href') === `#${id}`;
+            link.classList.toggle(activeClass, active);
+            if (active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+        }
 
         // A fixed band at ~35-45% of the viewport decides the active section:
         // a 50%-visibility threshold is unreachable for sections taller than
@@ -173,54 +217,91 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!entry.isIntersecting) return;
                 const id = entry.target.getAttribute('id');
                 navLinks.forEach(link =>
-                    link.classList.toggle('active-link', link.getAttribute('href') === `#${id}`)
+                    updateNavLink(link, id, 'active-link')
                 );
                 bottomNavLinks.forEach(link =>
-                    link.classList.toggle('active-bottom', link.getAttribute('href') === `#${id}`)
+                    updateNavLink(link, id, 'active-bottom')
                 );
             });
         }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
 
         const linkedIds = new Set([...navLinks, ...bottomNavLinks].map(a => a.getAttribute('href')));
-        sections.forEach(s => { if (linkedIds.has(`#${s.id}`)) navObserver.observe(s); });
+        sections.forEach(s => { if (s.id === 'hero' || linkedIds.has(`#${s.id}`)) navObserver.observe(s); });
 
-        /* ── SCROLL HANDLER (rAF-throttled) ────────────────── */
+        /* ── SCROLL STATE / READING PROGRESS ──────────────── */
 
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         const readProgress = document.getElementById('read-progress');
+        const folioProgress = document.getElementById('folio-progress');
         const header = document.querySelector('header');
+        // Modern engines connect the indicator transforms directly to scrolling
+        // in CSS. JavaScript only changes controls when their visible state changes.
+        const nativeScrollProgress = CSS.supports('animation-timeline: scroll(root block)');
         let scrollTicking = false;
-        window.addEventListener('scroll', () => {
-            if (!scrollTicking) {
-                requestAnimationFrame(() => {
-                    if (header) header.classList.toggle('scrolled', window.scrollY > 8);
-                    if (scrollTopBtn) scrollTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-                    const h = document.documentElement.scrollHeight - window.innerHeight;
-                    const ratio = h > 0 ? window.scrollY / h : 0;
-                    if (readProgress) readProgress.style.width = `${ratio * 100}%`;
-                    // drive the left-margin "folio ink" fill (CSS scaleY(var(--folio)))
-                    document.documentElement.style.setProperty('--folio', String(ratio));
-                    scrollTicking = false;
-                });
-                scrollTicking = true;
+        let scrollRange = 0;
+        let rangeDirty = !nativeScrollProgress;
+        let headerScrolled = header?.classList.contains('scrolled') || false;
+        /** @type {boolean | undefined} */
+        let topButtonVisible;
+        let lastProgress = -1;
+
+        function updateScrollState() {
+            scrollTicking = false;
+            // Finish all geometry reads before making any DOM/style changes.
+            const scrollY = window.scrollY;
+            if (rangeDirty) {
+                scrollRange = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+                rangeDirty = false;
             }
-        }, { passive: true });
-
-        if (scrollTopBtn) scrollTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        /* ── CURSOR GLOW ON GLASS CARDS ────────────────────── */
-
-        if (window.matchMedia('(hover: hover)').matches && !prefersReducedMotion) {
-            document.querySelectorAll('.glass-card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const el = /** @type {HTMLElement} */ (card);
-                    const me = /** @type {MouseEvent} */ (e);
-                    const rect = el.getBoundingClientRect();
-                    el.style.setProperty('--mouse-x', `${me.clientX - rect.left}px`);
-                    el.style.setProperty('--mouse-y', `${me.clientY - rect.top}px`);
-                });
-            });
+            const scrolled = scrollY > 8;
+            const showTopButton = scrollY > 300;
+            const progress = scrollRange > 0 ? Math.min(1, Math.max(0, scrollY / scrollRange)) : 0;
+            if (header && scrolled !== headerScrolled) {
+                header.classList.toggle('scrolled', scrolled);
+                headerScrolled = scrolled;
+            }
+            if (scrollTopBtn && showTopButton !== topButtonVisible) {
+                scrollTopBtn.style.display = showTopButton ? 'block' : 'none';
+                topButtonVisible = showTopButton;
+            }
+            if (!nativeScrollProgress && progress !== lastProgress) {
+                if (readProgress) readProgress.style.transform = `scaleX(${progress})`;
+                if (folioProgress) folioProgress.style.transform = `scaleY(${progress})`;
+                lastProgress = progress;
+            }
         }
+
+        function scheduleScrollUpdate() {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            requestAnimationFrame(updateScrollState);
+        }
+
+        function refreshScrollRange() {
+            rangeDirty = !nativeScrollProgress;
+            scheduleScrollUpdate();
+        }
+
+        window.addEventListener('scroll', scheduleScrollUpdate, { passive: true });
+        if (!nativeScrollProgress) {
+            // Cache document extent between actual size changes, including the
+            // intermediate frames of disclosures and late-loading images/fonts.
+            if (typeof ResizeObserver === 'function') {
+                const rangeObserver = new ResizeObserver(refreshScrollRange);
+                rangeObserver.observe(document.body);
+            }
+            window.addEventListener('resize', refreshScrollRange, { passive: true });
+            window.addEventListener('load', refreshScrollRange, true);
+            document.addEventListener('portfolio:languagechange', refreshScrollRange);
+            document.addEventListener('toggle', refreshScrollRange, true);
+            window.addEventListener('pageshow', refreshScrollRange);
+        }
+        scheduleScrollUpdate();
+
+        if (scrollTopBtn) scrollTopBtn.onclick = () => {
+            document.getElementById('main')?.focus({ preventScroll: true });
+            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        };
 
         /* ── COOKIE CONSENT (GDPR) ─────────────────────────── */
 
@@ -239,6 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         if (consentBanner) {
+            const consentOpener = document.getElementById('reopen-cookie-consent');
+            let returnConsentFocus = false;
             let storedConsent = null;
             try { storedConsent = localStorage.getItem('cookie-consent'); } catch {}
             if (!storedConsent) {
@@ -255,10 +338,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (granted) loadAnalytics();
                 consentBanner.hidden = true;
+                if (returnConsentFocus) consentOpener?.focus({ preventScroll: true });
+                returnConsentFocus = false;
             };
             document.getElementById('cookie-accept')?.addEventListener('click', () => setConsent(true));
             document.getElementById('cookie-decline')?.addEventListener('click', () => setConsent(false));
-            document.getElementById('reopen-cookie-consent')?.addEventListener('click', () => { consentBanner.hidden = false; });
+            consentOpener?.addEventListener('click', () => {
+                returnConsentFocus = true;
+                consentBanner.hidden = false;
+                document.getElementById('cookie-decline')?.focus({ preventScroll: true });
+            });
         }
 
         /* ── GA EVENT TRACKING (data-ga-event) ─────────────── */
@@ -306,15 +395,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 isSubmitting = true;
                 const formData = new FormData(contactForm);
-                const origText = submitButton.textContent;
+                const submittedValues = [nameEl.value, emailEl.value, messageEl.value];
 
                 submitButton.disabled = true;
+                submitButton.dataset.i18nKey = 'form_sending_button';
                 submitButton.textContent = translations[currentLang]?.form_sending_button || 'Sending...';
+                contactForm.setAttribute('aria-busy', 'true');
 
-                const restore = () => { isSubmitting = false; submitButton.disabled = false; submitButton.textContent = origText; };
+                const restore = () => {
+                    isSubmitting = false;
+                    submitButton.disabled = false;
+                    submitButton.dataset.i18nKey = 'form_send_button';
+                    submitButton.textContent = translations[currentLang]?.form_send_button || 'Send message';
+                    contactForm.setAttribute('aria-busy', 'false');
+                };
                 const finishOk = () => {
                     showToast(translations[currentLang]?.form_success_message || "Thank you! Your message has been sent.");
-                    contactForm.reset();
+                    // Keep any new draft written while the submitted message was in flight.
+                    const fields = [nameEl, emailEl, messageEl];
+                    if (fields.every((field, index) => field.value === submittedValues[index])) contactForm.reset();
                     if (typeof gtag === 'function') {
                         gtag('event', 'contact_form_submit', { form_name: 'contact', language: currentLang });
                     }
@@ -360,6 +459,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('.copy-email-btn').forEach(el => {
             const btn = /** @type {HTMLButtonElement} */ (el);
+            const label = btn.querySelector('[data-i18n-key="copy_email"]');
+            const icon = btn.querySelector('svg use');
+            const originalIcon = icon?.getAttribute('href');
+            if (!label) return;
             btn.addEventListener('click', () => {
                 if (btn.disabled) return;
                 const email = btn.dataset.email || '';
@@ -367,28 +470,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast(email, false);
                     return;
                 }
-                // Snapshot + disable BEFORE the async write so a double-click
-                // can't capture the mutated "Copied!" state as the original.
+                // Preserve the translated label node through both asynchronous states.
                 btn.disabled = true;
-                const origNodes = Array.from(btn.childNodes).map(n => n.cloneNode(true));
+                btn.setAttribute('aria-busy', 'true');
                 navigator.clipboard.writeText(email).then(() => {
-                    btn.textContent = '';
-                    const svgNS = 'http://www.w3.org/2000/svg';
-                    const icon = document.createElementNS(svgNS, 'svg');
-                    icon.setAttribute('class', 'icon mr-1');
-                    icon.setAttribute('aria-hidden', 'true');
-                    const use = document.createElementNS(svgNS, 'use');
-                    use.setAttribute('href', '#i-check');
-                    icon.appendChild(use);
-                    btn.appendChild(icon);
-                    btn.appendChild(document.createTextNode(translations[currentLang].copied));
+                    btn.setAttribute('aria-busy', 'false');
+                    icon?.setAttribute('href', '#i-check');
+                    label.setAttribute('data-i18n-key', 'copied');
+                    label.textContent = translations[currentLang]?.copied || 'Copied!';
                     setTimeout(() => {
-                        btn.textContent = '';
-                        origNodes.forEach(n => btn.appendChild(n));
+                        if (originalIcon) icon?.setAttribute('href', originalIcon);
+                        label.setAttribute('data-i18n-key', 'copy_email');
+                        label.textContent = translations[currentLang]?.copy_email || 'Copy';
                         btn.disabled = false;
                     }, 2000);
                 }).catch(() => {
                     btn.disabled = false;
+                    btn.setAttribute('aria-busy', 'false');
                     showToast(email, false);
                 });
             });
@@ -404,21 +502,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Respect reduced-motion: leave the final value as-is (no count-up)
                 obs.unobserve(el);
                 el.dataset.counted = '1'; // this instance has tallied - never again
-                if (prefersReducedMotion) return;
+                if (prefersReducedMotion) {
+                    // Keep the settled rule visible if motion is enabled later.
+                    el.closest('.impact-card')?.querySelector('.closing-rule')?.classList.add('drawn');
+                    return;
+                }
                 const match = (el.textContent || '').trim().match(/^(\d+)(%|x|\+)?$/);
-                if (!match) return;
+                if (!match) {
+                    el.closest('.impact-card')?.querySelector('.closing-rule')?.classList.add('drawn');
+                    return;
+                }
                 const target = parseInt(match[1], 10);
                 const suffix = match[2] || '';
                 const start = performance.now();
-                // Quintic ease-out: the figure tallies, decelerates, then the unit is posted last
+                let lastText = el.textContent;
+                // A short tally keeps its unit visible so the metric stays legible.
                 /** @param {number} now */
                 const tick = (now) => {
-                    const t = Math.min((now - start) / 1200, 1);
+                    const t = prefersReducedMotion ? 1 : Math.min((now - start) / 850, 1);
+                    const text = Math.round((1 - Math.pow(1 - t, 5)) * target) + suffix;
+                    if (text !== lastText) {
+                        el.textContent = text;
+                        lastText = text;
+                    }
                     if (t < 1) {
-                        el.textContent = String(Math.round((1 - Math.pow(1 - t, 5)) * target));
                         requestAnimationFrame(tick);
                     } else {
-                        el.textContent = target + suffix;
                         // draw the audit line under the total, after it settles
                         const card = el.closest('.impact-card');
                         const rule = card && card.querySelector('.closing-rule');
@@ -445,9 +554,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         observeMetrics(false);
 
-        // Closing rules "draw" left→right when they enter view. The three
-        // metric rules are drawn by the count-up above (audit-line-after-total),
-        // so exclude them here.
+        // Closing rules "draw" left→right when they enter view. Only metrics
+        // with a count-up draw their rule when the tally finishes; formatted
+        // static values (such as currency) reveal their rule normally.
         const ruleObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
@@ -456,49 +565,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { threshold: 0.6 });
         document.querySelectorAll('.closing-rule').forEach(el => {
-            if (el.closest('.impact-card')) return;
+            if (el.closest('.impact-card')?.querySelector('.metric-highlight')) return;
             ruleObs.observe(el);
         });
-
-        // Timeline scroll progress
-        const expSection = document.getElementById('experience');
-        const timelineProgress = /** @type {HTMLElement | null} */ (document.querySelector('.timeline-progress'));
-        if (expSection && timelineProgress) {
-            let isExp = false;
-            const expObs = new IntersectionObserver(entries => {
-                entries.forEach(e => { isExp = e.isIntersecting; });
-            }, { threshold: 0 });
-            expObs.observe(expSection);
-
-            let tlTicking = false;
-            window.addEventListener('scroll', () => {
-                if (!isExp || tlTicking) return;
-                requestAnimationFrame(() => {
-                    const rect = expSection.getBoundingClientRect();
-                    // guard: section shorter than viewport would divide by <= 0
-                    const denom = Math.max(1, rect.height - window.innerHeight);
-                    const progress = Math.max(0, Math.min(1, -rect.top / denom));
-                    timelineProgress.style.height = `${progress * 100}%`;
-                    tlTicking = false;
-                });
-                tlTicking = true;
-            }, { passive: true });
-        }
-
-        // Timeline card active state
-        const timelineContainers = document.querySelectorAll('.timeline-container');
-        if (timelineContainers.length) {
-            const tlObs = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        timelineContainers.forEach(c => c.classList.remove('timeline-card-active'));
-                        entry.target.classList.add('timeline-card-active');
-                    }
-                });
-            }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
-            timelineContainers.forEach(c => tlObs.observe(c));
-            timelineContainers[0]?.classList.add('timeline-card-active');
-        }
 
         // Section reveal + stagger items (unified observer)
         const revealObs = new IntersectionObserver((entries, obs) => {
@@ -520,28 +589,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.classList.add('motion-ready');
 
         // Native disclosures keep supporting projects compact, including without JS.
-        // Direct case-study links reveal their details before the anchor scrolls.
+        const disclosures = initAnimatedDisclosures(motionPreference);
+        // Direct project and role links reveal their details before the anchor scrolls.
         /** @param {string} hash */
-        function revealLinkedCase(hash) {
+        function revealLinkedDisclosure(hash) {
             let id;
             try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
             const target = document.getElementById(id);
             if (!target) return;
             const details = target.matches('.featured-project, .project-preview')
                 ? target.querySelector('details.case-details')
-                : target.closest('details.case-details');
-            if (details instanceof HTMLDetailsElement) details.open = true;
+                : target.closest('details.case-details, details.experience-details');
+            if (details instanceof HTMLDetailsElement) disclosures.open(details);
         }
         document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', () => revealLinkedCase(link.getAttribute('href') || ''));
+            link.addEventListener('click', () => revealLinkedDisclosure(link.getAttribute('href') || ''));
         });
-        window.addEventListener('hashchange', () => revealLinkedCase(window.location.hash));
-        revealLinkedCase(window.location.hash);
+        window.addEventListener('hashchange', () => revealLinkedDisclosure(window.location.hash));
+        revealLinkedDisclosure(window.location.hash);
 
         /** @type {HTMLDetailsElement[]} */
         let printDisclosures = [];
         window.addEventListener('beforeprint', () => {
-            printDisclosures = [...document.querySelectorAll('details.case-details')]
+            // Finish at the requested state before remembering what print must restore.
+            disclosures.finishAll();
+            printDisclosures = [...document.querySelectorAll('details.case-details, details.experience-details')]
                 .filter(el => el instanceof HTMLDetailsElement && !el.open)
                 .map(el => /** @type {HTMLDetailsElement} */ (el));
             printDisclosures.forEach(el => { el.open = true; });
@@ -571,6 +643,89 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('lang-loaded');
     }
 });
+
+/* ── NATIVE DISCLOSURE MOTION ───────────────────────────── */
+/** @param {MediaQueryList} motionPreference */
+function initAnimatedDisclosures(motionPreference) {
+    /** @type {Map<HTMLDetailsElement, (open?: boolean) => void>} */
+    const controls = new Map();
+    document.querySelectorAll('details.case-details, details.experience-details').forEach(details => {
+        if (!(details instanceof HTMLDetailsElement) || typeof details.animate !== 'function') return;
+        const summary = details.querySelector('summary');
+        if (!summary) return;
+        /** @type {Animation | null} */
+        let animation = null;
+        let targetOpen = details.open;
+        const originalOverflow = details.style.overflow;
+
+        /** @param {boolean} [open] */
+        const finish = (open) => {
+            const next = open ?? (animation ? targetOpen : details.open);
+            if (animation) {
+                animation.onfinish = null;
+                animation.cancel();
+                animation = null;
+            }
+            details.open = next;
+            targetOpen = next;
+            details.style.overflow = originalOverflow;
+            delete details.dataset.disclosureState;
+        };
+        controls.set(details, finish);
+
+        // Enter and Space already dispatch a click on native summary controls.
+        // Intercept only activation; links inside a summary keep their own behavior.
+        summary.addEventListener('click', event => {
+            if (event.defaultPrevented || (event.target instanceof Element && event.target.closest('a, button, input, select, textarea'))) return;
+            event.preventDefault();
+            targetOpen = !(animation ? targetOpen : details.open);
+            if (motionPreference.matches || window.matchMedia('print').matches) {
+                finish(targetOpen);
+                return;
+            }
+
+            // Read the currently painted height before cancelling, so a quick second
+            // activation reverses naturally instead of jumping to either endpoint.
+            const startHeight = details.getBoundingClientRect().height;
+            if (animation) {
+                animation.onfinish = null;
+                animation.cancel();
+            }
+            details.dataset.disclosureState = targetOpen ? 'opening' : 'closing';
+            details.open = targetOpen;
+            const endHeight = details.getBoundingClientRect().height;
+            // Keep content rendered until a closing animation reaches its endpoint.
+            details.open = true;
+            details.style.overflow = 'clip';
+            try {
+                animation = details.animate([
+                    { height: `${startHeight}px` },
+                    { height: `${endHeight}px` },
+                ], { duration: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' });
+                animation.onfinish = () => finish(targetOpen);
+            } catch {
+                // Unsupported animation engines still retain a usable native control.
+                finish(targetOpen);
+            }
+        });
+        // Lazy-loaded media can change the natural height during an expansion.
+        details.addEventListener('load', () => { if (animation) finish(); }, true);
+    });
+
+    const finishAll = () => controls.forEach(finish => finish());
+    motionPreference.addEventListener('change', event => { if (event.matches) finishAll(); });
+    window.addEventListener('resize', finishAll, { passive: true });
+    document.addEventListener('portfolio:languagechange', finishAll);
+    return {
+        finishAll,
+        /** @param {HTMLDetailsElement} details */
+        open(details) {
+            const finish = controls.get(details);
+            if (finish) finish(true);
+            else details.open = true;
+        },
+    };
+}
 
 /* ── AI FINANCE BOT (Dynamic Island) ──────────────────────── */
 function initFinanceBot() {
@@ -705,6 +860,8 @@ function initFinanceBot() {
             spanEl.textContent = tr('demo_' + key);
             const svg = document.createElementNS(svgNS, 'svg');
             svg.setAttribute('class', 'w-4 h-4');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('focusable', 'false');
             svg.setAttribute('fill', 'none');
             svg.setAttribute('stroke', 'currentColor');
             svg.setAttribute('viewBox', '0 0 24 24');

@@ -401,13 +401,15 @@ test.describe('Experience Timeline', () => {
     await expect(page.locator('.timeline-progress')).toBeAttached();
   });
 
-  test('each entry has a logo image', async ({ page }) => {
+  test('each entry shows one employer mark', async ({ page }) => {
     const entries = page.locator('.timeline-container');
     const count = await entries.count();
     for (let i = 0; i < count; i++) {
-      const logos = entries.nth(i).locator('.timeline-logo');
-      const logoCount = await logos.count();
-      expect(logoCount).toBeGreaterThanOrEqual(2); // light + dark
+      const mark = entries.nth(i).locator('.timeline-logo:visible');
+      await expect(mark).toHaveCount(1);
+      const bounds = await mark.boundingBox();
+      expect(bounds.width).toBeGreaterThanOrEqual(40);
+      expect(bounds.height).toBeGreaterThanOrEqual(40);
     }
   });
 
@@ -727,11 +729,10 @@ test.describe('Scroll Behaviors', () => {
 
   test('reading progress bar updates on scroll', async ({ page }) => {
     await page.goto(FILE_URL);
-    await page.evaluate(() => window.scrollTo(0, 500));
-    await page.waitForTimeout(200);
-    const width = await page.locator('#read-progress').evaluate(el => el.style.width);
-    expect(width).not.toBe('0%');
-    expect(width).not.toBe('');
+    await page.evaluate(() => window.scrollTo({ top: 500, behavior: 'instant' }));
+    await expect.poll(() => page.locator('#read-progress').evaluate(el =>
+      new DOMMatrixReadOnly(getComputedStyle(el).transform).a
+    )).toBeGreaterThan(0);
   });
 });
 

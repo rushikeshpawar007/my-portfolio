@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Portfolio sharing image source</title>
+  <style>
+    @font-face { font-family: Zodiak; font-weight: 700; src: url('../fonts/zodiak-700.woff2') format('woff2'); }
+    @font-face { font-family: Switzer; font-weight: 400; src: url('../fonts/switzer-400.woff2') format('woff2'); }
+    @font-face { font-family: Switzer; font-weight: 500; src: url('../fonts/switzer-500.woff2') format('woff2'); }
+    * { box-sizing: border-box; }
+    html { color-scheme: light; }
+    body { width: 1200px; height: 630px; margin: 0; padding: 52px 64px 42px; background: #F8F7F4; color: #242824; font-family: Switzer, sans-serif; }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    .brand { width: 52px; height: 52px; }
+    .label { margin: 0; font-size: 17px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+    .label span { color: #596059; }
+    main { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 68px; height: 392px; }
+    .role { margin: 0 0 18px; font-size: 25px; color: #454B45; }
+    h1 { margin: 0; font: 700 84px/1.06 Zodiak, Georgia, serif; letter-spacing: -0.055em; }
+    .focus { border-left: 1px solid #D8DDD5; padding-left: 38px; }
+    .focus p { margin: 0; font-size: 30px; line-height: 1.35; letter-spacing: -0.02em; }
+    .focus .tools { margin-top: 25px; font-size: 20px; line-height: 1.6; color: #596059; letter-spacing: 0; }
+    footer { display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid #A4432E; position: relative; color: #454B45; font-size: 20px; }
+    footer::before { content: ''; position: absolute; top: -7px; left: 0; right: 0; height: 3px; background: #A4432E; }
+    footer p { margin: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <img class="brand" src="../favicon.svg" width="52" height="52" alt="RP">
+    <p class="label">Portfolio <span>/ Business &amp; Data</span></p>
+  </header>
+  <main>
+    <section>
+      <p class="role">Senior Business Analyst</p>
+      <h1>Rushikesh<br>Pawar</h1>
+    </section>
+    <section class="focus" aria-label="Focus areas">
+      <p>Finance analytics.<br>Reporting automation.</p>
+      <p class="tools">Power BI · SQL · Python<br>AI / LLMs</p>
+    </section>
+  </main>
+  <footer>
+    <p>Hamburg, Germany</p>
+    <p>Open to Berlin &amp; remote</p>
+  </footer>
+</body>
+</html>

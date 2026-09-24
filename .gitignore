@@ -1,5 +1,6 @@
 node_modules/
 test-results/
 playwright-report/
+.portfolio-review/
 .claude/settings.local.json
 .gstack/

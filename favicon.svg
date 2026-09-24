@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- RP outlined from the self-hosted Zodiak Bold font; no font download or fallback required. -->
   <style>
-    .p{fill:#F8F7F4}.i{fill:#242824}.r{fill:#A4432E}
-    @media (prefers-color-scheme:dark){.p{fill:#181C19}.i{fill:#F3F2EA}.r{fill:#EF987E}}
+    .tile { fill: #242824; }
+    .monogram { fill: #F8F7F4; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #F3F2EA; }
+      .monogram { fill: #181C19; }
+    }
   </style>
-  <rect class="p" width="32" height="32"/>
-  <text x="16" y="14" class="i" font-family="Georgia,'Times New Roman',serif" font-size="17" font-weight="700" text-anchor="middle" dominant-baseline="central">RP</text>
-  <rect class="r" x="6" y="24" width="20" height="1"/>
-  <rect class="r" x="6" y="26" width="20" height="3"/>
+  <path class="tile" d="M0 0h32v32H0z"/>
+  <path class="monogram" d="M4.756 11.056V10.32H10.148Q12.5 10.32 13.676 11.096Q14.852 11.872 14.852 13.344Q14.852 15.376 12.404 16.048Q14.628 16.544 14.628 18.48V19.712Q14.628 20.24 14.748 20.456Q14.868 20.672 15.124 20.672Q15.604 20.672 15.604 19.936V18.992H16.404V19.952Q16.404 21.68 14.484 21.68Q13.492 21.68 12.98 21.216Q12.468 20.752 12.468 19.68V18.688Q12.468 17.44 11.86 16.92Q11.252 16.4 9.86 16.4H8.308V20.112Q8.308 20.784 8.852 20.784H9.636V21.52H4.756V20.784H5.604Q6.148 20.784 6.148 20.112V11.728Q6.148 11.056 5.604 11.056ZM9.476 11.056H8.308V15.664H9.556Q11.252 15.664 11.948 15.096Q12.644 14.528 12.644 13.408Q12.644 12.224 11.932 11.64Q11.22 11.056 9.476 11.056ZM16.892 11.056V10.32H22.476Q24.844 10.32 26.044 11.224Q27.244 12.128 27.244 13.824Q27.244 15.456 25.884 16.408Q24.524 17.36 21.868 17.36H20.444V20.112Q20.444 20.784 20.988 20.784H22.092V21.52H16.892V20.784H17.74Q18.284 20.784 18.284 20.112V11.728Q18.284 11.056 17.74 11.056ZM21.884 11.056H20.444V16.624H21.884Q23.596 16.624 24.316 15.92Q25.036 15.216 25.036 13.888Q25.036 12.496 24.324 11.776Q23.612 11.056 21.884 11.056Z"/>
 </svg>
