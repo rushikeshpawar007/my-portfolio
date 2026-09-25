@@ -373,12 +373,12 @@ test.describe('Hero Section', () => {
     expect(count).toBeGreaterThanOrEqual(3);
   });
 
-  test('resume button links to external URL', async ({ page }) => {
+  test('resume button downloads the general PDF CV', async ({ page }) => {
     const link = page.locator('a[data-i18n-key="resume_button"]');
     await expect(link).toBeAttached();
     const href = await link.getAttribute('href');
-    expect(href).toContain('drive.google.com');
-    expect(await link.getAttribute('target')).toBe('_blank');
+    expect(href).toBe('assets/documents/Rushikesh_Pawar_CV.pdf');
+    await expect(link).toHaveAttribute('download', 'Rushikesh_Pawar_CV.pdf');
   });
 });
 

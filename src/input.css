@@ -1,1 +1,5 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+/* Only shipped markup and application code can introduce utility classes. */
+@source "../index.html";
+@source "../assets/brand/social-preview.html";
+@source "./*.js";

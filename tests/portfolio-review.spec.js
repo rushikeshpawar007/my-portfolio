@@ -114,7 +114,7 @@ test('case studies are compact, keyboard operable, and keep the comparison visib
   await page.goto('/');
   await page.locator('#cookie-decline').click();
   await expect(page.locator('details.case-details[open]')).toHaveCount(0);
-  await expect(page.locator('.project-preview')).toHaveCount(4);
+  await expect(page.locator('.project-preview')).toHaveCount(7);
   await expect(page.locator('.report-comparison')).toContainText('~10 hours');
   const summary = page.locator('#royalty-case-study-details > summary');
   await summary.focus();
@@ -139,7 +139,7 @@ test('native case studies work without scripts and print restores disclosure sta
   await page.goto('/');
   await page.locator('#report-details > summary').click();
   await page.evaluate(() => dispatchEvent(new Event('beforeprint')));
-  await expect(page.locator('details.case-details[open]')).toHaveCount(5);
+  await expect(page.locator('details.case-details[open]')).toHaveCount(8);
   await expect(page.locator('details.experience-details[open]')).toHaveCount(3);
   await page.evaluate(() => dispatchEvent(new Event('afterprint')));
   await expect(page.locator('details.case-details[open]')).toHaveCount(1);
@@ -157,8 +157,16 @@ for (const theme of ['light', 'dark']) {
     expect(impact.y + impact.height).toBeLessThanOrEqual(900);
     const ratios = await page.evaluate(() => {
       const style = getComputedStyle(document.documentElement);
+      // Let the browser parse CSS colors: production minification can turn
+      // #ffffff into #fff without changing the rendered palette.
+      const probe = document.createElement('canvas');
+      probe.width = probe.height = 1;
+      const context = probe.getContext('2d', { willReadFrequently: true });
       const lum = value => {
-        const rgb = value.trim().replace('#', '').match(/../g).map(hex => parseInt(hex, 16) / 255)
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = value.trim();
+        context.fillRect(0, 0, 1, 1);
+        const rgb = [...context.getImageData(0, 0, 1, 1).data].slice(0, 3).map(channel => channel / 255)
           .map(channel => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
         return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
       };

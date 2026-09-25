@@ -15,7 +15,7 @@ module.exports = [
         },
     },
     {
-        files: ["tests/**/*.js", "*.config.js"],
+        files: ["tests/**/*.js", "scripts/**/*.cjs", "*.config.js"],
         languageOptions: {
             ecmaVersion: "latest",
             globals: {

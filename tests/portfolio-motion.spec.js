@@ -79,7 +79,7 @@ test('reduced motion opens and closes every disclosure without animation', async
     el.querySelector('summary').click();
     return opened && !el.open && el.style.overflow === '';
   }));
-  expect(states).toHaveLength(8);
+  expect(states).toHaveLength(11);
   expect(states.every(Boolean)).toBe(true);
 });
 
@@ -113,13 +113,38 @@ test('printing mid-animation reveals all content and restores intended states', 
     }
     dispatchEvent(new Event('beforeprint'));
   });
-  await expect(page.locator('details.case-details[open], details.experience-details[open]')).toHaveCount(8);
+  await expect(page.locator('details.case-details[open], details.experience-details[open]')).toHaveCount(11);
   await expect(page.locator('[data-disclosure-state]')).toHaveCount(0);
   expect(await page.locator('details.case-details, details.experience-details').evaluateAll(elements => elements.every(el => el.style.overflow === '' && el.getAnimations().length === 0))).toBe(true);
   await page.evaluate(() => dispatchEvent(new Event('afterprint')));
   await expect(page.locator('#report-details')).not.toHaveAttribute('open');
   await expect(page.locator('#royalty-case-study-details')).toHaveAttribute('open', '');
   await expect(page.locator('details.case-details[open], details.experience-details[open]')).toHaveCount(1);
+});
+
+test('printing a collapsed chatbot includes its explanation and preserves the screen state', async ({ page }) => {
+  await page.goto('/');
+  const chatbot = page.locator('#dynamic-island-container');
+  const explanation = chatbot.locator('.expanded-content');
+  const challenge = chatbot.locator('[data-i18n-key="bot_challenge_p"]');
+  const solution = chatbot.locator('[data-i18n-key="bot_solution_p"]');
+  await expect(chatbot).toHaveClass('collapsed');
+  await expect(challenge).toBeHidden();
+
+  await page.emulateMedia({ media: 'print' });
+  await page.evaluate(() => dispatchEvent(new Event('beforeprint')));
+  await expect(challenge).toBeVisible();
+  await expect(solution).toBeVisible();
+  await expect(explanation).toHaveCSS('opacity', '1');
+  await expect(explanation).toHaveCSS('transition-duration', '0s');
+  await expect(chatbot.locator('#bot-simulation-window-apple')).toBeHidden();
+
+  await page.evaluate(() => dispatchEvent(new Event('afterprint')));
+  await page.emulateMedia({ media: 'screen' });
+  await expect(chatbot).toHaveClass('collapsed');
+  await expect(challenge).toBeHidden();
+  await expect(solution).toBeHidden();
+  await expect(explanation).toHaveCSS('pointer-events', 'none');
 });
 
 test('a deep link interrupts closing and opens the full case study', async ({ page }) => {

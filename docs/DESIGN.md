@@ -16,22 +16,26 @@ signature. Utility class: `.closing-rule` (+ `.closing-rule--red` for metrics).
 
 ## Typography
 
-Three self-hosted families (`fonts/*.woff2`, no CDNs, CSP `font-src 'self'`):
+Three self-hosted families (`assets/fonts/*.woff2`, no CDNs, CSP `font-src 'self'`):
 
 | Family | Source / license | Weights | Role |
 |---|---|---|---|
 | **Zodiak** | Fontshare, ITF free license | 400, 700 | Display serif: hero name (700), section headings, project/degree titles, drop cap, email link |
-| **Switzer** | Fontshare, ITF free license | 400, 500, 600 | Running text, labels, buttons, nav. Small-caps effects = uppercase + 0.06–0.1em tracking at 0.6875–0.8125rem, weight 500 |
+| **Switzer** | Fontshare, ITF free license | 400, 500, 600 | Running text, labels, buttons and nav. Sentence case for semantic headings and controls; metadata stays readable at 13–15px. |
 | **Fragment Mono** | Google Fonts, OFL | 400 (latin + latin-ext subsets) | Numerals, dates, section indices, skill labels, diagram nodes, and compact metadata |
 
 Core discipline: **if it is data, it is mono.** Numerals always get
 `font-variant-numeric: tabular-nums`.
 
-Scale: desktop hero name `clamp(3.5rem, 6vw, 5rem)` Zodiak 700, line-height 0.98, ink
-(never a gradient). Section headings `clamp(1.875rem, 3.5vw, 2.75rem)` Zodiak
-**400**, sentence case, led by a full-width hairline rule and a mono red index
-(`01`–`06`). Body Switzer 400 at 1.0625rem/1.65. Metric numerals
-`clamp(2.5rem, 4vw, 3.5rem)` on desktop, in Fragment Mono and red ink.
+The page hierarchy is defined in `styles/typography.css`: hero identity at 18–20px,
+name up to 80px, section headings 32–48px, paired project titles 28–34px, role and
+degree titles 24–28px, and skill headings 22px. Project descriptions use 18px;
+longer prose uses 17px with comfortable leading. Important delivered outcomes
+use 19px and medium weight. Real captions use at least 13px, while source/stage
+labels and controls use 14–16px. Component sheets define their own readable
+scene hierarchy; mini dashboards must not shrink important labels to fit.
+Metric numerals retain their existing scale; grow their explanatory labels
+rather than enlarging sample numbers further. All sizes reflow with enlarged text.
 
 ## Color — ivory, charcoal, sage, and terracotta
 
@@ -66,7 +70,7 @@ so the no-JavaScript page retains intentional styling.
   overlays and blend layers: profiling showed a substantial scrolling cost.
 - The ledger margin line: a single fixed 1px red vertical rule at the left
   edge of the content grid, ≥1200px only (`.content-wrapper::before`).
-- **No** gradients, glows, radial washes, backdrop blur, or box shadows.
+- **No** gradients, radial washes, or backdrop blur. The requested skill-icon hover halo is the sole glow/shadow exception.
   Hierarchy comes exclusively from hairlines and the two-step surface color.
 - Radii: 0 on rules/tables/mats; 2px max on buttons/tags/nodes.
 
@@ -79,6 +83,10 @@ so the no-JavaScript page retains intentional styling.
 - **Hero**: asymmetric spread — stable body-font role line, Zodiak name,
   closing rule, tagline, one primary case-study action, and quieter CV/LinkedIn
   links. Employer logos sit in a ruled row, with portrait/location alongside.
+  The complete circular source photograph sits inside one hairline frame,
+  without additional zoom or cropping. Its centered location caption sits
+  closely below. Mobile places a compact portrait beside the caption so the
+  primary action stays in view.
 - **Impact ledger**: three-column hairline table, no cards; red mono numerals
   with red closing rules; labels in sentence case. Mobile: journal rows —
   numeral left, label right-aligned.
@@ -87,15 +95,21 @@ so the no-JavaScript page retains intentional styling.
   with Challenge / Solution / Impact columns. Dates use muted mono text; rows
   remain at full opacity, with stable monochrome logos in both themes.
 - **Projects**: featured finance comparison followed by supporting exhibits
-  1.1–1.4. Bot demo is a full-width rectangular ticket expanding into a report-appendix
+  1.1–1.7. Each paired card reads category, title, purpose/result, illustration,
+  technologies and details. The title and meaning precede the animated sample.
+  Bot demo is a full-width rectangular ticket expanding into a report-appendix
   transcript: bot lines carry an ink left rule, user lines a red right rule,
   no bubbles. Dashboard screenshot is plate-mounted (`.plate-mount`: raised
   mat + ink border). Architecture diagrams are ruled flows: hairline node
   boxes, mono uppercase labels, red arrows.
-- **Skills**: ruled index matrix — run-in small-caps heading sitting ON the
-  hairline rule, cells share hairlines (per-cell `border-right/bottom` so
-  unfilled tracks stay paper), mono uppercase names, icons grayscale. Static
-  labels retain their appearance on hover; interactive certification links
+- **Skills**: ruled index matrix — normal-flow, sentence-case category headings
+  above each grid, with room for long German labels. Cells share hairlines (per-cell
+  `border-right/bottom` so unfilled tracks stay paper), centered 17px tool names,
+  and 44px monochrome vector icons above every label. Product marks and distinct
+  concept symbols use the theme's heading color at rest. On pointer hover, icons
+  reveal their primary brand color with a subtle fading halo; concept icons use
+  the portfolio accent. Small backing discs keep dark or yellow marks visible.
+  Labels retain their appearance on hover; interactive certification links
   carry button feedback. The flagship group has an accent rule.
 - **Education**: hairline ledger rows, dates right-aligned mono red.
   Certifications are hairline stub buttons with a red `↗`.
@@ -114,7 +128,7 @@ Rules lead, content follows: each section's top hairline draws in
 (existing IntersectionObserver classes `section-reveal/revealed`,
 `stagger-item/visible`). Hero staggers in at 60ms steps, capped at 300ms. Hover uses
 fill inversion, underline movement, a 2px button lift, and gentle preview motion —
-nothing scales past 1.05, nothing glows, no parallax.
+nothing scales past 1.05; only skill icons glow on pointer hover. No parallax.
 `prefers-reduced-motion`: everything pre-drawn and fully legible as a still
 document; count-ups skipped.
 
@@ -142,7 +156,7 @@ the page readable.
   links, icons, and backgrounds all go red, the ledger becomes a promo flyer.
 - The closing double rule appears at exactly four ledger moments (six rule
   elements). Never add a fifth moment.
-- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows, backdrop blur, or pills.
+- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows beyond the skill-icon hover halo, backdrop blur, or pills.
 - No decorative icons glued to headings; ornaments (indices, footnote markers)
   live in `aria-hidden` spans or CSS pseudo-elements, **never inside
   `data-i18n-key` nodes** (the i18n renderer overwrites textContent).
@@ -212,7 +226,7 @@ the page readable.
 
 - Content measure: 1280px. The compact desktop hero and impact strip fit within the first 900px viewport at 1440px width.
 - The reporting project leads with a sage before/after panel, large mono values, and a terracotta top rule. Its measurement scope remains in the expandable case study.
-- Four supporting previews form a two-column desktop grid and a single phone column. Native details disclose the full case studies and work without JavaScript.
+- Seven supporting projects use paired desktop cards, with a full-width dbt technical case between the analyst cards and the remaining pairs. All stack into a single phone column. Native details disclose the full case studies and work without JavaScript.
 - Each disclosure references its project title for assistive technology. Deep links open the relevant case study; print opens all studies and restores their previous state afterward.
 - Phone navigation uses the bottom tabs only. The menu button is retained at tablet widths (768–1023px); desktop uses the masthead links. Theme and language controls remain available at every size.
 - The Spotify screenshot appears in its preview and its expanded case study; supporting projects use compact workflow illustrations.
@@ -253,22 +267,44 @@ the page readable.
 
 ## Project previews
 
-- Four short, looping stories accompany the reporting, invoice, finance chatbot, and Spotify projects. They use the existing palette, typography, and local icon sprite.
+- Eight short, looping project previews accompany the reporting, reconciliation, deal history, dbt modeling, royalty, invoice, finance chatbot, and Spotify projects. A ninth animation traces the chatbot architecture inside its expanded case study. They use the existing palette and typography, with local SVG artwork.
+- The dbt case explains the technical modeling behind the existing sales-history case, with an explicit related-case link. A looping illustration traces Salesforce through dbt history models on Athena to forecast inputs; fictional D-201 rows retain all three stages at the same fixed snapshot. No production schema, code, employer data or new business metric is implied. Its wider layout gives the model and explanation room without changing the surrounding card pairs.
+- Reconciliation pairs a prominent net difference with two source totals on a shared scale and one specific exception. Deal history pairs elapsed days with three dated stages and a proportional duration bar. Both use the expanded examples' fictional figures, label their sample scope, and stack into readable rows on narrow screens. Their animation uses the same visibility and Pause controls as the other previews.
 - Reporting connects source records to one report before revealing the time saving. Invoice steps advance from CSV/Excel through Python to PDF. The chatbot shows a clearly labeled fictional Q3 question, thinking indicator, answer, and source.
+- Report artwork assembles a miniature dashboard, royalty records arrive as layered author cards, and the invoice's lower paper panel unfolds into place. These are schematic illustrations, not additional business data. Hairlines and existing theme tokens supply depth without shadows or new colors. Supporting desktop preview panels share a minimum height.
+- The royalty preview moves from author records through calculations to statements, then shows the existing 300+ authors result. The architecture walkthrough traces report extraction, orchestration, retrieval, response, and the user interface with a small signal and brief outlines; its text stays visible throughout.
 - Spotify gently tours the existing authentic dashboard screenshot. This is an image preview, not a recording of filtering or live chart updates. The public Tableau dashboard remains available through its existing link.
-- Each 3–4 second story repeats while visible, holding the complete frame for 1.2 seconds between cycles. A keyboard-accessible Pause/Resume control lets visitors stop the animation on its readable final frame. The visitor's pause choice survives scrolling, tab changes, language changes, and preference changes.
-- Offscreen previews, background tabs, printing, and reduced motion settle to the complete still frame and cancel their pending cycle. Eligible visible previews resume automatically. No JavaScript or animation API also yields that still frame with controls hidden.
+- Each approximately 3–4 second story repeats while visible, holding the complete frame for 1.2 seconds between cycles. A keyboard-accessible Pause/Resume control lets visitors stop the animation on its readable final frame. The visitor's pause choice survives scrolling, tab changes, language changes, preference changes, and case-study closure.
+- Offscreen previews, closed or closing case studies, background tabs, printing, and reduced motion settle to the complete still frame and cancel their pending cycle. Eligible visible previews resume automatically. No JavaScript or animation API also yields that still frame with controls hidden.
 - Text and playback labels support English and German. Invoice steps stack when enlarged text leaves insufficient width. Preview animation uses only transforms and opacity, with one cancellable timer between cycles; no GIF downloads, external players, or per-frame JavaScript loops are added.
 
 ## Consistency checks
 
+- CV-backed additions place revenue reconciliation and Salesforce deal history
+  first among the supporting projects. Real contributions and outcomes are kept
+  separate from explicitly fictional interactive samples. Reconciliation uses
+  five records and a stated matching rule; stage history uses a fixed snapshot
+  date and elapsed calendar days. Closed and due-today deals are not overdue.
+- Reporting details include a revenue budget-versus-actual example with a shared
+  chart scale and a stated variance formula. CARIAD details compare regional
+  incentives and vehicle sales with separate units and no causal claim.
+- Examples retain complete static content without JavaScript and reveal controls
+  only after initialization. English/German changes preserve current selections.
+  Narrow tables become labeled record lists; native selects use short options
+  with full descriptions below to remain legible at enlarged text sizes.
+- Skills include dbt, Power Query, Excel and pandas. About lists language levels;
+  Lecturio details include weekly AI training. The CV button downloads a general
+  two-page English PDF from `assets/documents/Rushikesh_Pawar_CV.pdf`. Its report-preparation
+  metric retains the site's narrow scope; unconfirmed monthly-close figures from
+  the application-specific source CV are not merged into that claim.
+
 - English and German dates, source amounts, informative image descriptions, and accessible navigation labels switch together. German visitor-facing forms use informal address consistently.
 - Repeated savings use `₹200k`; the industries fact lists sectors, and product names use their established spelling (`n8n`).
 - All four experience entries share the same header and content alignment. Native project and role disclosures both open for direct links and use the same motion and keyboard behavior.
-- Static skills never imitate clickable controls. The demo close button shares the 44px target size used by the other controls.
+- Skills remain static labels with a default cursor. Their icons reveal color and a halo on pointer hover, without shifting the layout or adding tab stops; reduced motion makes the change immediate. The demo close button shares the 44px target size used by the other controls.
 - Long headings and labels wrap within their columns. Project, impact, and skill layouts adapt to larger text; comparison values stack when their panel has insufficient space. Test the actual content bounds because the outer sheet clips horizontal overflow.
 - Cookie choices wrap and the banner scrolls within short viewports. Reopening settings moves focus to the choices and returns it to the opener on dismissal.
 - Form and clipboard feedback stay in the selected language throughout pending, success, and reset states. Successful submissions clear only the submitted draft; edits made while waiting remain intact.
 - Legal pages share guarded theme initialization and browser-chrome tinting. Their headings, URLs, and 44px Back links remain usable at 320px and with enlarged text.
 - Company and school marks use one monochrome source each, explicit dimensions, and consistent theme filters. They never change color during scrolling or hover. The S.M. placeholder is a theme-aware monogram, not an asserted official company logo.
-- Tool icons use 20px slots; diagram and copy icons use a 16px minimum. SVG artwork stays inside its viewBox, and decorative icons are hidden from assistive technology while their controls retain meaningful labels.
+- Tool icons use 44px slots above their labels; diagram and copy icons use a 16px minimum. Skill marks are embedded as a local SVG sprite, with sources documented in `assets/skill-icons/README.md`. SVG artwork stays inside its viewBox, and decorative icons are hidden from assistive technology while their controls retain meaningful labels.

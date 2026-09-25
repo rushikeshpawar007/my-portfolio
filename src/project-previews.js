@@ -1,6 +1,6 @@
 // Compositor-friendly project stories loop only while visible. HTML is the final still frame.
 (() => {
-    /** @typedef {{ root: HTMLElement, toggle: HTMLButtonElement | null, animations: Animation[], generation: number, failed: boolean, visible: boolean, userPaused: boolean, running: boolean, timer: number | null }} Preview */
+    /** @typedef {{ root: HTMLElement, toggle: HTMLButtonElement | null, details: HTMLDetailsElement[], animations: Animation[], generation: number, failed: boolean, visible: boolean, userPaused: boolean, running: boolean, timer: number | null }} Preview */
 
     function initProjectPreviews() {
         const roots = document.querySelectorAll('[data-project-preview]');
@@ -17,6 +17,8 @@
         try { translations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}'); } catch {}
         /** @type {Preview[]} */
         const previews = [];
+        /** @type {Map<HTMLDetailsElement, Set<Preview>>} */
+        const disclosurePreviews = new Map();
 
         /** @param {Preview} preview */
         function settle(preview) {
@@ -32,7 +34,8 @@
         /** @param {Preview} preview */
         function canPlay(preview) {
             return supportsAnimation && supportsObserver && preview.visible && !preview.userPaused
-                && !reducedMotion.matches && !printing && !document.hidden && !preview.failed;
+                && !reducedMotion.matches && !printing && !document.hidden && !preview.failed
+                && preview.details.every(details => details.open && details.dataset.disclosureState !== 'closing');
         }
 
         /** @param {Preview} preview */
@@ -86,6 +89,16 @@
          */
         function motion(kind) {
             switch (kind) {
+                case 'paper':
+                    return {
+                        frames: [{ opacity: 0, transform: 'translateY(10px) rotate(-4deg)' }, { opacity: 1, transform: 'translateY(0) rotate(0)' }],
+                        duration: 650,
+                    };
+                case 'unfold':
+                    return {
+                        frames: [{ opacity: 0, transform: 'perspective(360px) rotateX(-55deg)' }, { opacity: 1, transform: 'perspective(360px) rotateX(0)' }],
+                        duration: 700,
+                    };
                 case 'step':
                     return {
                         frames: [{ opacity: 0.35, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }],
@@ -97,6 +110,7 @@
                         duration: 500,
                     };
                 case 'thinking':
+                case 'pulse':
                     return {
                         frames: [
                             { opacity: 0, offset: 0 },
@@ -104,8 +118,21 @@
                             { opacity: 1, offset: 0.75 },
                             { opacity: 0, offset: 1 },
                         ],
-                        duration: 800,
+                        duration: kind === 'pulse' ? 700 : 800,
                     };
+                case 'signal-y':
+                case 'signal-x': {
+                    const axis = kind === 'signal-y' ? 'Y' : 'X';
+                    return {
+                        frames: [
+                            { opacity: 0, transform: `translate${axis}(0)`, offset: 0 },
+                            { opacity: 1, transform: `translate${axis}(3.6px)`, offset: 0.15 },
+                            { opacity: 1, transform: `translate${axis}(18px)`, offset: 0.75 },
+                            { opacity: 0, transform: `translate${axis}(24px)`, offset: 1 },
+                        ],
+                        duration: 450,
+                    };
+                }
                 case 'pan':
                     return {
                         frames: [
@@ -188,6 +215,7 @@
             const preview = {
                 root,
                 toggle: toggle instanceof HTMLButtonElement ? toggle : null,
+                details: [],
                 animations: [],
                 generation: 0,
                 failed: false,
@@ -196,6 +224,12 @@
                 running: false,
                 timer: null,
             };
+            for (let ancestor = root.parentElement; ancestor; ancestor = ancestor.parentElement) {
+                if (!(ancestor instanceof HTMLDetailsElement)) continue;
+                preview.details.push(ancestor);
+                if (!disclosurePreviews.has(ancestor)) disclosurePreviews.set(ancestor, new Set());
+                disclosurePreviews.get(ancestor)?.add(preview);
+            }
             previews.push(preview);
             root.dataset.previewState = 'ready';
             updateControl(preview);
@@ -205,6 +239,23 @@
             });
             if (!supportsAnimation || !supportsObserver || reducedMotion.matches || printing || document.hidden) settle(preview);
         });
+
+        if (disclosurePreviews.size) {
+            // Observe only ancestors that contain a preview, including the animated closing phase.
+            const disclosureObserver = new MutationObserver(records => {
+                /** @type {Set<Preview>} */
+                const affected = new Set();
+                records.forEach(record => {
+                    if (!(record.target instanceof HTMLDetailsElement)) return;
+                    disclosurePreviews.get(record.target)?.forEach(preview => affected.add(preview));
+                });
+                affected.forEach(sync);
+            });
+            disclosurePreviews.forEach((related, details) => {
+                disclosureObserver.observe(details, { attributes: true, attributeFilter: ['open', 'data-disclosure-state'] });
+                details.addEventListener('toggle', () => related.forEach(sync));
+            });
+        }
 
         if (supportsObserver) {
             const byRoot = new Map(previews.map(preview => [preview.root, preview]));

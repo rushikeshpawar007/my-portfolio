@@ -1,0 +1,52 @@
+.analysis-example { container-type: inline-size; min-width: 0; margin-top: 1.5rem; padding: 1.25rem; border: 1px solid var(--hairline); background: var(--surface); }
+.analysis-example h4 { font-size: 1.5rem; line-height: 1.35; color: var(--heading-color); margin: 0; }
+.analysis-example p { font-size: 1.0625rem; line-height: 1.65; }
+.analysis-example .analysis-kicker { font: 0.8125rem/1.65 var(--font-mono); color: var(--text-color); margin: 0.5rem 0 1.25rem; }
+.analysis-control { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 1rem 0; }
+.analysis-control[hidden] { display: none; }
+.analysis-control label { font-size: 0.875rem; }
+.analysis-control select { min-height: 44px; min-width: 0; max-width: 100%; padding: 10px 28px 10px 12px; font: inherit; font-size: 0.9375rem; border: 1px solid var(--hairline); background: var(--bg-color); color: var(--heading-color); border-radius: 2px; }
+.analysis-control select:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.analysis-example .analysis-period { margin: 1.25rem 0 1rem; font-size: 0.875rem; }
+.analysis-bars { display: grid; gap: 1.25rem; }
+.analysis-bar-label { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; gap: 0.375rem 1rem; font-size: 0.9375rem; }
+.analysis-bar-label strong { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 400; }
+.analysis-bar-track { height: 8px; margin-top: 0.5rem; background: var(--feature-surface); }
+.analysis-bar-track i { display: block; height: 100%; width: 100%; background: var(--feature-ink); transform-origin: left center; }
+.analysis-bar-track [data-budget-bar="actual"] { background: var(--accent-text); }
+.analysis-example .analysis-insight { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--hairline); color: var(--heading-color); font-size: 1.25rem; line-height: 1.55; }
+.analysis-example .analysis-method { margin: 0.75rem 0 0; font-size: 0.9375rem; color: var(--text-color); }
+.region-table { table-layout: fixed; border-collapse: collapse; width: 100%; margin-top: 1.25rem; font-size: 0.875rem; }
+.region-table th, .region-table td { padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--hairline); text-align: right; vertical-align: top; overflow-wrap: anywhere; }
+.region-table th:first-child { text-align: left; }
+.region-table th { font-weight: 500; }
+.region-table td { font-family: var(--font-mono); }
+.region-table tbody tr { border-left: 2px solid transparent; }
+.region-table .is-selected { border-left-color: var(--accent-text); background: var(--feature-surface); }
+.region-cell-label { display: none; }
+.profile-languages { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.75rem 1.5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--hairline); font-size: 1.0625rem; line-height: 1.6; }
+.profile-languages h3 { font: 500 1.25rem/1.4 var(--font-body); }
+.profile-languages p { margin: 0; }
+.experience-training { margin-top: 1rem; padding: 1rem 0; border-top: 1px solid var(--hairline); }
+.experience-training h4 { margin-bottom: 0.625rem; font-size: 1.25rem; line-height: 1.4; }
+.experience-training p { font-size: 1.0625rem; line-height: 1.7; }
+.professional-course { margin-top: 1rem; font-size: 1.0625rem; line-height: 1.65; }
+@container (max-width: 28rem) {
+    .region-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .region-table, .region-table tbody, .region-table tr, .region-table th, .region-table td { display: block; width: 100%; }
+    .region-table tr { padding: 0.5rem; border-bottom: 1px solid var(--hairline); }
+    .region-table th, .region-table td { padding: 0.25rem; border: 0; text-align: left; }
+    .region-table td { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 0.75rem; }
+    .region-cell-label { display: inline; font-family: var(--font-body); }
+}
+@media (max-width: 767px) {
+    .featured-project > .case-details { padding-inline: clamp(12px, 4vw, 20px); }
+    .analysis-example { padding: 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .analysis-bar-track i { transition: transform 180ms ease; }
+}
+@media print {
+    .analysis-control { display: none; }
+    .analysis-example { break-inside: avoid; }
+}

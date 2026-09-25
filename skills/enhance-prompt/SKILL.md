@@ -22,13 +22,13 @@ Before implementing, check for missing elements:
 - [ ] **Platform context** — Desktop-first? Mobile-first? Both?
 - [ ] **Section/component type** — Hero, card, grid, form, navigation?
 - [ ] **Content structure** — What data/text goes where?
-- [ ] **Visual style** — Matches existing DESIGN.md atmosphere?
+- [ ] **Visual style** — Matches existing docs/DESIGN.md atmosphere?
 - [ ] **Color usage** — Uses existing CSS variables? Needs new ones?
 - [ ] **Interaction states** — Hover, focus, active, disabled?
 
-### Step 2: Check DESIGN.md
+### Step 2: Check docs/DESIGN.md
 
-Always consult `DESIGN.md` before proceeding:
+Always consult `docs/DESIGN.md` before proceeding:
 1. Read the Visual Theme & Atmosphere section
 2. Verify color choices against the palette
 3. Check typography rules for the component type
@@ -54,7 +54,7 @@ Format every visual change as:
 ## [Component Name]
 
 **Vibe:** [one-line atmosphere description]
-**Design System:** Uses [list CSS variables from DESIGN.md]
+**Design System:** Uses [list CSS variables from docs/DESIGN.md]
 **Structure:**
 1. [Element] — [styling details]
 2. [Element] — [styling details]
@@ -68,5 +68,5 @@ Format every visual change as:
 - Implementing before specifying — always write the spec first
 - Using hardcoded colors instead of CSS variables
 - Forgetting to define all interaction states
-- Not checking DESIGN.md for consistency
+- Not checking docs/DESIGN.md for consistency
 - Skipping reduced-motion considerations

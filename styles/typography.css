@@ -1,0 +1,128 @@
+/* Reading hierarchy: identity → project purpose → result → explanation → metadata.
+   Component scenes keep their own type scales; these rules cover the page itself. */
+:root {
+    --type-caption: .8125rem;
+    --type-meta: .875rem;
+    --type-small: .9375rem;
+    --type-body: 1.0625rem;
+    --type-lead: 1.1875rem;
+    --type-subheading: 1.375rem;
+    --type-project: clamp(1.75rem, 1.4rem + .7vw, 2.125rem);
+    --type-section: clamp(2rem, 1.5rem + 2vw, 3rem);
+    --mobile-nav-reserve: calc(3.2rem + 40px);
+}
+body { font-size: var(--type-body); line-height: 1.7; }
+.section-title { font-size: var(--type-section); line-height: 1.2; }
+.section-eyebrow { font-size: var(--type-meta); }
+.section-intro { font-size: 1.125rem; line-height: 1.65; }
+header nav > a { font-size: var(--type-small); letter-spacing: .025em; text-transform: none; }
+header nav ul li a { font-size: var(--type-meta); letter-spacing: .02em; text-transform: none; }
+header nav ul li a::before { font-size: .75rem; }
+#lang-toggle-header, #lang-toggle-mobile { font-size: var(--type-meta); }
+#hero .hero-role { font-size: 1.25rem; line-height: 1.45; letter-spacing: 0; font-weight: 500; color: var(--heading-color); }
+#hero .hero-tagline { font-size: 1.25rem; line-height: 1.65; max-width: 51ch; }
+#hero .hero-tagline strong { display: block; margin-bottom: .35rem; }
+#hero .portrait-caption p { font-size: var(--type-meta); line-height: 1.6; }
+#hero .portrait-caption p:first-child { font-size: var(--type-small); }
+.hero-secondary-link { font-size: 1rem; }
+.company-logos span { font-size: var(--type-meta); }
+.ios-button { font-size: 1rem; line-height: 1.5; }
+.copy-email-btn.btn-compact { font-size: var(--type-small); }
+.impact-card p, html[lang='de'] .impact-card p { font-size: 1rem; line-height: 1.5; }
+.project-kicker, .project-meta, .project-preview .project-meta::before { font-size: var(--type-meta); }
+.project-kicker { text-transform: none; letter-spacing: .02em; }
+.project-intro { margin-bottom: 1.5rem; min-width: 0; }
+.project-preview h3 { font-size: var(--type-project); line-height: 1.25; }
+.project-intro .project-description { margin-bottom: 0; }
+.feature-copy h3 { font-size: clamp(2rem, 1.5rem + 1vw, 2.625rem); line-height: 1.2; }
+.project-description { font-size: 1.125rem; line-height: 1.65; }
+.project-description strong { font-weight: 600; color: var(--heading-color); }
+.project-tools { font-size: var(--type-meta); line-height: 1.6; }
+.comparison-label { font-size: var(--type-small); line-height: 1.5; }
+.project-preview > .project-tools { margin-top: .25rem; }
+.case-details > summary, .experience-details > summary { font-size: 1rem; line-height: 1.5; }
+.case-facts dt { font-size: var(--type-small); line-height: 1.5; text-transform: none; letter-spacing: 0; }
+.case-facts dd { font-size: var(--type-body); line-height: 1.7; }
+.case-facts > div:has(> dt[data-i18n-key='case_outcome']) > dd,
+.case-facts > div:has(> dt[data-i18n-key='report_after_label']) > dd { font-size: var(--type-lead); font-weight: 500; color: var(--heading-color); }
+.case-body > p, #spotify-case-study .case-body p, #spotify-case-study .case-body li { font-size: var(--type-body); line-height: 1.7; }
+.case-body > .case-scope { font-size: var(--type-small); line-height: 1.7; }
+#spotify-case-study .case-body h4 { font-size: var(--type-subheading); line-height: 1.35; margin-bottom: .65rem; }
+.case-link, .project-extra .case-link { font-size: 1rem; line-height: 1.6; }
+.dbt-project-relation { margin: 1rem 0 .5rem; font-size: var(--type-small); line-height: 1.6; }
+.visual-step span { font-size: var(--type-meta); line-height: 1.5; }
+.arch-node { font-size: var(--type-small); line-height: 1.5; text-transform: none; letter-spacing: 0; }
+.arch-layer-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: .02em; }
+.arch-engine-tag { font-size: var(--type-caption); line-height: 1.6; }
+.arch-diagram { gap: 1.25rem; }
+.about-intro { font-size: 1.5rem; line-height: 1.5; max-width: 40ch; color: var(--heading-color); }
+.about-intro::first-letter { float: none; font: inherit; padding: 0; margin: 0; }
+.about-background { font-size: var(--type-body); line-height: 1.75; max-width: 62ch; margin-top: 1.25rem; }
+.about-layout .about-stat p { font-size: 1rem; line-height: 1.6; }
+.about-stat .impact-number { font-size: 2rem; }
+.experience-header h3 { font-size: clamp(1.5rem, 1.25rem + .4vw, 1.75rem); line-height: 1.3; }
+.experience-header .exp-company { font-size: 1.0625rem; line-height: 1.6; }
+.experience-header .exp-dates { font-size: var(--type-meta); line-height: 1.6; }
+.experience-lead { font-size: var(--type-lead); line-height: 1.6; }
+.experience-card .experience-highlights > li { font-size: var(--type-body); line-height: 1.7; }
+.experience-card ul h4 { font-size: 1.125rem; line-height: 1.4; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.experience-card .role-body > ul p { font-size: var(--type-body); line-height: 1.7; }
+.experience-card .tech-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: 0; }
+.skill-tag-sm { font-size: var(--type-meta); line-height: 1.5; }
+.skill-group { padding-top: 1.25rem; }
+.skill-group-heading { position: static; display: block; margin: 0 0 1rem; padding: 0; text-transform: none; letter-spacing: 0; line-height: 1.35; }
+.skill-matrix { grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9rem, 16.666%)), 1fr)); grid-auto-rows: minmax(9rem, auto); }
+.skill-chip { min-width: 0; flex-direction: column; justify-content: center; gap: .875rem; padding: 1.25rem .75rem; text-align: center; font-family: var(--font-body); font-size: 1.0625rem; text-transform: none; letter-spacing: 0; }
+.skill-chip-label { display: flex; align-items: center; justify-content: center; min-height: 3em; max-width: 100%; overflow-wrap: anywhere; }
+.skill-chip .skill-chip-icon { display: block; width: 44px; height: 44px; flex-shrink: 0; color: var(--heading-color); filter: none; }
+/* Strengthen the fine outlines of the Airflow mark at small display sizes. */
+.skill-chip-icon:has(use[href='#skill-airflow']) { overflow: visible; stroke: currentColor; stroke-width: .55; stroke-linejoin: round; }
+.skill-note { font-family: var(--font-body); font-size: var(--type-small); line-height: 1.7; letter-spacing: 0; }
+.edu-row h3 { font-size: 1.5rem; line-height: 1.4; }
+.edu-row p:not(.edu-dates) { font-size: 1rem; line-height: 1.6; }
+.edu-row .edu-dates { font-size: var(--type-meta); line-height: 1.6; }
+#education h3:has([data-i18n-key='certs_title']) { font-size: 1.5rem; line-height: 1.4; }
+.cert-stub { font-size: var(--type-small); line-height: 1.5; }
+#contact [data-i18n-key='contact_availability'] { font-size: 1.125rem; line-height: 1.7; }
+.quick-fact, .contact-available-badge { font-size: 1rem; line-height: 1.6; }
+.contact-email-link { font-size: 1.5rem; line-height: 1.5; }
+.form-label { font-size: 1rem; line-height: 1.5; text-transform: none; letter-spacing: 0; font-weight: 500; }
+.contact-input { font-size: var(--type-body); line-height: 1.6; }
+.contact-form-note { font-size: var(--type-meta); }
+footer .colophon, footer p a, footer p button { font-size: var(--type-meta); line-height: 1.6; }
+footer #reopen-cookie-consent { font-size: var(--type-meta); }
+.cookie-banner { font-size: var(--type-small); line-height: 1.6; }
+.cookie-btn { font-size: var(--type-meta); text-transform: none; letter-spacing: 0; }
+.collapsed-content > span:first-child { text-transform: none; letter-spacing: 0; }
+#dynamic-island-container .collapsed-content { min-height: 64px; height: auto; padding-block: 1rem; }
+.bot-message-bubble, .user-message .bot-message-bubble, #bot-question-prompts-apple .prompt-button { font-size: 1rem; line-height: 1.65; }
+#dynamic-island-container [data-i18n-key='bot_challenge_h'],
+#dynamic-island-container [data-i18n-key='bot_solution_h'] { font-size: 1.25rem; line-height: 1.4; }
+#dynamic-island-container [data-i18n-key='bot_challenge_p'],
+#dynamic-island-container [data-i18n-key='bot_solution_p'] { font-size: var(--type-body); line-height: 1.65; }
+#dynamic-island-container [data-i18n-key='bot_coretech'],
+.skill-tag-sm-apple { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: 0; }
+#dynamic-island-container [data-i18n-key='bot_subtitle'] { font-size: 1.125rem; line-height: 1.65; }
+.demo-source summary, .demo-source p, .demo-source th, .demo-source td { font-size: var(--type-small); line-height: 1.6; }
+#bottom-nav a { font-family: var(--font-body); font-size: .8125rem; text-transform: none; letter-spacing: 0; line-height: 1.3; }
+@media (max-width: 767px) {
+    #bottom-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    #bottom-nav a { min-width: 0; padding-inline: 4px; overflow-wrap: anywhere; text-align: center; }
+    #bottom-nav a span { max-width: 100%; }
+    .cookie-banner { left: 12px; right: 12px; padding: 12px; bottom: calc(var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); max-height: calc(100dvh - var(--mobile-nav-reserve) - env(safe-area-inset-bottom) - 8px); }
+    .cookie-btn { padding-inline: .75rem; line-height: 1.4; }
+    footer.py-12 { padding-bottom: calc(3rem + var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); }
+    #scrollTopBtn { bottom: calc(var(--mobile-nav-reserve) + 12px) !important; }
+    #hero .hero-role { font-size: 1.125rem; }
+    #hero .hero-tagline { font-size: 1.125rem; line-height: 1.6; }
+    header nav > a { font-size: var(--type-caption); letter-spacing: 0; }
+    #hero .hero-actions { column-gap: .75rem; }
+    .hero-secondary-link { font-size: var(--type-small); }
+    .about-intro { font-size: 1.375rem; }
+    .experience-header .exp-dates { grid-column: 2; }
+    .skill-matrix { grid-auto-rows: minmax(9rem, auto); }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+    header nav ul { gap: 1rem; }
+    header nav ul li a::before { display: none; }
+}

@@ -1,0 +1,56 @@
+/* Primary brand colors from the pinned Simple Icons metadata in the asset README.
+   Original concept symbols use the portfolio accent. All remain monochrome at rest. */
+.skill-chip {
+    --skill-brand: var(--accent-text);
+    --skill-glow: var(--skill-brand);
+    --skill-backing: color-mix(in srgb, var(--skill-brand) 8%, var(--bg-color));
+}
+.skill-chip[data-skill='power-bi'] { --skill-brand: #F2C811; --skill-backing: #292D29; }
+.skill-chip[data-skill='tableau'] { --skill-brand: #E97627; }
+.skill-chip[data-skill='qlik-sense'] { --skill-brand: #009848; }
+.skill-chip[data-skill='excel'] { --skill-brand: #217346; }
+.skill-chip[data-skill='python'] { --skill-brand: #3776AB; }
+.skill-chip[data-skill='bigquery'] { --skill-brand: #669DF6; }
+.skill-chip[data-skill='dbt'] { --skill-brand: #FF694B; }
+.skill-chip[data-skill='pandas'] { --skill-brand: #150458; }
+.skill-chip[data-skill='airflow'] { --skill-brand: #017CEE; }
+.skill-chip[data-skill='n8n'] { --skill-brand: #EA4B71; }
+.skill-chip[data-skill='claude-code'] { --skill-brand: #D97757; }
+.skill-chip[data-skill='salesforce'] { --skill-brand: #00A1E0; }
+.skill-chip[data-skill='aws'] { --skill-brand: #232F3E; }
+.skill-chip[data-skill='github-pages'] { --skill-brand: #181717; }
+html[data-theme='dark'] .skill-chip:is([data-skill='pandas'], [data-skill='aws'], [data-skill='github-pages'], [data-skill='excel']) {
+    --skill-backing: #F8F7F4;
+    --skill-glow: #D6DACC;
+}
+.skill-icon-wrap {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+}
+.skill-icon-wrap::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -9px;
+    border-radius: 50%;
+    background: var(--skill-backing);
+    box-shadow: 0 0 18px 3px color-mix(in srgb, var(--skill-glow) 28%, transparent);
+    opacity: 0;
+    pointer-events: none;
+}
+@media screen and (hover: hover) and (pointer: fine) {
+    .skill-chip:hover .skill-chip-icon { color: var(--skill-brand); }
+    .skill-chip:hover .skill-icon-wrap::before { opacity: 1; }
+}
+@media screen and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .skill-chip .skill-chip-icon { transition: color 160ms ease; }
+    .skill-icon-wrap::before { transition: opacity 180ms ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .skill-chip .skill-chip-icon, .skill-icon-wrap::before { transition: none !important; }
+}

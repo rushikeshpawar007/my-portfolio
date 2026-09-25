@@ -30,14 +30,6 @@ for (const theme of ['light', 'dark']) {
     await expect(page.locator('.edu-row img')).toHaveCount(2);
     await expect(page.locator('.employer-monogram')).toHaveText('S.M.');
     await expect(page.locator('.employer-monogram')).toHaveCSS('filter', 'none');
-    const wordmarks = page.locator('.skill-chip-icon[src="aws.webp"]');
-    for (const wordmark of await wordmarks.all()) {
-      await wordmark.scrollIntoViewIfNeeded();
-      const size = await wordmark.boundingBox();
-      expect(size.width).toBe(20);
-      expect(size.height).toBe(20);
-      if (theme === 'dark') await expect(wordmark).toHaveCSS('filter', 'grayscale(1) invert(1)');
-    }
   });
 }
 

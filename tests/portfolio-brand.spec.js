@@ -9,8 +9,8 @@ for (const pathname of ['/', '/privacy.html', '/impressum.html']) {
       sizes: link.getAttribute('sizes'),
     })));
     expect(icons).toEqual([
-      { href: 'favicon-32.png', type: 'image/png', sizes: '32x32' },
-      { href: 'favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      { href: 'assets/brand/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      { href: 'assets/brand/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
     ]);
     await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('sizes', '180x180');
   });
@@ -21,11 +21,11 @@ for (const scheme of ['light', 'dark']) {
     await page.emulateMedia({ colorScheme: scheme });
     await page.route('**/*.woff2', route => route.abort());
     await page.goto('/');
-    const vector = await (await request.get('/favicon.svg')).text();
+    const vector = await (await request.get('/assets/brand/favicon.svg')).text();
     expect(vector).not.toMatch(/<text\b|@font-face|https?:\/\/(?!www\.w3\.org)/);
     const result = await page.evaluate(async () => {
       const image = new Image();
-      image.src = '/favicon.svg';
+      image.src = '/assets/brand/favicon.svg';
       await image.decode();
       const canvas = document.createElement('canvas');
       canvas.width = canvas.height = 32;
@@ -44,7 +44,7 @@ for (const scheme of ['light', 'dark']) {
 
 test('header and browser icons use the same outlined RP monogram', async ({ page, request }) => {
   await page.goto('/');
-  const favicon = await (await request.get('/favicon.svg')).text();
+  const favicon = await (await request.get('/assets/brand/favicon.svg')).text();
   const monogram = favicon.match(/<path class="monogram" d="([^"]+)"/)[1];
   const mark = page.locator('.brand-mark svg');
   await expect(mark).toHaveAttribute('viewBox', '0 0 32 32');
@@ -57,7 +57,7 @@ test('PNG exports have correct dimensions and current palette', async ({ page })
   await page.goto('/');
   const assets = await page.evaluate(async () => {
     const values = [];
-    for (const file of ['favicon-32.png', 'apple-touch-icon.png', 'social_preview.png']) {
+    for (const file of ['assets/brand/favicon-32.png', 'assets/brand/apple-touch-icon.png', 'assets/brand/social_preview.png']) {
       const image = new Image();
       image.src = '/' + file;
       await image.decode();
@@ -70,16 +70,16 @@ test('PNG exports have correct dimensions and current palette', async ({ page })
     return values;
   });
   expect(assets).toEqual([
-    { file: 'favicon-32.png', width: 32, height: 32, corner: [36, 40, 36, 255] },
-    { file: 'apple-touch-icon.png', width: 180, height: 180, corner: [36, 40, 36, 255] },
-    { file: 'social_preview.png', width: 1200, height: 630, corner: [248, 247, 244, 255] },
+    { file: 'assets/brand/favicon-32.png', width: 32, height: 32, corner: [36, 40, 36, 255] },
+    { file: 'assets/brand/apple-touch-icon.png', width: 180, height: 180, corner: [36, 40, 36, 255] },
+    { file: 'assets/brand/social_preview.png', width: 1200, height: 630, corner: [248, 247, 244, 255] },
   ]);
 });
 
 test('share card source fits its export and uses the local typefaces', async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 630 });
   await page.emulateMedia({ colorScheme: 'light' });
-  await page.goto('/assets/social-preview.html');
+  await page.goto('/assets/brand/social-preview.html');
   await page.evaluate(() => document.fonts.ready);
   await expect(page.getByRole('heading', { name: 'Rushikesh Pawar' })).toBeVisible();
   await expect(page.getByText('Senior Business Analyst')).toBeVisible();

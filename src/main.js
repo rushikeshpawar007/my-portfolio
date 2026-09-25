@@ -119,8 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(meta);
         }
 
+        let themeTransitionGeneration = 0;
         /** @param {string} next */
         function setTheme(next) {
+            const generation = ++themeTransitionGeneration;
+            const finish = () => {
+                // An earlier transition may finish after another toggle has started.
+                if (generation === themeTransitionGeneration) document.documentElement.classList.remove('theme-switching');
+            };
             const apply = () => {
                 document.documentElement.setAttribute('data-theme', next);
                 try { localStorage.setItem('theme', next); } catch {}
@@ -129,9 +135,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Cross-fade the whole sheet like turning a page (progressive enhancement)
             if (document.startViewTransition && !prefersReducedMotion) {
                 document.documentElement.classList.add('theme-switching');
-                const vt = document.startViewTransition(apply);
-                vt.finished.finally(() => document.documentElement.classList.remove('theme-switching'));
+                try {
+                    const vt = document.startViewTransition(apply);
+                    // Handle both outcomes without leaving a rejected finally() promise.
+                    vt.finished.then(finish, finish);
+                } catch {
+                    finish();
+                    apply();
+                }
             } else {
+                finish();
                 apply();
             }
         }
@@ -425,7 +438,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const subject = encodeURIComponent(`Portfolio contact from ${name}`);
                     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
                     window.location.href = `mailto:rushikeshpawar197@gmail.com?subject=${subject}&body=${body}`;
-                    contactForm.reset();
+                    // A mailto handoff cannot confirm delivery or even an available mail app.
+                    // Preserve the draft so the visitor can copy it or retry.
                     restore();
                     return;
                 }
@@ -519,6 +533,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // A short tally keeps its unit visible so the metric stays legible.
                 /** @param {number} now */
                 const tick = (now) => {
+                    // Translated rich text can replace a metric during its tally.
+                    if (!el.isConnected) return;
                     const t = prefersReducedMotion ? 1 : Math.min((now - start) / 850, 1);
                     const text = Math.round((1 - Math.pow(1 - t, 5)) * target) + suffix;
                     if (text !== lastText) {
@@ -542,6 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // currently looking at - that reset-and-re-tally was a visible glitch.
         /** @param {boolean} [skipInView] */
         function observeMetrics(skipInView) {
+            // Release old rich-text spans before registering their translated replacements.
+            countUpObs.disconnect();
             document.querySelectorAll('.metric-highlight').forEach(node => {
                 const el = /** @type {HTMLElement} */ (node);
                 if (el.dataset.counted) return; // already tallied this instance
@@ -585,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ── AI FINANCE BOT ────────────────────────────────── */
 
-        initFinanceBot();
+        initFinanceBot(translations);
         document.documentElement.classList.add('motion-ready');
 
         // Native disclosures keep supporting projects compact, including without JS.
@@ -728,7 +746,8 @@ function initAnimatedDisclosures(motionPreference) {
 }
 
 /* ── AI FINANCE BOT (Dynamic Island) ──────────────────────── */
-function initFinanceBot() {
+/** @param {Record<string, Record<string, string>>} demoTranslations */
+function initFinanceBot(demoTranslations) {
     const islandContainer = document.getElementById('dynamic-island-container');
     if (!islandContainer) return;
 
@@ -748,10 +767,8 @@ function initFinanceBot() {
         isBotTyping = false;
     }
 
-    /** @type {Record<string, Record<string, string>>} */
-    const demoTranslations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}');
     /** @param {string} key */
-    const tr = key => (demoTranslations[document.documentElement.lang] || demoTranslations.en)[key];
+    const tr = key => demoTranslations[document.documentElement.lang]?.[key] || demoTranslations.en?.[key] || '';
     const questionKeys = ['q1', 'q2', 'q3'];
     document.addEventListener('portfolio:languagechange', () => {
         if (islandContainer.classList.contains('expanded')) initBotUI();
