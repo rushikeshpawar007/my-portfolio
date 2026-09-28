@@ -90,8 +90,12 @@ test('language changes include dates, source values, image descriptions and acce
   const imageKeys = ['alt_profile', 'alt_spotify_preview', 'alt_spotify_dashboard'];
 
   for (const language of ['de', 'en']) {
-    await page.locator('#lang-toggle-header').click();
-    await expect(page.locator('html')).toHaveAttribute('lang', language);
+    // The toggle ignores clicks within 150 ms of the previous one; retry until the
+    // language changes, and never click again once it has.
+    await expect(async () => {
+      if (await page.locator('html').getAttribute('lang') !== language) await page.locator('#lang-toggle-header').click();
+      await expect(page.locator('html')).toHaveAttribute('lang', language, { timeout: 500 });
+    }).toPass();
     for (const key of textKeys) {
       await expect(page.locator(`[data-i18n-key="${key}"]`)).toHaveText(translations[language][key]);
     }

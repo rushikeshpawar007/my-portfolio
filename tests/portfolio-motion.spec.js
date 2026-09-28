@@ -23,16 +23,21 @@ for (const id of ['report-details', 'royalty-case-study-details', 'lecturio-role
     const details = page.locator('#' + id);
     const summary = details.locator('summary');
     await summary.focus();
-    await page.keyboard.press('Enter');
-    const dimensions = await details.evaluate(el => {
-      const animation = el.getAnimations()[0];
-      expectAnimation(animation);
-      animation.pause();
-      const frames = animation.effect.getKeyframes();
-      animation.currentTime = 60;
-      return { from: parseFloat(frames[0].height), to: parseFloat(frames[1].height), current: el.getBoundingClientRect().height };
-      function expectAnimation(value) { if (!value) throw new Error('Expected an active disclosure animation'); }
+    // Sample the 240 ms animation in the same task that starts it; reading it after
+    // a separate round trip fails whenever a busy runner lets the animation finish.
+    await details.evaluate(el => {
+      el.addEventListener('click', () => {
+        const animation = el.getAnimations()[0];
+        if (!animation) { window.disclosureSample = { error: 'Expected an active disclosure animation' }; return; }
+        animation.pause();
+        const frames = animation.effect.getKeyframes();
+        animation.currentTime = 60;
+        window.disclosureSample = { from: parseFloat(frames[0].height), to: parseFloat(frames[1].height), current: el.getBoundingClientRect().height };
+      }, { once: true });
     });
+    await page.keyboard.press('Enter');
+    const dimensions = await (await page.waitForFunction(() => window.disclosureSample)).jsonValue();
+    expect(dimensions.error).toBeUndefined();
     expect(dimensions.current).toBeGreaterThan(dimensions.from);
     expect(dimensions.current).toBeLessThan(dimensions.to);
     await details.evaluate(el => el.getAnimations()[0].play());
