@@ -187,9 +187,11 @@ body {
 
 /* Only visitors with a saved non-default language wait for JS translation;
    default (EN) visitors and crawlers get an immediate first paint.
+   The head script marks the wait with .lang-pending and leaves lang="en",
+   which still describes the English markup until main.js translates it.
    The 3s animation is a pure-CSS failsafe: if main.js ever fails to run,
    the page still becomes visible instead of staying blank forever. */
-html.motion-ready[lang='de'] body:not(.lang-loaded) {
+html.lang-pending body:not(.lang-loaded) {
     visibility: hidden;
     animation: lang-reveal 0s 3s forwards;
 }
@@ -1292,7 +1294,7 @@ html[data-theme='light'] #theme-icon-dark { display: block; }
 
 /* mono ledger index before the label */
 .collapsed-content::before {
-    content: '1.2';
+    content: '1.5';
     font-family: var(--font-mono);
     font-size: 0.6875rem;
     color: var(--accent-text);
@@ -1444,7 +1446,7 @@ body:has(#dynamic-island-container.expanded) #scrollTopBtn { display: none !impo
 
 #bot-question-prompts-apple .prompt-button:last-child { border-bottom: none; }
 #bot-question-prompts-apple .prompt-button:hover { color: var(--apple-accent); }
-#bot-question-prompts-apple .prompt-button:disabled { opacity: 0.4; cursor: not-allowed; }
+#bot-question-prompts-apple .prompt-button[aria-disabled='true'] { opacity: 0.4; cursor: not-allowed; }
 
 .analysis-animation svg { width: 80px; height: 40px; }
 
@@ -2199,7 +2201,7 @@ html:not(.motion-ready) .timeline-container { opacity: 1; }
     #hero .hero-chips { margin-top: 1rem; }
     #hero .scroll-indicator { display: none; }
     .cookie-banner { bottom: calc(68px + env(safe-area-inset-bottom)); max-height: calc(100dvh - 68px - env(safe-area-inset-bottom) - 1rem); padding: 0.75rem 1rem; }
-    #bottom-nav a { font-size: 11px; padding: 10px 4px; letter-spacing: 0; }
+    #bottom-nav a { padding: 10px 4px; letter-spacing: 0; }
     .case-facts { grid-template-columns: 1fr; gap: 1rem; }
     .expanded-content { padding: 3.5rem 1rem 1rem; }
     #bot-simulation-window-apple { height: auto; max-height: none; }
@@ -2371,7 +2373,7 @@ header nav ul li a::before { display: none; }
 .copy-email-btn.btn-compact { min-height: 44px; padding: 0.5rem 0.75rem; }
 .copy-email-btn .icon { width: 1rem; height: 1rem; }
 .contact-form-note { margin: 0.75rem 0 0; color: var(--text-color); font-size: 0.8125rem; line-height: 1.6; }
-.contact-form-note a { text-decoration: underline; text-underline-offset: 3px; }
+.contact-form-note a, .cookie-banner-text a { text-decoration: underline; text-underline-offset: 3px; }
 #contact > .grid > * { min-width: 0; }
 #contact-form { padding: 1.5rem 2rem; background: var(--surface); border: 1px solid var(--hairline); }
 #contact-form .closing-rule { margin-top: 1.5rem; }

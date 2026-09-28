@@ -107,7 +107,8 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
 #bottom-nav a { font-family: var(--font-body); font-size: .8125rem; text-transform: none; letter-spacing: 0; line-height: 1.3; }
 @media (max-width: 767px) {
     #bottom-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    #bottom-nav a { min-width: 0; padding-inline: 4px; overflow-wrap: anywhere; text-align: center; }
+    /* 12px keeps "Experience" and "Fähigkeiten" whole from 360px up. */
+    #bottom-nav a { min-width: 0; padding-inline: 4px; overflow-wrap: anywhere; text-align: center; font-size: .75rem; }
     #bottom-nav a span { max-width: 100%; }
     .cookie-banner { left: 12px; right: 12px; padding: 12px; bottom: calc(var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); max-height: calc(100dvh - var(--mobile-nav-reserve) - env(safe-area-inset-bottom) - 8px); }
     .cookie-btn { padding-inline: .75rem; line-height: 1.4; }

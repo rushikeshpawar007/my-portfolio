@@ -19,6 +19,68 @@ async function expectContentWithinViewport(page) {
   expect(clippedComparison).toEqual([]);
 }
 
+// Words split across lines without a hyphen, as overflow-wrap: anywhere does when a
+// word cannot fit. Breaks at spaces, hyphens and soft hyphens are allowed. Glyphs of
+// one word that differ by less than half a line come from font fallback (for example
+// "@"), not from a line break.
+async function wordsSplitAcrossLines(page, selector) {
+  return page.locator(selector).evaluateAll(elements => elements.flatMap(el => {
+    const split = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const fontSize = parseFloat(getComputedStyle(node.parentElement).fontSize);
+      // Use each character's last rect: Chrome reports the hyphen drawn at a
+      // soft-hyphen break as the first rect of the following character.
+      const lineOf = index => {
+        const range = document.createRange();
+        range.setStart(node, index);
+        range.setEnd(node, index + 1);
+        const rects = [...range.getClientRects()].filter(rect => rect.width > 0);
+        return rects.length ? rects[rects.length - 1].top : null;
+      };
+      for (const match of node.textContent.matchAll(/[^\s\-­/–—]+/g)) {
+        const tops = [];
+        for (let offset = 0; offset < match[0].length; offset++) {
+          const top = lineOf(match.index + offset);
+          if (top !== null) tops.push(top);
+        }
+        if (tops.length > 1 && Math.max(...tops) - Math.min(...tops) > fontSize / 2) split.push(match[0]);
+      }
+    }
+    return split;
+  }));
+}
+
+for (const width of [360, 375]) {
+  for (const language of ['en', 'de']) {
+    test(`bottom navigation labels stay whole at ${width}px in ${language}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.addInitScript(lang => {
+        localStorage.setItem('lang', lang);
+        localStorage.setItem('cookie-consent', 'denied');
+      }, language);
+      await page.goto('/');
+      await page.evaluate(() => document.fonts.ready);
+      expect(await wordsSplitAcrossLines(page, '#bottom-nav span')).toEqual([]);
+    });
+  }
+}
+
+for (const language of ['en', 'de']) {
+  test(`headings never split a word at phone and tablet widths in ${language}`, async ({ page }) => {
+    await page.addInitScript(lang => {
+      localStorage.setItem('lang', lang);
+      localStorage.setItem('cookie-consent', 'denied');
+    }, language);
+    for (const width of [320, 375, 390, 768]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/');
+      await page.evaluate(() => document.fonts.ready);
+      expect(await wordsSplitAcrossLines(page, 'main h1, main h2, main h3'), `${width}px`).toEqual([]);
+    }
+  });
+}
+
 test('long German headings and project diagrams fit a 320px screen', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(() => {

@@ -319,18 +319,38 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── COOKIE CONSENT (GDPR) ─────────────────────────── */
 
         const consentBanner = document.getElementById('cookie-consent-banner');
+        const analyticsId = 'G-H2TJQ5H08S';
         let analyticsLoaded = false;
+        let analyticsConsent = false;
         function loadAnalytics() {
             if (analyticsLoaded) return;
             analyticsLoaded = true;
             const s = document.createElement('script');
             s.async = true;
-            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-H2TJQ5H08S';
+            s.src = `https://www.googletagmanager.com/gtag/js?id=${analyticsId}`;
             document.head.appendChild(s);
             if (typeof gtag === 'function') {
                 gtag('js', new Date());
-                gtag('config', 'G-H2TJQ5H08S', { anonymize_ip: true });
+                gtag('config', analyticsId, { anonymize_ip: true });
             }
+        }
+        /** @param {string} name @param {Record<string, string>} params */
+        function trackEvent(name, params) {
+            if (analyticsConsent && typeof gtag === 'function') gtag('event', name, params);
+        }
+        // Withdrawn consent must also stop a tag loaded earlier in this visit and
+        // remove the cookies it set; a consent update alone leaves both in place.
+        /** @param {boolean} granted */
+        function applyAnalyticsConsent(granted) {
+            analyticsConsent = granted;
+            /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (window))[`ga-disable-${analyticsId}`] = !granted;
+            if (granted) return;
+            document.cookie.split(';').map(cookie => cookie.split('=')[0].trim())
+                .filter(name => /^_ga(_|$)/.test(name))
+                .forEach(name => {
+                    document.cookie = `${name}=; Max-Age=0; path=/`;
+                    document.cookie = `${name}=; Max-Age=0; path=/; domain=${location.hostname}`;
+                });
         }
         if (consentBanner) {
             const consentOpener = document.getElementById('reopen-cookie-consent');
@@ -340,12 +360,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!storedConsent) {
                 consentBanner.hidden = false;
             } else if (storedConsent === 'granted') {
+                analyticsConsent = true;
                 if (typeof gtag === 'function') gtag('consent', 'update', { analytics_storage: 'granted' });
                 loadAnalytics();
             }
             /** @param {boolean} granted */
             const setConsent = (granted) => {
                 try { localStorage.setItem('cookie-consent', granted ? 'granted' : 'denied'); } catch {}
+                applyAnalyticsConsent(granted);
                 if (typeof gtag === 'function') {
                     gtag('consent', 'update', { analytics_storage: granted ? 'granted' : 'denied' });
                 }
@@ -368,12 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-ga-event]').forEach((el) => {
             const a = /** @type {HTMLAnchorElement} */ (el);
             a.addEventListener('click', () => {
-                if (typeof gtag === 'function') {
-                    gtag('event', a.dataset.gaEvent, {
-                        link_url: a.href || '',
-                        link_text: (a.textContent || '').trim().slice(0, 80),
-                    });
-                }
+                trackEvent(a.dataset.gaEvent || '', {
+                    link_url: a.href || '',
+                    link_text: (a.textContent || '').trim().slice(0, 80),
+                });
             });
         });
 
@@ -410,14 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = new FormData(contactForm);
                 const submittedValues = [nameEl.value, emailEl.value, messageEl.value];
 
-                submitButton.disabled = true;
+                // aria-disabled keeps keyboard focus on the button (a disabled element
+                // loses it); isSubmitting already ignores further submissions.
+                submitButton.setAttribute('aria-disabled', 'true');
                 submitButton.dataset.i18nKey = 'form_sending_button';
                 submitButton.textContent = translations[currentLang]?.form_sending_button || 'Sending...';
                 contactForm.setAttribute('aria-busy', 'true');
 
                 const restore = () => {
                     isSubmitting = false;
-                    submitButton.disabled = false;
+                    submitButton.removeAttribute('aria-disabled');
                     submitButton.dataset.i18nKey = 'form_send_button';
                     submitButton.textContent = translations[currentLang]?.form_send_button || 'Send message';
                     contactForm.setAttribute('aria-busy', 'false');
@@ -427,9 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Keep any new draft written while the submitted message was in flight.
                     const fields = [nameEl, emailEl, messageEl];
                     if (fields.every((field, index) => field.value === submittedValues[index])) contactForm.reset();
-                    if (typeof gtag === 'function') {
-                        gtag('event', 'contact_form_submit', { form_name: 'contact', language: currentLang });
-                    }
+                    trackEvent('contact_form_submit', { form_name: 'contact', language: currentLang });
                 };
 
                 // Fallback: until a Web3Forms access key is configured, open a pre-filled email draft.
@@ -476,30 +496,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const label = btn.querySelector('[data-i18n-key="copy_email"]');
             const icon = btn.querySelector('svg use');
             const originalIcon = icon?.getAttribute('href');
+            // The button's name stays "Copy email address", so the result is announced here.
+            const status = btn.parentElement?.querySelector('[data-copy-status]');
             if (!label) return;
+            let copying = false;
+            /** @param {boolean} busy */
+            const setCopying = busy => {
+                copying = busy;
+                // aria-disabled, unlike disabled, keeps keyboard focus on the button.
+                if (busy) btn.setAttribute('aria-disabled', 'true');
+                else btn.removeAttribute('aria-disabled');
+            };
             btn.addEventListener('click', () => {
-                if (btn.disabled) return;
+                if (copying) return;
                 const email = btn.dataset.email || '';
                 if (!navigator.clipboard || !navigator.clipboard.writeText) {
                     showToast(email, false);
                     return;
                 }
                 // Preserve the translated label node through both asynchronous states.
-                btn.disabled = true;
+                setCopying(true);
                 btn.setAttribute('aria-busy', 'true');
                 navigator.clipboard.writeText(email).then(() => {
                     btn.setAttribute('aria-busy', 'false');
                     icon?.setAttribute('href', '#i-check');
                     label.setAttribute('data-i18n-key', 'copied');
                     label.textContent = translations[currentLang]?.copied || 'Copied!';
+                    if (status) status.textContent = label.textContent;
                     setTimeout(() => {
                         if (originalIcon) icon?.setAttribute('href', originalIcon);
                         label.setAttribute('data-i18n-key', 'copy_email');
                         label.textContent = translations[currentLang]?.copy_email || 'Copy';
-                        btn.disabled = false;
+                        if (status) status.textContent = '';
+                        setCopying(false);
                     }, 2000);
                 }).catch(() => {
-                    btn.disabled = false;
+                    setCopying(false);
                     btn.setAttribute('aria-busy', 'false');
                     showToast(email, false);
                 });
@@ -565,7 +597,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (el.dataset.counted) return; // already tallied this instance
                 if (skipInView) {
                     const r = el.getBoundingClientRect();
-                    if (r.top < window.innerHeight && r.bottom > 0) return;
+                    if (r.top < window.innerHeight && r.bottom > 0) {
+                        // Settle it at its final value: dropping it would leave its rule undrawn.
+                        el.dataset.counted = '1';
+                        el.closest('.impact-card')?.querySelector('.closing-rule')?.classList.add('drawn');
+                        return;
+                    }
                 }
                 countUpObs.observe(el);
             });
@@ -843,7 +880,8 @@ function initFinanceBot(demoTranslations) {
     function handleQ(key) {
         if (isBotTyping) return;
         isBotTyping = true;
-        promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = true; });
+        // aria-disabled, unlike disabled, keeps keyboard focus (and Escape) inside the demo.
+        promptsContainer.querySelectorAll('button').forEach(b => { b.setAttribute('aria-disabled', 'true'); });
         addMsg('user', tr('demo_' + key));
         messagesContainer.setAttribute('aria-busy', 'true');
         botTimers.push(setTimeout(() => {
@@ -859,7 +897,7 @@ function initFinanceBot(demoTranslations) {
             addMsgElement('bot', sourceLink);
             isBotTyping = false;
             messagesContainer.setAttribute('aria-busy', 'false');
-            promptsContainer.querySelectorAll('button').forEach(b => { b.disabled = false; });
+            promptsContainer.querySelectorAll('button').forEach(b => { b.removeAttribute('aria-disabled'); });
         }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 350));
     }
 

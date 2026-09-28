@@ -299,7 +299,7 @@ the page readable.
   the application-specific source CV are not merged into that claim.
 
 - English and German dates, source amounts, informative image descriptions, and accessible navigation labels switch together. German visitor-facing forms use informal address consistently.
-- Repeated savings use `₹200k`; the industries fact lists sectors, and product names use their established spelling (`n8n`).
+- Repeated savings use `₹200k` (now only in the S.M. Auto entry); the industries fact lists sectors, and product names use their established spelling (`n8n`).
 - All four experience entries share the same header and content alignment. Native project and role disclosures both open for direct links and use the same motion and keyboard behavior.
 - Skills remain static labels with a default cursor. Their icons reveal color and a halo on pointer hover, without shifting the layout or adding tab stops; reduced motion makes the change immediate. The demo close button shares the 44px target size used by the other controls.
 - Long headings and labels wrap within their columns. Project, impact, and skill layouts adapt to larger text; comparison values stack when their panel has insufficient space. Test the actual content bounds because the outer sheet clips horizontal overflow.
@@ -308,3 +308,13 @@ the page readable.
 - Legal pages share guarded theme initialization and browser-chrome tinting. Their headings, URLs, and 44px Back links remain usable at 320px and with enlarged text.
 - Company and school marks use one monochrome source each, explicit dimensions, and consistent theme filters. They never change color during scrolling or hover. The S.M. placeholder is a theme-aware monogram, not an asserted official company logo.
 - Tool icons use 44px slots above their labels; diagram and copy icons use a 16px minimum. Skill marks are embedded as a local SVG sprite, with sources documented in `assets/skill-icons/README.md`. SVG artwork stays inside its viewBox, and decorative icons are hidden from assistive technology while their controls retain meaningful labels.
+
+## Review fixes — September 2026
+
+- Hero metrics are 99%, 300+ and 4+ years in analytics, using the CV's "finance, automotive and audit" phrasing. `₹200k` stays in the S.M. Auto entry: converted, it undersold the headline row.
+- The Lecturio location describes the person ("based in Hamburg" / "wohnhaft in Hamburg"); the company itself is not placed in Hamburg.
+- Phone tab labels use 12px so "Experience" and "Fähigkeiten" stay whole from 360px. At 320px they still wrap mid-word and would need shorter labels.
+- German headings keep `hyphens: manual`: long compounds get a soft hyphen (`Monats­berichte`, `zusammen­arbeiten`) or shorter phrasing (`Automatisierte Rechnungspipeline`). A test checks that no heading word splits without a hyphen at 320–768px.
+- A saved German preference sets `.lang-pending` before first paint, hiding the English markup until main.js translates it. `lang` stays `en` until then, so it always describes the visible text; the 3s failsafe still reveals the page if main.js fails.
+- Controls that wait (demo questions, copy, contact submit) use `aria-disabled` rather than `disabled`, so keyboard focus and Escape stay in place. The copy result is announced through a status region.
+- Analytics events are sent only with consent. Withdrawing consent disables the loaded tag and removes its `_ga` cookies. The cookie banner links the privacy policy.

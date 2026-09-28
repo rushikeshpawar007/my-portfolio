@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let translations = {};
     try {
         translations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}');
-    } catch { /* Authored English markup remains a complete fallback. */ }
+    } catch {
+        // Leave the authored English markup untouched; rendering now would show raw keys.
+        return;
+    }
     const locale = () => document.documentElement.lang === 'de' ? 'de-DE' : 'en-GB';
     /** @type {Map<string, { money: Intl.NumberFormat, date: Intl.DateTimeFormat }>} */
     const formatters = new Map();

@@ -12,6 +12,18 @@ async function openSamples(page) {
   await expect(page.locator('[data-reconciliation-filter="all"]')).toBeVisible();
 }
 
+test('broken translation data leaves the authored English samples in place', async ({ page }) => {
+  await page.route('http://127.0.0.1:4173/', async route => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace('"workbench_missing":', '"workbench_missing"');
+    await route.fulfill({ response, body });
+  });
+  await page.goto('/');
+  for (const sample of ['reconciliation', 'history']) {
+    await expect(page.locator(`[data-workbench="${sample}"]`)).not.toContainText(/workbench_[a-z_]+/);
+  }
+});
+
 test('reconciliation computes coherent totals and keeps all review categories when filtering', async ({ page }) => {
   await openSamples(page);
   const sample = page.locator('[data-workbench="reconciliation"]');

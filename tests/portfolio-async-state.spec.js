@@ -86,6 +86,51 @@ test('copy feedback and its reset follow language changes before and after copyi
   await expect(button.locator('svg use')).toHaveAttribute('href', '#i-copy-r');
 });
 
+test('choosing a demo question by keyboard keeps focus in the demo, so Escape still closes it', async ({ page }) => {
+  await page.goto('/');
+  const island = page.locator('#dynamic-island-container');
+  await island.focus();
+  await page.keyboard.press('Enter');
+  const prompt = page.locator('#bot-question-prompts-apple button').first();
+  await prompt.focus();
+  await page.keyboard.press('Enter');
+  // Greeting, question, answer and citation.
+  await expect(page.locator('#bot-messages-apple .bot-message-wrapper')).toHaveCount(4);
+  await expect(prompt).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(island).toHaveClass(/collapsed/);
+  await expect(island).toBeFocused();
+});
+
+test('copying the email by keyboard keeps focus on the button and announces the result', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.resolve() } });
+  });
+  await page.goto('/');
+  const button = page.locator('.copy-email-btn');
+  await button.focus();
+  await page.keyboard.press('Enter');
+  await expect(button).toHaveText('Copied!');
+  await expect(button).toBeFocused();
+  await expect(page.getByRole('status').filter({ hasText: 'Copied!' })).toHaveCount(1);
+});
+
+test('sending the contact form by keyboard keeps focus on the submit button', async ({ page }) => {
+  let pendingRequest;
+  await page.route('**/api.web3forms.com/**', route => { pendingRequest = route; });
+  await page.goto('/');
+  await fillContactForm(page);
+  const submit = page.locator('#contact-form button[type="submit"]');
+  await submit.focus();
+  await page.keyboard.press('Enter');
+  await expect(submit).toHaveText('Sending...');
+  await expect(submit).toBeFocused();
+  await expect.poll(() => Boolean(pendingRequest)).toBe(true);
+  await pendingRequest.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+  await expect(submit).toHaveText('Send message');
+  await expect(submit).toBeFocused();
+});
+
 test('reopened cookie settings move keyboard focus to the choices and back after dismissal', async ({ page }) => {
   await page.goto('/');
   const opener = page.locator('#reopen-cookie-consent');

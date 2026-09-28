@@ -22,6 +22,70 @@ test('blocked main script preserves content, including a saved German preference
   }
 });
 
+test('a saved German preference hides the English page until it is translated', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('lang', 'de'));
+  let releaseMain;
+  const mainHeld = new Promise(resolve => { releaseMain = resolve; });
+  await page.route('**/src/main.js', async route => { await mainHeld; await route.continue(); });
+  await page.goto('/', { waitUntil: 'commit' });
+  await page.waitForSelector('#contact', { state: 'attached' });
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).visibility)).toBe('hidden');
+  // The language attribute stays truthful: the markup is still English.
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  releaseMain();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+  await expect(page.locator('body')).toBeVisible();
+});
+
+test('an unsupported saved theme falls back to the system theme', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => localStorage.setItem('theme', 'system'));
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
+
+test('declining after accepting stops analytics for the rest of the visit', async ({ page, context }) => {
+  await page.route('https://www.googletagmanager.com/**', route => route.fulfill({ contentType: 'text/javascript', body: '' }));
+  await context.addCookies([
+    { name: '_ga', value: 'GA1.1.1.1', url: 'http://127.0.0.1:4173' },
+    { name: '_ga_H2TJQ5H08S', value: 'GS1.1.1', url: 'http://127.0.0.1:4173' },
+  ]);
+  await page.goto('/');
+  await page.locator('#cookie-accept').click();
+  await page.locator('#reopen-cookie-consent').click();
+  await page.locator('#cookie-decline').click();
+  const start = await page.evaluate(() => window.dataLayer.length);
+  await page.evaluate(() => document.querySelector('[data-ga-event="report_contact_click"]').click());
+  const state = await page.evaluate(from => ({
+    events: window.dataLayer.slice(from).filter(entry => entry[0] === 'event').length,
+    disabled: window['ga-disable-G-H2TJQ5H08S'] === true,
+    cookies: document.cookie,
+  }), start);
+  expect(state.events).toBe(0);
+  expect(state.disabled).toBe(true);
+  expect(state.cookies).not.toMatch(/(^|;\s*)_ga/);
+});
+
+test('the cookie banner links to the privacy policy in the visitor’s language', async ({ page }) => {
+  await page.goto('/');
+  const link = page.locator('#cookie-consent-banner a[href="privacy.html"]');
+  await expect(link).toHaveText('Privacy Policy');
+  await page.locator('#lang-toggle-header').click();
+  await expect(link).toHaveText('Datenschutzerklärung');
+});
+
+test('both language toggles have a translated accessible name', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('cookie-consent', 'denied'));
+  await page.goto('/');
+  for (const [lang, name] of [['en', 'Switch language'], ['de', 'Sprache wechseln']]) {
+    if (lang === 'de') await page.locator('#lang-toggle-header').click();
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    for (const id of ['lang-toggle-header', 'lang-toggle-mobile']) {
+      await expect(page.locator('#' + id)).toHaveAttribute('aria-label', name);
+    }
+  }
+});
+
 test('projects precede biography and every project remains inside main', async ({ page }) => {
   await page.goto('/');
   const order = await page.locator('main > section').evaluateAll(elements => elements.map(el => el.id));

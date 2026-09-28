@@ -48,6 +48,17 @@ test('language changes release replaced metric observer targets', async ({ page 
   await expect(page.locator('.skill-note .metric-highlight')).toHaveText(['4+', '5']);
 });
 
+test('switching language before scrolling still lets every impact metric finish on a phone', async ({ page }) => {
+  // At this size the first metric is only partly on screen when the page opens.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  await page.locator('#lang-toggle-header').click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'de');
+  await page.locator('#impact').scrollIntoViewIfNeeded();
+  for (const rule of await page.locator('#impact .closing-rule').all()) await expect(rule).toHaveClass(/drawn/);
+});
+
 test('superseded theme transitions cannot clear the latest transition state', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.addInitScript(() => {

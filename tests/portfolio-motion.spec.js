@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('cookie-consent', 'denied'));
 });
 
-test('every impact metric draws its closing rule, including formatted currency', async ({ page }) => {
+test('every impact metric finishes its tally and draws its closing rule', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
   await page.locator('#impact').scrollIntoViewIfNeeded();
@@ -14,7 +14,7 @@ test('every impact metric draws its closing rule, including formatted currency',
     await expect(rule).toHaveClass(/drawn/);
     await expect(rule).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)');
   }
-  await expect(page.locator('#impact .impact-number').last()).toHaveText('₹200k');
+  await expect(page.locator('#impact .impact-number')).toHaveText(['99%', '300+', '4+']);
 });
 
 for (const id of ['report-details', 'royalty-case-study-details', 'lecturio-role-details']) {

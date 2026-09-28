@@ -51,6 +51,12 @@ test('tablet navigation visibly marks the current section without shifting links
   await expect(inactive).toHaveCSS('border-inline-start-width', '2px');
 });
 
+test('the demo launcher carries the chatbot case study number', async ({ page }) => {
+  await page.goto('/');
+  const number = (selector) => page.locator(selector).evaluate(el => getComputedStyle(el, '::before').content);
+  expect(await number('#dynamic-island-container .collapsed-content')).toBe(await number('#rag-case-study .project-meta'));
+});
+
 test('the demo close control keeps a 44px target on tablet', async ({ page }) => {
   await page.setViewportSize({ width: 820, height: 1180 });
   await page.goto('/');
