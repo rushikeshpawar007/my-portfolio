@@ -149,14 +149,42 @@ for (const width of [320, 375, 768, 1440]) {
         expect(banner.y + banner.height).toBeLessThanOrEqual(nav.y);
       }
       await page.locator('#cookie-decline').click();
-      const skillSizes = await page.locator('.skill-chip').evaluateAll(elements => elements.map(el => {
-        const bounds = el.getBoundingClientRect();
-        return { width: bounds.width, height: bounds.height, clipped: el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth };
+      await page.evaluate(() => document.fonts.ready);
+      // Categories have different counts; compare tiles within each filled row.
+      const skillGroups = await page.locator('.skill-matrix').evaluateAll(groups => groups.map(group => {
+        const bounds = group.getBoundingClientRect();
+        const rows = new Map();
+        for (const element of group.children) {
+          const box = element.getBoundingClientRect();
+          const top = Math.round(box.top);
+          const row = rows.get(top) || [];
+          const icon = element.querySelector('.skill-chip-icon').getBoundingClientRect();
+          const container = element.querySelector('.skill-icon-wrap').getBoundingClientRect();
+          row.push({ left: box.left, right: box.right, width: box.width, height: box.height, icon: icon.width, containerWidth: container.width, containerHeight: container.height, clipped: element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth });
+          rows.set(top, row);
+        }
+        return { left: bounds.left, right: bounds.right, rows: [...rows.values()] };
       }));
-      for (const size of skillSizes) {
-        expect(Math.abs(size.width - skillSizes[0].width)).toBeLessThan(1);
-        expect(size.height).toBe(skillSizes[0].height);
-        expect(size.clipped).toBe(false);
+      for (const group of skillGroups) {
+        for (const row of group.rows) {
+          expect(Math.abs(row[0].left - group.left)).toBeLessThan(2);
+          expect(Math.abs(row.at(-1).right - group.right)).toBeLessThan(2);
+          for (const size of row) {
+            expect(Math.abs(size.width - row[0].width)).toBeLessThan(1);
+            expect(size.height).toBe(row[0].height);
+            expect(size.height).toBeGreaterThanOrEqual(44);
+            expect(size.icon).toBeGreaterThanOrEqual(36);
+            expect(size.icon).toBeLessThanOrEqual(44);
+            expect(size.containerWidth).toBeCloseTo(52, 2);
+            expect(size.containerHeight).toBeCloseTo(52, 2);
+            expect(size.clipped).toBe(false);
+          }
+        }
+      }
+      if (width >= 1280) {
+        expect(skillGroups[1].rows).toHaveLength(1);
+        expect(skillGroups[1].rows[0]).toHaveLength(7);
+        expect(skillGroups[1].rows[0][0].height).toBeLessThan(160);
       }
       if (width < 768) {
         const cta = await page.locator('[data-i18n-key="see_my_work_button"]').boundingBox();
@@ -174,12 +202,13 @@ for (const width of [320, 375, 768, 1440]) {
   }
 }
 
-test('case studies are compact, keyboard operable, and keep the comparison visible', async ({ page }) => {
+test('case studies are compact, keyboard operable, and keep the measured outcome visible', async ({ page }) => {
   await page.goto('/');
   await page.locator('#cookie-decline').click();
   await expect(page.locator('details.case-details[open]')).toHaveCount(0);
   await expect(page.locator('.project-preview')).toHaveCount(7);
-  await expect(page.locator('.report-comparison')).toContainText('~10 hours');
+  await expect(page.locator('#finance-case-study .project-outcome')).toContainText('Manual preparation per monthly report');
+  await expect(page.locator('#finance-case-study .project-outcome')).toContainText('~10 hours → ~5 minutes');
   const summary = page.locator('#royalty-case-study-details > summary');
   await summary.focus();
   await page.keyboard.press('Enter');

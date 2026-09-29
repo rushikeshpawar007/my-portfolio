@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     /** @param {string} start @param {string} end */
     const days = (start, end) => Math.round((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86400000);
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const printMedia = matchMedia('print');
+    let printing = printMedia.matches;
     /** @type {Map<Element, Animation>} */
     const animations = new Map();
     function stopMotion() {
@@ -43,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!element) return;
         animations.get(element)?.cancel();
         animations.delete(element);
-        if (reducedMotion.matches || document.hidden || typeof element.animate !== 'function') return;
+        const details = element.closest('details');
+        if (reducedMotion.matches || printing || document.hidden || (details && !details.open) || typeof element.animate !== 'function') return;
         const animation = element.animate([{ opacity: 0.65, transform: 'translateY(3px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 180, easing: 'ease-out' });
         animations.set(element, animation);
         animation.addEventListener('finish', () => {
@@ -52,7 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     reducedMotion.addEventListener('change', stopMotion);
     document.addEventListener('visibilitychange', () => { if (document.hidden) stopMotion(); });
-    window.addEventListener('beforeprint', stopMotion);
+    printMedia.addEventListener('change', event => { printing = event.matches; if (printing) stopMotion(); });
+    window.addEventListener('beforeprint', () => { printing = true; stopMotion(); });
+    window.addEventListener('afterprint', () => { printing = printMedia.matches; });
+    const disclosures = new Set([...document.querySelectorAll('[data-workbench]')].map(example => example.closest('details')));
+    disclosures.forEach(details => details?.addEventListener('toggle', () => { if (!details.open) stopMotion(); }));
 
     const reconciliation = document.querySelector('[data-workbench="reconciliation"]');
     /** @type {{id: string, bookings: number | null, accounting: number | null}[]} */
@@ -91,7 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (count) count.textContent = t(showReview ? 'workbench_showing_review' : 'workbench_showing_all');
     }
     reconciliation?.querySelectorAll('[data-reconciliation-filter]').forEach(button => button.addEventListener('click', () => {
-        showReview = button.getAttribute('data-reconciliation-filter') === 'review';
+        const next = button.getAttribute('data-reconciliation-filter') === 'review';
+        if (next === showReview) return;
+        showReview = next;
         renderReconciliation();
         reveal(reconciliation.querySelector('[data-reconciliation-result]'));
     }));

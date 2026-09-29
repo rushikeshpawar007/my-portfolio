@@ -3,28 +3,12 @@
 // Requires the project's Playwright Chromium installation; no image editor or font service.
 const { chromium } = require('@playwright/test');
 const fs = require('node:fs');
-const http = require('node:http');
 const path = require('node:path');
+const { createStaticServer } = require('./serve.cjs');
 
 const root = path.resolve(__dirname, '..');
 const brandRoot = path.join(root, 'assets', 'brand');
-const types = { '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
-const server = http.createServer((request, response) => {
-  const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-  const file = path.resolve(root, '.' + pathname);
-  if (!file.startsWith(root + path.sep)) {
-    response.writeHead(403).end();
-    return;
-  }
-  fs.readFile(file, (error, content) => {
-    if (error) {
-      response.writeHead(404).end();
-      return;
-    }
-    response.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
-    response.end(content);
-  });
-});
+const server = createStaticServer();
 
 (async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));

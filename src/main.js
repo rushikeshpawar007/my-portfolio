@@ -68,27 +68,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 const t = translations[currentLang]?.[key];
                 if (!t) return;
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    (/** @type {HTMLInputElement} */ (el)).placeholder = t;
+                    const field = /** @type {HTMLInputElement} */ (el);
+                    if (field.placeholder !== t) field.placeholder = t;
                 } else if (el.hasAttribute('data-i18n-html')) {
                     // Author-controlled translation strings only (safe, static markup like <span>/<strong>)
-                    el.innerHTML = t;
+                    if (el.innerHTML !== t) el.innerHTML = t;
                 } else if (el.children.length === 0) {
-                    el.textContent = t;
+                    if (el.textContent !== t) el.textContent = t;
                 }
             });
             const next = currentLang === 'de' ? 'EN' : 'DE';
             const title = translations[currentLang]?.['lang_toggle_title'];
-            if (langToggleHeader) { langToggleHeader.textContent = next; if (title) langToggleHeader.title = title; }
-            if (langToggleMobile) { langToggleMobile.textContent = next; if (title) langToggleMobile.title = title; }
+            [langToggleHeader, langToggleMobile].forEach(button => {
+                if (!button) return;
+                if (button.textContent !== next) button.textContent = next;
+                if (title && button.title !== title) button.title = title;
+            });
             document.querySelectorAll('[data-i18n-aria]').forEach(el => {
                 const key = el.getAttribute('data-i18n-aria');
-                if (key && translations[currentLang]?.[key]) el.setAttribute('aria-label', translations[currentLang][key]);
+                const label = key && translations[currentLang]?.[key];
+                if (label && el.getAttribute('aria-label') !== label) el.setAttribute('aria-label', label);
             });
             document.querySelectorAll('[data-i18n-alt]').forEach(el => {
                 const key = el.getAttribute('data-i18n-alt');
-                if (key && translations[currentLang]?.[key]) el.setAttribute('alt', translations[currentLang][key]);
+                const alt = key && translations[currentLang]?.[key];
+                if (alt && el.getAttribute('alt') !== alt) el.setAttribute('alt', alt);
             });
-            document.documentElement.lang = currentLang;
+            if (document.documentElement.lang !== currentLang) document.documentElement.lang = currentLang;
         }
 
         function toggleLanguage() {
@@ -225,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // a 50%-visibility threshold is unreachable for sections taller than
         // twice the viewport (Experience, Projects), and unlinked sections
         // (#impact, #education) must not wipe the highlight.
-        const navObserver = new IntersectionObserver((entries) => {
+        const navObserver = typeof IntersectionObserver === 'function' ? new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 const id = entry.target.getAttribute('id');
@@ -236,10 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateNavLink(link, id, 'active-bottom')
                 );
             });
-        }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+        }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 }) : null;
 
         const linkedIds = new Set([...navLinks, ...bottomNavLinks].map(a => a.getAttribute('href')));
-        sections.forEach(s => { if (s.id === 'hero' || linkedIds.has(`#${s.id}`)) navObserver.observe(s); });
+        sections.forEach(s => { if (s.id === 'hero' || linkedIds.has(`#${s.id}`)) navObserver?.observe(s); });
 
         /* ── SCROLL STATE / READING PROGRESS ──────────────── */
 
@@ -401,6 +407,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const contactForm = /** @type {HTMLFormElement | null} */ (document.getElementById('contact-form'));
         if (contactForm) {
+            const messageField = contactForm.querySelector('#message');
+            // Native textarea focus can reveal only the caret behind the phone tabs.
+            // Use the document's scroll padding to keep the complete field in view.
+            messageField?.addEventListener('focus', () => {
+                messageField.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+            });
             let isSubmitting = false;
             contactForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -419,10 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!name || !email || !message) {
                     showToast(translations[currentLang]?.form_required || 'Please fill in all fields.', true);
+                    [nameEl, emailEl, messageEl].find(field => !field.value.trim())?.focus();
                     return;
                 }
                 if (!emailPattern.test(email)) {
-                    showToast(translations[currentLang].form_invalid_email, true);
+                    showToast(translations[currentLang]?.form_invalid_email || 'Please enter a valid email address.', true);
+                    emailEl.focus();
                     return;
                 }
 
@@ -479,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch((err) => {
                     if (err.name === 'AbortError') {
-                        showToast(translations[currentLang].form_timeout, true);
+                        showToast(translations[currentLang]?.form_timeout || 'Request timed out. Please try again.', true);
                     } else {
                         console.error('Form error:', err);
                         showToast(translations[currentLang]?.form_error_message || 'Sorry, an error occurred.', true);
@@ -541,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ── INTERSECTION OBSERVERS ────────────────────────── */
 
         // Count-up animation
-        const countUpObs = new IntersectionObserver((entries, obs) => {
+        const countUpObs = typeof IntersectionObserver === 'function' ? new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 const el = /** @type {HTMLElement} */ (entry.target);
@@ -584,27 +598,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 requestAnimationFrame(tick);
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.5 }) : null;
         // hoisted so toggleLanguage (defined earlier, runs post-init) can call it.
         // skipInView: on a language toggle, never reset a number the user is
         // currently looking at - that reset-and-re-tally was a visible glitch.
         /** @param {boolean} [skipInView] */
         function observeMetrics(skipInView) {
             // Release old rich-text spans before registering their translated replacements.
-            countUpObs.disconnect();
-            document.querySelectorAll('.metric-highlight').forEach(node => {
-                const el = /** @type {HTMLElement} */ (node);
-                if (el.dataset.counted) return; // already tallied this instance
-                if (skipInView) {
-                    const r = el.getBoundingClientRect();
-                    if (r.top < window.innerHeight && r.bottom > 0) {
-                        // Settle it at its final value: dropping it would leave its rule undrawn.
-                        el.dataset.counted = '1';
-                        el.closest('.impact-card')?.querySelector('.closing-rule')?.classList.add('drawn');
-                        return;
-                    }
-                }
-                countUpObs.observe(el);
+            countUpObs?.disconnect();
+            const metrics = Array.from(document.querySelectorAll('.metric-highlight'), node => /** @type {HTMLElement} */ (node))
+                .filter(el => !el.dataset.counted);
+            const viewportHeight = window.innerHeight;
+            // Read every rectangle before dataset/class changes invalidate layout.
+            const settled = new Set(!countUpObs ? metrics : skipInView ? metrics.filter(el => {
+                const rect = el.getBoundingClientRect();
+                return rect.top < viewportHeight && rect.bottom > 0;
+            }) : []);
+            metrics.forEach(el => {
+                if (settled.has(el)) {
+                    // Keep visible totals at their final value and settle their rule.
+                    el.dataset.counted = '1';
+                    el.closest('.impact-card')?.querySelector('.closing-rule')?.classList.add('drawn');
+                } else countUpObs?.observe(el);
             });
         }
         observeMetrics(false);
@@ -612,20 +627,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Closing rules "draw" left→right when they enter view. Only metrics
         // with a count-up draw their rule when the tally finishes; formatted
         // static values (such as currency) reveal their rule normally.
-        const ruleObs = new IntersectionObserver((entries, obs) => {
+        const ruleObs = typeof IntersectionObserver === 'function' ? new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
                 entry.target.classList.add('drawn');
                 obs.unobserve(entry.target);
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.6 }) : null;
         document.querySelectorAll('.closing-rule').forEach(el => {
             if (el.closest('.impact-card')?.querySelector('.metric-highlight')) return;
-            ruleObs.observe(el);
+            if (ruleObs) ruleObs.observe(el);
+            else el.classList.add('drawn');
         });
 
         // Section reveal + stagger items (unified observer)
-        const revealObs = new IntersectionObserver((entries, obs) => {
+        const revealObs = typeof IntersectionObserver === 'function' ? new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (entry.target.classList.contains('section-reveal')) entry.target.classList.add('revealed');
@@ -634,13 +650,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         // Long case-study sections must reveal even when only their leading edge fits.
-        }, { threshold: 0, rootMargin: '0px 0px -50px 0px' });
+        }, { threshold: 0, rootMargin: '0px 0px -50px 0px' }) : null;
 
-        document.querySelectorAll('.section-reveal, .stagger-item').forEach(el => revealObs.observe(el));
+        document.querySelectorAll('.section-reveal, .stagger-item').forEach(el => {
+            if (revealObs) revealObs.observe(el);
+            else {
+                if (el.classList.contains('section-reveal')) el.classList.add('revealed');
+                if (el.classList.contains('stagger-item')) el.classList.add('visible');
+            }
+        });
 
         /* ── AI FINANCE BOT ────────────────────────────────── */
 
-        initFinanceBot(translations);
+        const financeBot = initFinanceBot(translations);
         document.documentElement.classList.add('motion-ready');
 
         // Native disclosures keep supporting projects compact, including without JS.
@@ -652,6 +674,11 @@ document.addEventListener('DOMContentLoaded', () => {
             try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
             const target = document.getElementById(id);
             if (!target) return;
+            // A bookmarked demo or citation must reveal the same content as a click.
+            if (target.closest('#dynamic-island-container')) {
+                financeBot?.expand(false);
+                if (target instanceof HTMLDetailsElement) target.open = true;
+            }
             const details = target.matches('.featured-project, .project-preview')
                 ? target.querySelector('details.case-details')
                 : target.closest('details.case-details, details.experience-details');
@@ -678,11 +705,11 @@ document.addEventListener('DOMContentLoaded', () => {
             printDisclosures = [];
         });
 
-        // Open the disclosure when visitors follow the case study's demo link.
+        // Move keyboard focus into the revealed demo after an explicit link activation.
         document.querySelectorAll('a[href="#dynamic-island-container"]').forEach(link => {
             link.addEventListener('click', () => {
                 const island = document.getElementById('dynamic-island-container');
-                if (island && island.classList.contains('collapsed')) island.click();
+                if (island) document.getElementById('close-island-btn')?.focus({ preventScroll: true });
             });
         });
 
@@ -705,16 +732,46 @@ function initAnimatedDisclosures(motionPreference) {
     /** @type {Map<HTMLDetailsElement, (open?: boolean) => void>} */
     const controls = new Map();
     document.querySelectorAll('details.case-details, details.experience-details').forEach(details => {
-        if (!(details instanceof HTMLDetailsElement) || typeof details.animate !== 'function') return;
+        if (!(details instanceof HTMLDetailsElement)) return;
         const summary = details.querySelector('summary');
         if (!summary) return;
         /** @type {Animation | null} */
         let animation = null;
         let targetOpen = details.open;
         const originalOverflow = details.style.overflow;
+        /** @type {{ top: number } | null} */
+        let summaryPosition = null;
+        /** @type {AbortController | null} */
+        let positionEvents = null;
 
-        /** @param {boolean} [open] */
-        const finish = (open) => {
+        const releaseSummaryPosition = () => {
+            summaryPosition = null;
+            positionEvents?.abort();
+            positionEvents = null;
+        };
+
+        // A case can span a new grid row when opened. Keep its activated control
+        // in view without making later scrolling or linked navigation sticky.
+        const restoreSummaryPosition = () => {
+            if (!summaryPosition) return;
+            const offset = summary.getBoundingClientRect().top - summaryPosition.top;
+            if (Math.abs(offset) > 1) window.scrollBy({ top: offset, behavior: 'instant' });
+        };
+        /** @param {boolean} [release] */
+        const settleSummaryPosition = (release = false) => {
+            const position = summaryPosition;
+            restoreSummaryPosition();
+            // Native scroll anchoring can settle after the layout mutation.
+            requestAnimationFrame(() => {
+                if (summaryPosition !== position) return;
+                restoreSummaryPosition();
+                if (release) releaseSummaryPosition();
+            });
+        };
+
+        /** @param {boolean} [open] @param {boolean} [preservePosition] */
+        const finish = (open, preservePosition = false) => {
+            const restore = preservePosition && summaryPosition;
             const next = open ?? (animation ? targetOpen : details.open);
             if (animation) {
                 animation.onfinish = null;
@@ -725,6 +782,8 @@ function initAnimatedDisclosures(motionPreference) {
             targetOpen = next;
             details.style.overflow = originalOverflow;
             delete details.dataset.disclosureState;
+            if (restore) settleSummaryPosition(true);
+            else releaseSummaryPosition();
         };
         controls.set(details, finish);
 
@@ -733,9 +792,17 @@ function initAnimatedDisclosures(motionPreference) {
         summary.addEventListener('click', event => {
             if (event.defaultPrevented || (event.target instanceof Element && event.target.closest('a, button, input, select, textarea'))) return;
             event.preventDefault();
+            releaseSummaryPosition();
+            summaryPosition = { top: summary.getBoundingClientRect().top };
+            positionEvents = new AbortController();
+            // Real navigation/scroll input wins over the short layout correction.
+            // A scroll event alone also fires for the browser's own anchoring.
+            for (const type of ['wheel', 'touchmove', 'pointerdown', 'keydown']) {
+                window.addEventListener(type, releaseSummaryPosition, { passive: true, signal: positionEvents.signal });
+            }
             targetOpen = !(animation ? targetOpen : details.open);
-            if (motionPreference.matches || window.matchMedia('print').matches) {
-                finish(targetOpen);
+            if (motionPreference.matches || window.matchMedia('print').matches || typeof details.animate !== 'function') {
+                finish(targetOpen, true);
                 return;
             }
 
@@ -757,19 +824,22 @@ function initAnimatedDisclosures(motionPreference) {
                     { height: `${startHeight}px` },
                     { height: `${endHeight}px` },
                 ], { duration: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' });
-                animation.onfinish = () => finish(targetOpen);
+                settleSummaryPosition();
+                animation.onfinish = () => finish(targetOpen, true);
             } catch {
                 // Unsupported animation engines still retain a usable native control.
-                finish(targetOpen);
+                finish(targetOpen, true);
             }
         });
         // Lazy-loaded media can change the natural height during an expansion.
-        details.addEventListener('load', () => { if (animation) finish(); }, true);
+        details.addEventListener('load', () => { if (animation) finish(undefined, true); }, true);
     });
 
+    document.documentElement.classList.add('disclosures-ready');
     const finishAll = () => controls.forEach(finish => finish());
     motionPreference.addEventListener('change', event => { if (event.matches) finishAll(); });
     window.addEventListener('resize', finishAll, { passive: true });
+    window.addEventListener('hashchange', finishAll);
     document.addEventListener('portfolio:languagechange', finishAll);
     return {
         finishAll,
@@ -816,7 +886,8 @@ function initFinanceBot(demoTranslations) {
     islandContainer.setAttribute('tabindex', '0');
     islandContainer.setAttribute('aria-expanded', 'false');
 
-    const expand = () => {
+    /** @param {boolean} [moveFocus] */
+    const expand = (moveFocus = true) => {
         if (islandContainer.classList.contains('collapsed')) {
             islandContainer.classList.remove('collapsed');
             islandContainer.classList.add('expanded');
@@ -825,7 +896,7 @@ function initFinanceBot(demoTranslations) {
             islandContainer.setAttribute('tabindex', '-1');
             islandContainer.setAttribute('aria-expanded', 'true');
             initBotUI();
-            closeButton?.focus({ preventScroll: true });
+            if (moveFocus) closeButton?.focus({ preventScroll: true });
         }
     };
 
@@ -840,7 +911,7 @@ function initFinanceBot(demoTranslations) {
         }
     };
 
-    islandContainer.addEventListener('click', expand);
+    islandContainer.addEventListener('click', () => expand());
     islandContainer.addEventListener('keydown', (e) => {
         if ((e.key === 'Enter' || e.key === ' ') && islandContainer.classList.contains('collapsed')) {
             e.preventDefault();
@@ -932,4 +1003,6 @@ function initFinanceBot(demoTranslations) {
             promptsContainer.appendChild(btn);
         });
     }
+
+    return { expand };
 }

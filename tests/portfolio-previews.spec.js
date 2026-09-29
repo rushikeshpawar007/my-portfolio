@@ -57,7 +57,7 @@ test('visible project stories loop with a readable hold and only finite composit
   for (let cycle = 0; cycle < 2; cycle += 1) {
     await finishPreview(invoice);
     await expectStatic(invoice);
-    await page.clock.fastForward(1199);
+    await page.clock.fastForward(1999);
     await expect(invoice).toHaveAttribute('data-preview-state', 'complete');
     await page.clock.fastForward(1);
     await expect(invoice).toHaveAttribute('data-preview-state', 'playing');
@@ -238,7 +238,7 @@ test('the royalty workflow repeats and its pause control settles the whole story
   const royalty = await openPreview(page, 'royalty', true);
   await finishPreview(royalty);
   await expectStatic(royalty);
-  await page.clock.fastForward(1200);
+  await page.clock.fastForward(2000);
   await expect(royalty).toHaveAttribute('data-preview-state', 'playing');
   await royalty.locator('[data-preview-toggle]').click();
   await expect(royalty).toHaveAttribute('data-preview-paused', 'true');
@@ -263,7 +263,7 @@ for (const name of ['reconciliation', 'deal-history', 'dbt-history']) {
     for (let cycle = 0; cycle < 2; cycle += 1) {
       await finishPreview(preview);
       await expectStatic(preview);
-      await page.clock.fastForward(1199);
+      await page.clock.fastForward(1999);
       await expect(preview).toHaveAttribute('data-preview-state', 'complete');
       await page.clock.fastForward(1);
       await expect(preview).toHaveAttribute('data-preview-state', 'playing');

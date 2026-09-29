@@ -1,0 +1,62 @@
+/* Shared by the portfolio and standalone pages. Component styles consume these
+   roles; palette values intentionally retain the original paper-and-ink theme. */
+:root {
+    --font-display: 'Zodiak', Georgia, 'Times New Roman', serif;
+    --font-body: 'Switzer', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'Fragment Mono', 'Courier New', monospace;
+    --type-caption: .8125rem;
+    --type-meta: .875rem;
+    --type-small: .9375rem;
+    --type-body: 1.0625rem;
+    --type-lead: 1.1875rem;
+    --type-subheading: clamp(1.25rem, 1.15rem + .35vw, 1.5rem);
+    --type-project: clamp(1.75rem, 1.4rem + .75vw, 2rem);
+    --type-section: clamp(2rem, 1.6rem + 1.4vw, 3rem);
+    --type-page: clamp(2.75rem, 2rem + 3vw, 4.5rem);
+    --type-outcome: clamp(1.25rem, 1.15rem + .4vw, 1.5rem);
+    --space-1: .25rem;
+    --space-2: .5rem;
+    --space-3: .75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+    --page-gutter: clamp(1.25rem, 3vw, 3rem);
+    --content-width: 76rem;
+    --reading-width: 65ch;
+    --section-space: clamp(3rem, 6vw, 6rem);
+    --layout-gap: clamp(1.5rem, 3vw, 3rem);
+    --control-size: 44px;
+}
+:root, html[data-theme='light'] {
+    --bg-color: #F8F7F4;
+    --surface: #FFFFFF;
+    --heading-color: #242824;
+    --ink: #242824;
+    --text-primary: #454B45;
+    --text-color: #596059;
+    --hairline: #D8DDD5;
+    --hairline-strong: #242824;
+    --accent-color: #A4432E;
+    --accent-text: #A4432E;
+    --accent-hover: #843323;
+    --feature-surface: #EDF1E9;
+    --feature-ink: #354A39;
+}
+html[data-theme='dark'] {
+    --bg-color: #181C19;
+    --surface: #222823;
+    --heading-color: #F3F2EA;
+    --ink: #F3F2EA;
+    --text-primary: #CCD1C7;
+    --text-color: #B1BAAF;
+    --hairline: #404A41;
+    --hairline-strong: #F3F2EA;
+    --accent-color: #EF987E;
+    --accent-text: #EF987E;
+    --accent-hover: #FFB69D;
+    --feature-surface: #2B352D;
+    --feature-ink: #D4E1CF;
+}

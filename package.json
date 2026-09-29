@@ -2,10 +2,11 @@
   "name": "my-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "",
-  "main": "index.js",
+  "description": "Rushikesh Pawar's bilingual data analyst portfolio, built with HTML, CSS, and vanilla JavaScript.",
   "scripts": {
     "build:css": "node scripts/build-css.cjs",
+    "preview": "node scripts/serve.cjs",
+    "test:server": "node --test tests/server.test.cjs",
     "test": "playwright test",
     "lint": "eslint src/ tests/ scripts/ eslint.config.js playwright.config.js",
     "typecheck": "tsc --noEmit"

@@ -33,6 +33,8 @@ jobs:
 
       - run: npm run typecheck
 
+      - run: npm run test:server
+
       - run: npm run build:css
 
       # GitHub Pages serves the committed bundles; fail when generated CSS is stale.

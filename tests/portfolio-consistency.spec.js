@@ -51,10 +51,13 @@ test('tablet navigation visibly marks the current section without shifting links
   await expect(inactive).toHaveCSS('border-inline-start-width', '2px');
 });
 
-test('the demo launcher carries the chatbot case study number', async ({ page }) => {
+test('the demo follows its project and category bookmarks remain attached to the work', async ({ page }) => {
   await page.goto('/');
-  const number = (selector) => page.locator(selector).evaluate(el => getComputedStyle(el, '::before').content);
-  expect(await number('#dynamic-island-container .collapsed-content')).toBe(await number('#rag-case-study .project-meta'));
+  await expect(page.locator('#royalty-case-study #story-automation')).toHaveCount(1);
+  await expect(page.locator('#invoice-case-study #story-more')).toHaveCount(1);
+  const order = await page.locator('.bento-grid > *').evaluateAll(elements => elements.map(el => el.id || el.className));
+  expect(order.indexOf('rag-case-study')).toBeLessThan(order.findIndex(id => id.includes('demo-exhibit')));
+  expect(order.findIndex(id => id.includes('demo-exhibit'))).toBeLessThan(order.indexOf('invoice-case-study'));
 });
 
 test('the demo close control keeps a 44px target on tablet', async ({ page }) => {

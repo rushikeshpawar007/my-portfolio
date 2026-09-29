@@ -10,7 +10,8 @@
         const printMedia = window.matchMedia('print');
         const supportsAnimation = typeof Element.prototype.animate === 'function';
         const supportsObserver = typeof window.IntersectionObserver === 'function';
-        const holdDuration = 1200;
+        // Leave the completed business outcome readable before another cycle starts.
+        const holdDuration = 2000;
         let printing = printMedia.matches;
         /** @type {Record<string, Record<string, string>>} */
         let translations = {};
@@ -89,6 +90,32 @@
          */
         function motion(kind) {
             switch (kind) {
+                case 'match':
+                    return {
+                        frames: [{ opacity: 0, transform: 'translateX(-12px)' }, { opacity: 1, transform: 'translateX(0)' }],
+                        duration: 500,
+                    };
+                case 'queue':
+                    return {
+                        frames: [{ opacity: 0, transform: 'translate(-8px, -14px)' }, { opacity: 1, transform: 'translate(0, 0)' }],
+                        duration: 650,
+                    };
+                case 'version':
+                    return {
+                        frames: [{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+                        duration: 650,
+                    };
+                case 'fan-left':
+                case 'fan-right': {
+                    const left = kind === 'fan-left';
+                    return {
+                        frames: [
+                            { opacity: 0, transform: `translateX(${left ? '25%' : '-25%'}) rotate(${left ? '7deg' : '-7deg'})` },
+                            { opacity: 1, transform: 'translateX(0) rotate(0)' },
+                        ],
+                        duration: 750,
+                    };
+                }
                 case 'paper':
                     return {
                         frames: [{ opacity: 0, transform: 'translateY(10px) rotate(-4deg)' }, { opacity: 1, transform: 'translateY(0) rotate(0)' }],

@@ -2,8 +2,8 @@
 
 The portfolio is typeset as a **printed, audited annual report** — the object a
 Big-4 partner keeps on the desk. Warm rag paper in light mode, deep warm ink in
-dark mode, hairline rules instead of cards, and every quantitative claim set in
-red-ink mono like a ledger line item. The analyst's craft *is* the aesthetic:
+dark mode, hairline rules instead of cards, and restrained red-ink data accents
+like ledger line items. The analyst's craft *is* the aesthetic:
 the page reads as a beautifully typeset financial statement of a career.
 
 **Signature move:** the accountant's closing double rule (1px hairline + 4px
@@ -20,22 +20,60 @@ Three self-hosted families (`assets/fonts/*.woff2`, no CDNs, CSP `font-src 'self
 
 | Family | Source / license | Weights | Role |
 |---|---|---|---|
-| **Zodiak** | Fontshare, ITF free license | 400, 700 | Display serif: hero name (700), section headings, project/degree titles, drop cap, email link |
+| **Zodiak** | Fontshare, ITF free license | 400, 700 | Display serif: hero name (700), page/section headings, project/role/degree titles, email link |
 | **Switzer** | Fontshare, ITF free license | 400, 500, 600 | Running text, labels, buttons and nav. Sentence case for semantic headings and controls; metadata stays readable at 13–15px. |
-| **Fragment Mono** | Google Fonts, OFL | 400 (latin + latin-ext subsets) | Numerals, dates, section indices, skill labels, diagram nodes, and compact metadata |
+| **Fragment Mono** | Google Fonts, OFL | 400 (latin + latin-ext subsets) | Tabular values, dates, section indices, and compact diagram metadata |
 
-Core discipline: **if it is data, it is mono.** Numerals always get
-`font-variant-numeric: tabular-nums`.
+Mono distinguishes tabular data and dates from prose. Outcome sentences use the
+body family so the result and its context read together; tables and animated
+metric displays retain tabular numerals.
 
-The page hierarchy is defined in `styles/typography.css`: hero identity at 18–20px,
-name up to 80px, section headings 32–48px, paired project titles 28–34px, role and
-degree titles 24–28px, and skill headings 22px. Project descriptions use 18px;
-longer prose uses 17px with comfortable leading. Important delivered outcomes
-use 19px and medium weight. Real captions use at least 13px, while source/stage
-labels and controls use 14–16px. Component sheets define their own readable
-scene hierarchy; mini dashboards must not shrink important labels to fit.
-Metric numerals retain their existing scale; grow their explanatory labels
-rather than enlarging sample numbers further. All sizes reflow with enlarged text.
+The shared roles and palette live in `styles/foundations.css`, included in both
+the portfolio and legal bundles. `styles/typography.css` maps portfolio components
+to those roles; `styles/legal.css` applies them to the standalone documents.
+
+| Role | Default fluid range | Treatment |
+| --- | --- | --- |
+| Page identity/title | 44–72px | Display serif; hero name retains its bold weight |
+| Major section | 32–48px | Regular display serif with a quiet numbered label |
+| Project, role, degree title | 28–32px | One shared regular display-serif role |
+| Subsection/category heading | 20–24px | Semibold body face |
+| Supported outcome | 20–24px | Semibold body face, with a smaller measurement/context label |
+| Description/body | 17px | 1.65–1.7 line height, comfortable reading measure |
+| Lead | 19px | Introductory or emphasized prose |
+| Metadata/caption | 13–15px | Secondary colour, sentence case |
+
+Sizes use rem-based limits and natural wrapping. Mini dashboards keep their
+own data hierarchy without overriding the project-title role.
+
+## Shared layout and project structure
+
+- The page measure is 76rem, with fluid gutters and a 65ch reading measure.
+  A quarter-rem spacing scale supplies related-content gaps; section spacing
+  ranges from 3rem to 6rem. Header, main sections and footer share the page grid.
+- Projects follow category → title → supported outcome → description → actual
+  tools → case-study action. Preview scenes illustrate the work. The featured
+  card uses the same type roles with a deliberate split surface.
+- Compact category navigation replaces repeated chapter headings. Legacy
+  category fragment IDs remain on visible metadata, so bookmarks still work.
+- Closed secondary projects form a two-column overview where space permits.
+  With the disclosure enhancement available, open cases use the full reading
+  width and preserve the visitor's position at the control. Native fallback
+  retains a stable overview layout. Mobile uses a single logical column.
+- A disclosure says **Show project details** / **Hide project details**.
+  Navigation links say **View case study** or describe their destination.
+  The plus/collapse indicator, visible focus outline and native keyboard
+  semantics remain consistent.
+- The reporting result is prominent once in its overview and explicitly names
+  monthly manual preparation. Detailed evidence stays in the expanded case.
+  No new results or project stacks are inferred to fill empty fields.
+- Contact uses the shared gutter and gap scale with balanced copy/form columns;
+  skills use equal icon containers with optically balanced marks and individual
+  brand-colour interactions.
+
+Implementation guidance: [W3C heading structure](https://www.w3.org/WAI/tutorials/page-structure/headings/),
+[W3C reflow](https://www.w3.org/WAI/WCAG21/Understanding/reflow), and
+[web.dev responsive typography](https://web.dev/learn/design/typography).
 
 ## Color — ivory, charcoal, sage, and terracotta
 
@@ -70,18 +108,20 @@ so the no-JavaScript page retains intentional styling.
   overlays and blend layers: profiling showed a substantial scrolling cost.
 - The ledger margin line: a single fixed 1px red vertical rule at the left
   edge of the content grid, ≥1200px only (`.content-wrapper::before`).
-- **No** gradients, radial washes, or backdrop blur. The requested skill-icon hover halo is the sole glow/shadow exception.
+- **No** gradients, radial washes, backdrop blur or decorative glow/shadows.
   Hierarchy comes exclusively from hairlines and the two-step surface color.
 - Radii: 0 on rules/tables/mats; 2px max on buttons/tags/nodes.
 
 ## Component grammar
 
 - **Masthead**: solid paper, hairline bottom rule, RP mark and compact name.
+  Hover or keyboard focus reveals a small terracotta corner signature beside
+  the RP mark; the monogram stays consistent with browser and touch icons.
   Desktop active section uses a 2px overline; the tablet overlay uses an inline
   rule and leaves page geometry unchanged. Navigation and toggle targets are at
   least 44px high. Toggles are square hairline-bordered typographic buttons.
 - **Hero**: asymmetric spread — stable body-font role line, Zodiak name,
-  closing rule, tagline, one primary case-study action, and quieter CV/LinkedIn
+  closing rule, prominent value proposition, quieter role context, one primary case-study action, and quieter CV/LinkedIn
   links. Employer logos sit in a ruled row, with portrait/location alongside.
   The complete circular source photograph sits inside one hairline frame,
   without additional zoom or cropping. Its centered location caption sits
@@ -94,23 +134,42 @@ so the no-JavaScript page retains intentional styling.
   company, date, and lead layout. The first three have optional native details
   with Challenge / Solution / Impact columns. Dates use muted mono text; rows
   remain at full opacity, with stable monochrome logos in both themes.
-- **Projects**: featured finance comparison followed by supporting exhibits
-  1.1–1.7. Each paired card reads category, title, purpose/result, illustration,
-  technologies and details. The title and meaning precede the animated sample.
+- **Projects**: one Selected work section, with compact category links for
+  Reporting, Data quality and Automation. Each card reads category, title,
+  supported outcome, description, technologies and details, with an illustration
+  subordinate to that message. Real delivered outcomes lead fictional sample numbers. Sales
+  pipeline reporting links to its dbt technical chapter; both describe the same
+  project. Short reasoning notes explain the documented approach without adding
+  unsupported impact claims. Type roles live in `styles/typography.css`;
+  category navigation and career styles live in `styles/storytelling.css`.
+  The title and meaning precede the animated sample. Each animated story ends
+  in a readable still frame, held for two seconds before the next visible loop.
+  Matched records, review exceptions, retained deal versions and distributed
+  statements make the business mechanism visible using transforms and opacity.
   Bot demo is a full-width rectangular ticket expanding into a report-appendix
   transcript: bot lines carry an ink left rule, user lines a red right rule,
   no bubbles. Dashboard screenshot is plate-mounted (`.plate-mount`: raised
   mat + ink border). Architecture diagrams are ruled flows: hairline node
   boxes, mono uppercase labels, red arrows.
-- **Skills**: ruled index matrix — normal-flow, sentence-case category headings
-  above each grid, with room for long German labels. Cells share hairlines (per-cell
-  `border-right/bottom` so unfilled tracks stay paper), centered 17px tool names,
-  and 44px monochrome vector icons above every label. Product marks and distinct
+- **Skills**: neutral hairline category dividers and quiet, borderless tool tiles
+  on the existing surface colour. Normal-flow, sentence-case headings allow
+  room for long German labels; 12px gaps separate tiles. Centered 17px tool names
+  sit below equal 52px icon containers. Marks use 36–44px optical sizing, with
+  smaller solid symbols and larger sparse or horizontal artwork. Product marks and distinct
   concept symbols use the theme's heading color at rest. On pointer hover, icons
-  reveal their primary brand color with a subtle fading halo; concept icons use
-  the portfolio accent. Small backing discs keep dark or yellow marks visible.
-  Labels retain their appearance on hover; interactive certification links
-  carry button feedback. The flagship group has an accent rule.
+  reveal their primary brand color with a brief fade; concept icons use
+  the portfolio accent. Tight neutral backings keep dark or yellow marks visible
+  where needed, with 6px corners and no shadow; other marks have no backing.
+  Documented tools link to relevant project or experience evidence. Linked
+  cells show a compact, underlined destination with an inline right arrow and
+  color only the hovered or keyboard-focused icon. Destination labels stay visible
+  on every device. Tiles use natural content height with an 8.75rem minimum;
+  seven engineering tools share one desktop row, become four plus three on
+  tablets, and finish with a compact full-width Airflow row on phones. The
+  platform group stays capped at 36rem. Category spacing is 1.5rem. Stack
+  captions occupy the same reserved space as group notes, avoiding layout jumps.
+  Tool names retain their appearance on hover. All four categories share the
+  same neutral divider; Automation & AI has no extra accent rule.
 - **Education**: hairline ledger rows, dates right-aligned mono red.
   Certifications are hairline stub buttons with a red `↗`.
 - **Contact**: two-column filing form. Visible small-caps labels; inputs are
@@ -122,6 +181,15 @@ so the no-JavaScript page retains intentional styling.
 - **Toasts / cookie banner**: raised surface, ink border, mono text, square.
 
 ## Motion — print-restrained
+
+The case studies contain optional, explicitly fictional analyst exercises:
+`lineage-explorer` traces one current-deal metric through source, SQL/model and
+reporting, with retained history shown as a separate branch; `data-cleaning`
+shows original values, date normalization, exact duplicate removal and unresolved
+missing amounts. Both retain complete readable examples without JavaScript.
+Their finite response effects animate only opacity and transforms and respect
+reduced motion. The budget chart can highlight the actual-versus-plan gap on its
+shared scale. These exercises stay inside native case-study disclosures.
 
 Rules lead, content follows: each section's top hairline draws in
 (`scaleX 0→1`) on reveal, then project items settle by 8px with a short row stagger
@@ -156,7 +224,7 @@ the page readable.
   links, icons, and backgrounds all go red, the ledger becomes a promo flyer.
 - The closing double rule appears at exactly four ledger moments (six rule
   elements). Never add a fifth moment.
-- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows beyond the skill-icon hover halo, backdrop blur, or pills.
+- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows, backdrop blur, or pills.
 - No decorative icons glued to headings; ornaments (indices, footnote markers)
   live in `aria-hidden` spans or CSS pseudo-elements, **never inside
   `data-i18n-key` nodes** (the i18n renderer overwrites textContent).
@@ -200,9 +268,9 @@ the page readable.
   `font-synthesis: none`; sup markers use line-height 0 so footnotes never
   disturb leading; mono numerals carry zero letter-spacing (respect the grid);
   About intro measures 60ch.
-- Rhythm: 56px chapter padding ≥768px and 40px on phones; hero–impact uses
-  tighter spacing; colophon gets last-page weight; one
-  20px gutter on mobile shared by masthead, sections, and colophon; footer
+- Rhythm: sections share the fluid 3–6rem spacing token; hero–impact uses
+  tighter spacing; colophon gets last-page weight; the fluid page gutter
+  starts at 20px and is shared by masthead, sections, and colophon; footer
   clears the fixed tab bar (it sits outside `<main>`).
 - Buttons use a 180ms color transition and a 240ms eased, 2px lift on pointer
   hover; pressing moves down 1px. Form caret is red ink.
@@ -224,8 +292,8 @@ the page readable.
 
 ## Compact project presentation — September 2026
 
-- Content measure: 1280px. The compact desktop hero and impact strip fit within the first 900px viewport at 1440px width.
-- The reporting project leads with a sage before/after panel, large mono values, and a terracotta top rule. Its measurement scope remains in the expandable case study.
+- Content measure: 76rem, with fluid gutters. The hero and impact strip retain a tighter relationship than separate content sections.
+- The reporting project leads with a clearly scoped outcome, sage workflow illustration and terracotta top rule. The manual-preparation measurement is labeled in the overview; detailed evidence remains in the case study.
 - Seven supporting projects use paired desktop cards, with a full-width dbt technical case between the analyst cards and the remaining pairs. All stack into a single phone column. Native details disclose the full case studies and work without JavaScript.
 - Each disclosure references its project title for assistive technology. Deep links open the relevant case study; print opens all studies and restores their previous state afterward.
 - Phone navigation uses the bottom tabs only. The menu button is retained at tablet widths (768–1023px); desktop uses the masthead links. Theme and language controls remain available at every size.
@@ -242,7 +310,7 @@ the page readable.
 ## UI and interaction refinement
 
 - Supporting projects now show concise workflow illustrations and the existing Spotify dashboard preview before their disclosures. The figures describe the actual workflows; full details remain available in each case study.
-- A small RP masthead mark, sentence-case headings, and readable impact captions carry the editorial identity. Main chapter padding is 56px on desktop and 40px on phones; the hero and impact strip retain their own spacing.
+- A small RP masthead mark, sentence-case headings, and readable impact captions carry the editorial identity. Main sections share fluid spacing; the hero and impact strip retain a tighter gap.
 - The About section pairs the introduction with a compact facts column on desktop and stacks on phones. At 320px, impact values are smaller to give German labels adequate room.
 - Contact fields sit on a distinct surface, with native name/email autocomplete, a vertically resizable message field, and a privacy link. Cookie, theme, language, and copy controls meet a 44px minimum target. The copy control is bilingual.
 - Tablet navigation dismisses on Escape, outside interaction, focus leaving, and breakpoint changes. Navigation announces the active section with `aria-current`; section jumps and Back to top preserve a useful keyboard focus destination.
@@ -301,19 +369,27 @@ the page readable.
 - English and German dates, source amounts, informative image descriptions, and accessible navigation labels switch together. German visitor-facing forms use informal address consistently.
 - Repeated savings use `₹200k` (now only in the S.M. Auto entry); the industries fact lists sectors, and product names use their established spelling (`n8n`).
 - All four experience entries share the same header and content alignment. Native project and role disclosures both open for direct links and use the same motion and keyboard behavior.
-- Skills remain static labels with a default cursor. Their icons reveal color and a halo on pointer hover, without shifting the layout or adding tab stops; reduced motion makes the change immediate. The demo close button shares the 44px target size used by the other controls.
-- Long headings and labels wrap within their columns. Project, impact, and skill layouts adapt to larger text; comparison values stack when their panel has insufficient space. Test the actual content bounds because the outer sheet clips horizontal overflow.
+- Tools with documented project examples use native links and permanently visible project captions. Other tools remain static labels. Their icons reveal color on pointer hover without shifting the layout; reduced motion makes the change immediate. The demo close button shares the 44px target size used by the other controls.
+- Long headings and labels wrap within their columns. Project, impact, and skill layouts adapt to larger text; outcomes wrap naturally with their measurement context. Test the actual content bounds because the outer sheet clips horizontal overflow.
 - Cookie choices wrap and the banner scrolls within short viewports. Reopening settings moves focus to the choices and returns it to the opener on dismissal.
+- Mobile document scroll padding reserves space for the fixed navigation. Textarea focus reveals its full box; narrow mastheads wrap whole groups at enlarged text sizes instead of squeezing the name into a column.
 - Form and clipboard feedback stay in the selected language throughout pending, success, and reset states. Successful submissions clear only the submitted draft; edits made while waiting remain intact.
 - Legal pages share guarded theme initialization and browser-chrome tinting. Their headings, URLs, and 44px Back links remain usable at 320px and with enlarged text.
 - Company and school marks use one monochrome source each, explicit dimensions, and consistent theme filters. They never change color during scrolling or hover. The S.M. placeholder is a theme-aware monogram, not an asserted official company logo.
-- Tool icons use 44px slots above their labels; diagram and copy icons use a 16px minimum. Skill marks are embedded as a local SVG sprite, with sources documented in `assets/skill-icons/README.md`. SVG artwork stays inside its viewBox, and decorative icons are hidden from assistive technology while their controls retain meaningful labels.
+- Tool icons use equal 52px slots above their labels, with optically balanced 36–44px artwork; diagram and copy icons use a 16px minimum. Skill marks are embedded as a local SVG sprite, with sources documented in `assets/skill-icons/README.md`. SVG artwork stays inside its viewBox, and decorative icons are hidden from assistive technology while their controls retain meaningful labels.
+
+## Purposeful logo motion
+
+- All skill marks share a restrained 160ms color reveal and 180ms backing fade on hover or keyboard focus. Optically balanced marks, names and project captions stay centered and stationary. Power BI and dark-theme low-contrast marks use a tight 48px neutral backing for readability. There are no extra charts or nodes beside the logos, enlarged circles, shadows or looping logo effects.
+- The employer strip links KPMG, CARIAD and Lecturio to their experience headings. Always-visible captions describe the progression from audit analytics through sales reporting to finance automation. The marks retain their monochrome treatment; a short accent rule responds on hover or focus. Three columns become three compact rows on phones.
+- Touch navigation remains one tap and keyboard activation follows the native link. The skill color reveal works without JavaScript; reduced motion makes the change immediate. Employer links also work without JavaScript; enhancement places keyboard focus at the selected role.
+- Interaction guidance: [W3C reduced-motion technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39), [W3C keyboard criterion](https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html) and [web.dev animation performance](https://web.dev/articles/animations-guide). These guide the implementation; they are not a claim of comprehensive accessibility conformance.
 
 ## Review fixes — September 2026
 
 - Hero metrics are 99%, 300+ and 4+ years in analytics, using the CV's "finance, automotive and audit" phrasing. `₹200k` stays in the S.M. Auto entry: converted, it undersold the headline row.
 - The Lecturio location describes the person ("based in Hamburg" / "wohnhaft in Hamburg"); the company itself is not placed in Hamburg.
-- Phone tab labels use 12px so "Experience" and "Fähigkeiten" stay whole from 360px. At 320px they still wrap mid-word and would need shorter labels.
+- Phone navigation uses concise labels: Career/Skills in English and Beruf/Tools in German. Desktop retains the fuller labels; destinations are unchanged.
 - German headings keep `hyphens: manual`: long compounds get a soft hyphen (`Monats­berichte`, `zusammen­arbeiten`) or shorter phrasing (`Automatisierte Rechnungspipeline`). A test checks that no heading word splits without a hyphen at 320–768px.
 - A saved German preference sets `.lang-pending` before first paint, hiding the English markup until main.js translates it. `lang` stays `en` until then, so it always describes the visible text; the 3s failsafe still reveals the page if main.js fails.
 - Controls that wait (demo questions, copy, contact submit) use `aria-disabled` rather than `disabled`, so keyboard focus and Escape stay in place. The copy result is announced through a status region.

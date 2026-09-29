@@ -1,10 +1,18 @@
 /* Primary brand colors from the pinned Simple Icons metadata in the asset README.
    Original concept symbols use the portfolio accent. All remain monochrome at rest. */
 .skill-chip {
+    --skill-mark-size: 42px;
     --skill-brand: var(--accent-text);
-    --skill-glow: var(--skill-brand);
-    --skill-backing: color-mix(in srgb, var(--skill-brand) 8%, var(--bg-color));
+    --skill-backing: transparent;
+    justify-content: flex-start;
+    gap: .375rem;
 }
+/* Equal slots, optically balanced artwork: solid marks need less area than
+   fine outlines or wide wordmarks. Source artwork and hover geometry stay intact. */
+.skill-chip:is([data-skill='qlik-sense'], [data-skill='github-pages']) { --skill-mark-size: 36px; }
+.skill-chip:is([data-skill='power-bi'], [data-skill='python'], [data-skill='dbt']) { --skill-mark-size: 38px; }
+.skill-chip:is([data-skill='excel'], [data-skill='bigquery'], [data-skill='claude-code']) { --skill-mark-size: 40px; }
+.skill-chip:is([data-skill='tableau'], [data-skill='airflow'], [data-skill='n8n'], [data-skill='salesforce'], [data-skill='aws']) { --skill-mark-size: 44px; }
 .skill-chip[data-skill='power-bi'] { --skill-brand: #F2C811; --skill-backing: #292D29; }
 .skill-chip[data-skill='tableau'] { --skill-brand: #E97627; }
 .skill-chip[data-skill='qlik-sense'] { --skill-brand: #009848; }
@@ -21,36 +29,60 @@
 .skill-chip[data-skill='github-pages'] { --skill-brand: #181717; }
 html[data-theme='dark'] .skill-chip:is([data-skill='pandas'], [data-skill='aws'], [data-skill='github-pages'], [data-skill='excel']) {
     --skill-backing: #F8F7F4;
-    --skill-glow: #D6DACC;
 }
 .skill-icon-wrap {
     position: relative;
     isolation: isolate;
     display: grid;
     place-items: center;
-    flex: 0 0 44px;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
 }
 .skill-icon-wrap::before {
     content: '';
     position: absolute;
     z-index: -1;
-    inset: -9px;
-    border-radius: 50%;
+    inset: 2px;
+    border-radius: 6px;
     background: var(--skill-backing);
-    box-shadow: 0 0 18px 3px color-mix(in srgb, var(--skill-glow) 28%, transparent);
     opacity: 0;
     pointer-events: none;
 }
+.skill-project-intro { margin: 0 0 var(--space-8); max-width: var(--reading-width); color: var(--text-color); font-size: 1.125rem; line-height: 1.65; }
+.skill-project-label { font-size: .8125rem; line-height: 1.4; color: var(--text-color); overflow-wrap: anywhere; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+.skill-project-link:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -3px; }
+.skill-chip:focus-visible .skill-chip-icon { color: var(--skill-brand); }
+.skill-chip:focus-visible .skill-icon-wrap::before { opacity: 1; }
+.skill-note-wrap { display: grid; }
+.skill-note-wrap > p { grid-area: 1 / 1; min-height: 3em; }
+.skill-connection { margin-top: .75rem; font-size: .9375rem; line-height: 1.5; color: var(--heading-color); visibility: hidden; }
+.has-skill-connection .skill-note { visibility: hidden; }
+.has-skill-connection .skill-connection { visibility: visible; }
 @media screen and (hover: hover) and (pointer: fine) {
     .skill-chip:hover .skill-chip-icon { color: var(--skill-brand); }
     .skill-chip:hover .skill-icon-wrap::before { opacity: 1; }
 }
-@media screen and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media screen and (prefers-reduced-motion: no-preference) {
     .skill-chip .skill-chip-icon { transition: color 160ms ease; }
     .skill-icon-wrap::before { transition: opacity 180ms ease; }
 }
 @media (prefers-reduced-motion: reduce) {
     .skill-chip .skill-chip-icon, .skill-icon-wrap::before { transition: none !important; }
+}
+/* Flex growth fills the shorter final row: seven tools become four plus three. */
+.skill-matrix--engineering { --skill-columns: 7; }
+.skill-matrix--platforms { --skill-columns: 3; max-width: 36rem; }
+@container (max-width: 64rem) {
+    .skill-matrix { --skill-columns: 3; }
+    .skill-matrix--engineering { --skill-columns: 4; }
+}
+@container (max-width: 40rem) {
+    .skill-matrix { --skill-columns: 2; }
+    .skill-matrix--engineering > :last-child,
+    .skill-matrix--platforms > :last-child { flex-basis: 100%; flex-direction: row; justify-content: center; min-height: 0; }
+}
+@container (max-width: 16rem) {
+    .skill-matrix { --skill-columns: 1; }
+    .skill-project-label [aria-hidden] { display: none; }
 }

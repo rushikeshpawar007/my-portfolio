@@ -1,0 +1,200 @@
+/* The portfolio's reading path: value, evidence, method, and career progression.
+   All surfaces and emphasis inherit the existing light/dark ledger palette. */
+.brand-mark { position: relative; }
+.brand-mark::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 13px;
+    height: 13px;
+    border-right: 2px solid var(--accent-text);
+    border-bottom: 2px solid var(--accent-text);
+    opacity: 0;
+    transform: translate(-3px, -3px);
+    pointer-events: none;
+}
+header nav > a:is(:hover, :focus-visible) .brand-mark::after {
+    opacity: 1;
+    transform: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .brand-mark::after { transition: opacity 180ms ease, transform 240ms var(--motion-ease); }
+}
+#hero .hero-tagline {
+    max-width: 33ch;
+    margin-top: 1.5rem;
+    color: var(--heading-color);
+    font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -.015em;
+}
+.hero-context {
+    max-width: 57ch;
+    margin-top: 1rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--text-color);
+}
+
+.project-route {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem 2rem;
+    margin: 0 0 var(--space-8);
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--hairline);
+}
+.project-route a {
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    min-height: 44px;
+    max-width: 100%;
+    color: var(--heading-color);
+    font-size: var(--type-small);
+    line-height: 1.5;
+    text-decoration: underline;
+    text-decoration-color: var(--hairline);
+    text-underline-offset: 5px;
+}
+.project-route a > span:first-child {
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    font-size: .8125rem;
+    text-decoration: none;
+}
+.project-route a:hover,
+.project-connection:hover { text-decoration-color: var(--accent-text); }
+.project-route a:focus-visible,
+.project-connection:focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 4px;
+}
+/* Categories belong to project metadata, not another heading level. */
+.project-preview .project-meta::before { display: none; }
+#reconciliation-case-study .wb-scene-metric > strong {
+    font-size: 1.375rem;
+    line-height: 1.4;
+    letter-spacing: -.025em;
+}
+.project-connection {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+    margin-top: .625rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--heading-color);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--hairline);
+}
+.case-reasoning {
+    margin-top: 1.5rem;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--hairline);
+    max-width: var(--reading-width);
+}
+.case-reasoning h4,
+.case-reasoning > strong {
+    display: block;
+    color: var(--heading-color);
+    font-family: var(--font-body);
+    font-size: var(--type-subheading);
+    line-height: 1.4;
+    font-weight: 600;
+}
+.case-reasoning p { margin-top: .5rem; font-size: 1.0625rem; line-height: 1.7; }
+.supporting-project .project-intro { margin-bottom: 1rem; }
+.supporting-project .project-visual.motion-preview { min-height: 0; }
+.supporting-project .preview-dashboard-window { height: 210px; }
+.supporting-project .invoice-flow { margin-top: .25rem; margin-bottom: 1.25rem; }
+.dashboard-annotation {
+    max-width: 72ch;
+    margin: .5rem 0 1.5rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--accent-text);
+}
+.dashboard-annotation > span {
+    display: block;
+    margin-bottom: .75rem;
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    font-size: .875rem;
+    line-height: 1.6;
+}
+.dashboard-annotation h4 { color: var(--heading-color); }
+.dashboard-annotation p { font-size: 1.0625rem; line-height: 1.7; }
+
+.career-path {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.career-path li {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: .25rem 1.25rem;
+    min-width: 0;
+    padding: 1.125rem 0;
+    border-top: 1px solid var(--hairline);
+}
+.career-path li:first-child { padding-top: .75rem; }
+.career-path li > div { min-width: 0; }
+.career-year {
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    font-size: .875rem;
+    line-height: 1.7;
+}
+.career-path strong {
+    display: block;
+    color: var(--heading-color);
+    font-size: 1.125rem;
+    line-height: 1.5;
+    font-weight: 500;
+}
+.career-path p { margin-top: .25rem; font-size: 1rem; line-height: 1.6; }
+.career-path li:last-child strong { color: var(--accent-text); }
+.about-practice {
+    max-width: 72ch;
+    margin-top: 2rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--accent-text);
+    color: var(--heading-color);
+    font-size: 1.125rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+    #hero .hero-tagline { margin-top: 1rem; font-size: 1.5rem; line-height: 1.4; }
+    .hero-context { margin-top: .75rem; font-size: 1rem; line-height: 1.65; }
+    .project-route { gap: .25rem 1.25rem; margin-bottom: 1.5rem; }
+    .supporting-project .preview-dashboard-window { height: 194px; }
+    .about-practice { margin-top: 1.5rem; padding-left: 1rem; }
+}
+@media (max-width: 359px) {
+    .career-path li { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
+}
+@media print {
+    .project-route { display: none; }
+    .project-outcome, .about-practice { color: inherit; }
+    .career-path li, .case-reasoning { break-inside: avoid; }
+}
+
+/* Employer marks stay still; only the short career markers respond. */
+.career-trail { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; max-width: 44rem; }
+.career-stop { position: relative; display: flex; align-items: center; gap: .5rem; min-height: 44px; padding-bottom: .5rem; scroll-margin-block: 6rem; }
+.career-stop > div { min-width: 0; overflow-wrap: anywhere; }
+.career-stop small { display: block; font-size: .8125rem; line-height: 1.5; color: var(--text-color); }
+.career-stop::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--accent-text); transform: scaleX(.15); transform-origin: left; opacity: .4; }
+.career-stop:is(:hover, :focus-visible)::after { transform: scaleX(1); opacity: 1; }
+.career-stop:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 4px; }
+.experience-role h3 { scroll-margin-top: 6rem; }
+@media (prefers-reduced-motion: no-preference) { .career-stop::after { transition: transform 240ms ease, opacity 180ms ease; } }
+@media (max-width: 767px) { .career-trail { grid-template-columns: 1fr; gap: .75rem; } }

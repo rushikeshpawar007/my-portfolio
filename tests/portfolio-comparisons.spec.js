@@ -13,17 +13,32 @@ test('budget periods calculate positive and negative revenue variance using the 
   await expect(example.locator('[data-budget-plan]')).toHaveText('€100,000');
   await expect(example.locator('[data-budget-actual]')).toHaveText('€112,000');
   await expect(example.locator('[data-budget-insight]')).toHaveText('Revenue is €12,000 above budget (12.0%).');
+  const highlight = example.locator('[data-budget-explain]');
+  const gap = example.locator('[data-budget-gap]');
+  await highlight.focus();
+  await page.keyboard.press('Enter');
+  await expect(highlight).toBeFocused();
+  await expect(highlight).toHaveAttribute('aria-pressed', 'true');
+  await expect(gap).toHaveCSS('opacity', '1');
+  expect(await gap.evaluate(element => parseFloat(element.style.left))).toBeCloseTo(83.3333, 3);
+  expect(await gap.evaluate(element => parseFloat(element.style.width))).toBe(10);
   await page.locator('#budget-period').selectOption('feb');
   await expect(example.locator('[data-budget-plan]')).toHaveText('€108,000');
   await expect(example.locator('[data-budget-actual]')).toHaveText('€96,000');
   await expect(example.locator('[data-budget-insight]')).toHaveText('Revenue is €12,000 below budget (11.1%).');
   await expect(example.locator('[data-budget-bar="actual"]')).toHaveCSS('transform', 'matrix(0.8, 0, 0, 1, 0, 0)');
+  expect(await gap.evaluate(element => parseFloat(element.style.left))).toBe(80);
+  expect(await gap.evaluate(element => parseFloat(element.style.width))).toBe(10);
   await page.locator('#lang-toggle-header').click();
   await expect(example.locator('[data-budget-period]')).toHaveText('Februar 2026');
   await expect(example.locator('[data-budget-insight]')).toContainText('12.000');
   await expect(example.locator('[data-budget-insight]')).toContainText('11,1');
   await expect(example.locator('[data-budget-insight]')).toContainText('unter dem Plan');
   await expect(page.locator('#budget-period')).toHaveValue('feb');
+  await expect(highlight).toHaveText('Hervorhebung ausblenden');
+  await expect(highlight).toHaveAttribute('aria-pressed', 'true');
+  await highlight.click();
+  await expect(gap).toHaveCSS('opacity', '0');
 });
 
 test('regional selection preserves comparable source rows and labels independent units', async ({ page }) => {
@@ -50,6 +65,7 @@ test('new analysis examples retain complete source values and hide inactive cont
   await page.locator('#report-details > summary').click();
   await expect(page.locator('[data-budget-insight]')).toContainText('€12,000 above budget');
   await expect(page.locator('#budget-period')).toBeHidden();
+  await expect(page.locator('[data-budget-explain]')).toBeHidden();
   await page.locator('#cariad-role-details > summary').click();
   await expect(page.locator('[data-analysis-example="regional"] tbody tr')).toHaveCount(3);
   await expect(page.locator('#analysis-region')).toBeHidden();
@@ -66,7 +82,7 @@ test('general CV is downloadable and languages and analyst skills are present', 
   expect((await response.body()).subarray(0, 5).toString()).toBe('%PDF-');
   await expect(page.locator('.profile-languages')).toContainText('German · B1');
   for (const skill of ['dbt', 'Power Query', 'Excel', 'pandas']) {
-    await expect(page.locator('.skill-chip').filter({ hasText: new RegExp('^' + skill + '$') })).toBeVisible();
+    await expect(page.locator('.skill-chip-label').filter({ hasText: new RegExp('^' + skill + '$') })).toBeVisible();
   }
 });
 

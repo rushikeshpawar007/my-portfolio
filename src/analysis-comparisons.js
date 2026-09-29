@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const period = document.getElementById('budget-period');
     if (budget instanceof HTMLElement && period instanceof HTMLSelectElement) {
         const periods = { jan: { budget: 100000, actual: 112000 }, feb: { budget: 108000, actual: 96000 } };
+        const explain = budget.querySelector('[data-budget-explain]');
+        let explaining = false;
         function renderBudget() {
             const root = /** @type {HTMLElement} */ (budget);
             const select = /** @type {HTMLSelectElement} */ (period);
@@ -53,7 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (bar instanceof HTMLElement) bar.style.transform = `scaleX(${values[kind] / 120000})`;
             }
             write(root, '[data-budget-insight]', message(difference >= 0 ? 'comparison_above' : 'comparison_below', { amount: money(Math.abs(difference)), percent }));
+            const gap = root.querySelector('[data-budget-gap]');
+            if (gap instanceof HTMLElement) {
+                gap.style.left = `${Math.min(values.actual, values.budget) / 1200}%`;
+                gap.style.width = `${Math.abs(difference) / 1200}%`;
+            }
+            root.dataset.budgetExplaining = String(explaining);
+            if (explain instanceof HTMLButtonElement) {
+                const key = explaining ? 'comparison_hide_takeaway' : 'comparison_show_takeaway';
+                explain.dataset.i18nKey = key;
+                explain.textContent = text(key);
+                explain.setAttribute('aria-pressed', String(explaining));
+            }
         }
+        explain?.addEventListener('click', () => { explaining = !explaining; renderBudget(); });
         period.addEventListener('change', renderBudget);
         document.addEventListener('portfolio:languagechange', renderBudget);
         budget.querySelector('[data-comparison-control]')?.removeAttribute('hidden');

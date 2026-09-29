@@ -188,7 +188,7 @@ paint and compositing also share the 8.33 ms budget for 120 Hz.
 ## Regression coverage and device verification
 
 Project previews use finite Web Animations API sequences with transforms and
-opacity only, repeating while visible with a 1.2-second still interval. An
+opacity only, repeating while visible with a two-second still interval. An
 IntersectionObserver controls eligibility; each preview has at most one timer
 between cycles. Animations and timers are cancelled when offscreen, in a hidden
 tab, during printing, or with reduced motion. Architecture playback also requires
@@ -218,6 +218,29 @@ on initialization, interaction or a language change. They add no polling or
 continuous animation loop. Optional 180ms response transitions use transforms
 and opacity and respect reduced motion. The downloadable CV is not prefetched.
 
+The lineage and data-cleaning exercises also run only on initialization, explicit
+interaction or language change. Lineage signals cancel when offscreen, the case
+closes, the tab hides, printing starts or reduced motion changes. Cleaning uses
+one finite response animation, with cancellation for closure, hidden tabs,
+printing and reduced motion. Skill project captions respond to pointer/focus events;
+the RP signature uses a small CSS pseudo-element. These additions require no
+animation library, GIF download, polling or per-frame JavaScript loop.
+
+Skill marks use brief CSS color and backing-opacity transitions on hover or
+keyboard focus. Color interpolation repaints only the small icon during the
+160ms transition; there is no geometry animation, shadow animation or idle loop.
+Reduced motion disables the transition. Removing the added Power BI/dbt
+illustrations also removes their JavaScript controller and observer entirely.
+Employer trail rules use brief CSS transform/opacity transitions; native links
+remain usable without their optional focus-management script. Both features
+reuse the existing palette and assets and add no animation library.
+
+Removing four superseded decoration families saved 1,355 minified CSS bytes.
+Frozen before/after comparisons found no visible geometry or computed-style
+changes in eight mobile/desktop, English/German, light/dark and print combinations.
+The resulting bundle including the new logo interactions remains below the
+existing 130,000-byte stylesheet budget.
+
 `tests/portfolio-performance.spec.js` checks native and fallback progress,
 reduced motion, initial deep links, content/viewport changes, stable header
 dimensions, and absence of repeated root/indicator style writes. Existing
@@ -231,3 +254,48 @@ running in the production page.
 
 Implementation references: [Chrome's scroll-driven animation guide](https://developer.chrome.com/docs/css-ui/scroll-driven-animations)
 and [web.dev's animation performance guide](https://web.dev/articles/animations-guide).
+
+## Follow-up quality audit — 29 September 2026
+
+Startup translation now leaves matching text and attributes intact. Language
+changes read all metric rectangles before applying metric state, avoiding mixed
+layout reads and writes. Theme snapshots suppress colour transitions only on
+the components that own them, instead of every element and pseudo-element.
+
+The comparison used local headless Chromium on a Ryzen 7 5700U Windows machine,
+fresh contexts, disabled cache, 40 ms emulated latency, 1.25 MiB/s download and
+0.625 MiB/s upload. Each CPU4× series contains three samples at 1440×900 and
+three at 390×844. Other audit browser work was stopped during measurement.
+Initial observations end after page load, font readiness and a further 1.5 seconds;
+the long-task measure covers that window and is not Lighthouse TBT.
+
+| Local lab measurement | Desktop before → after | Mobile viewport before → after |
+| --- | ---: | ---: |
+| Theme click, median Event Timing | 1,424 → 928 ms | 1,352 → 696 ms |
+| Language click, median Event Timing | 2,312 → 1,696 ms | 2,008 → 1,136 ms |
+| Project disclosure click, median Event Timing | 632 → 592 ms | 544 → 320 ms |
+| Initial long-task time above 50 ms per task, median | 2,927 → 1,698 ms | 2,401 → 1,035 ms |
+| Initial LCP, median | 2,004 → 2,640 ms | 2,980 → 2,100 ms |
+
+Click latency and initial main-thread work improved in these samples. LCP was
+variable and mixed, so this does not establish a general loading-speed gain.
+All after-change samples recorded initial CLS of zero. One unthrottled control
+per viewport recorded LCP of 832/800 ms and observed click durations of 48–144 ms.
+These controls are small samples, not a device-independent guarantee.
+
+The CPU4× results still show substantial theme/language rendering costs. They
+remain a limitation on slower devices; physical-device checks and production
+visitor metrics are required before promising consistently fast interactions.
+Event Timing samples are not field INP, and viewport emulation does not recreate
+a physical phone or verify 120 FPS.
+
+Initial loading requests one CSS bundle, eight deferred scripts, seven used
+self-hosted font subsets and four WebP images. It makes no external request
+with analytics consent denied. Hidden portrait variants, legacy images and
+unused page styles are not fetched. No animation framework or telemetry was added.
+
+Detailed observations and scripts are retained in the ignored
+`.portfolio-review/audit-performance-*.json` files. See the
+[quality audit](AUDIT-2026-09-29.md) for functional coverage and remaining
+verification limits. Final narrow-screen form-padding refinements do not affect
+the measured 390px/1440px layouts.

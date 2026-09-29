@@ -33,8 +33,8 @@ The portfolio-authored `dax.svg`, `sql.svg`, `power-query.svg`, `aws-athena.svg`
 
 ## Maintenance
 
-Keep skill graphics theme-colored at rest via `currentColor`, keep their visible tool-name labels, and mark repeated inline SVG uses decorative (`aria-hidden="true"`, `focusable="false"`). Pointer hover reveals the primary brand color with a small halo; original concept icons use the portfolio accent. If updating artwork, preserve its source and licensing information here.
+Keep skill graphics theme-colored at rest via `currentColor`, keep their visible tool-name labels, and mark repeated inline SVG uses decorative (`aria-hidden="true"`, `focusable="false"`). Pointer hover and keyboard focus reveal the primary brand color; original concept icons use the portfolio accent. A tight neutral backing supports colors that need extra contrast. If updating artwork, preserve its source and licensing information here.
 
 Hover colors in `styles/skill-icons.css` come from the matching pinned metadata: [16.0.0](https://github.com/simple-icons/simple-icons/blob/16.0.0/data/simple-icons.json) and [11.15.0](https://github.com/simple-icons/simple-icons/blob/11.15.0/_data/simple-icons.json). These are primary brand colors applied to the existing monochrome shapes, rather than full multicolor logo variants.
 
-The corresponding `skill-*` symbols in `index.html` mirror these source files. Update both when replacing artwork. The Airflow mark gets a small matching stroke in the display CSS to make its fine outlines legible at 44px.
+The corresponding `skill-*` symbols in `index.html` mirror these source files. Update both when replacing artwork. All marks sit in consistent 52px square containers. Their display sizes vary from 36px to 44px to balance dense and sparse shapes without changing the source geometry. The Airflow mark gets a small matching stroke in the display CSS to make its fine outlines legible.

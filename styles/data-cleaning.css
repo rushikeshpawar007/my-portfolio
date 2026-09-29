@@ -1,0 +1,11 @@
+/* Small, user-controlled explanation; shared workbench styles handle reflow. */
+.cleaning-exercise { margin-top: 2rem; }
+.cleaning-exercise .workbench-controls { margin-bottom: 1rem; }
+.cleaning-exercise [data-cleaning-note] { margin-bottom: .75rem; line-height: 1.7; }
+.cleaning-exercise [data-cleaning-count] { color: var(--accent-text); font-weight: 500; }
+.cleaning-exercise .workbench-table del { display: block; color: var(--text-color); }
+.cleaning-exercise [data-cleaning-attention='true'] [data-cleaning-status] { color: var(--accent-text); }
+.cleaning-exercise [data-cleaning-removed='true'] [data-cleaning-date], .cleaning-exercise [data-cleaning-removed='true'] [data-cleaning-amount] { text-decoration: line-through; }
+.cleaning-exercise [data-cleaning-select] { flex: 1 1 8rem; }
+.cleaning-exercise [data-cleaning-date], .cleaning-exercise [data-cleaning-amount] { min-width: 0; overflow-wrap: anywhere; }
+.cleaning-exercise .workbench-table td { line-height: 1.7; }

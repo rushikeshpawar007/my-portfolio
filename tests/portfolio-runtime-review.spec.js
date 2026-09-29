@@ -113,18 +113,24 @@ test('sample controls reuse locale formatters while preserving translated values
     }
   });
   await page.goto('/');
-  await page.locator('#reconciliation-details, #pipeline-history-details').evaluateAll(details => details.forEach(el => { el.open = true; }));
+  await page.locator('#reconciliation-details, #pipeline-history-details, #dbt-history-details').evaluateAll(details => details.forEach(el => { el.open = true; }));
   const initial = await page.evaluate(() => window.formatterConstructions);
   await page.locator('[data-reconciliation-filter="review"]').click();
   await page.locator('#workbench-deal').selectOption('D-202');
   await expect(page.locator('[data-current-stage] strong')).toHaveText('Closed Won');
   await expect(page.locator('[data-total="difference"]')).toHaveText('€2,500');
+  await page.locator('[data-cleaning-select="2"]').click();
+  await page.locator('[data-lineage-step="1"]').click();
   expect(await page.evaluate(() => window.formatterConstructions)).toBe(initial);
   await page.locator('#lang-toggle-header').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'de');
   await expect(page.locator('[data-total="difference"]')).toHaveText(/2\.500\s€/);
   const german = await page.evaluate(() => window.formatterConstructions);
-  expect(german - initial).toBeLessThanOrEqual(5);
+  // Five existing formats plus one currency format for each new analyst sample.
+  expect(german - initial).toBeLessThanOrEqual(7);
+  await page.locator('[data-cleaning-select="0"]').click();
+  await page.locator('[data-lineage-step="2"]').click();
+  expect(await page.evaluate(() => window.formatterConstructions)).toBe(german);
   await page.waitForTimeout(160);
   await page.locator('#lang-toggle-header').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');

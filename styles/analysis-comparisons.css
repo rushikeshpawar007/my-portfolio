@@ -14,7 +14,13 @@
 .analysis-bar-track { height: 8px; margin-top: 0.5rem; background: var(--feature-surface); }
 .analysis-bar-track i { display: block; height: 100%; width: 100%; background: var(--feature-ink); transform-origin: left center; }
 .analysis-bar-track [data-budget-bar="actual"] { background: var(--accent-text); }
+.analysis-control button { min-height: 44px; padding: .5rem .75rem; border: 1px solid var(--hairline); color: var(--heading-color); background: var(--surface); font: inherit; font-size: .9375rem; cursor: pointer; }
+.analysis-control button:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.analysis-gap { position: relative; height: 12px; margin-top: .5rem; }
+.analysis-gap i { position: absolute; top: 0; height: 9px; border: 1px solid var(--accent-text); border-top: 0; opacity: 0; transform: translateY(-3px); }
+[data-budget-explaining='true'] .analysis-gap i { opacity: 1; transform: none; }
 .analysis-example .analysis-insight { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--hairline); color: var(--heading-color); font-size: 1.25rem; line-height: 1.55; }
+[data-budget-explaining='true'] .analysis-insight { border-top-color: var(--accent-text); }
 .analysis-example .analysis-method { margin: 0.75rem 0 0; font-size: 0.9375rem; color: var(--text-color); }
 .region-table { table-layout: fixed; border-collapse: collapse; width: 100%; margin-top: 1.25rem; font-size: 0.875rem; }
 .region-table th, .region-table td { padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--hairline); text-align: right; vertical-align: top; overflow-wrap: anywhere; }
@@ -45,6 +51,7 @@
 }
 @media (prefers-reduced-motion: no-preference) {
     .analysis-bar-track i { transition: transform 180ms ease; }
+    .analysis-gap i { transition: opacity 180ms ease, transform 180ms ease; }
 }
 @media print {
     .analysis-control { display: none; }

@@ -18,11 +18,12 @@ if (tailwind.status !== 0) process.exit(tailwind.status ?? 1);
 // the same base. Editable source files remain separate for maintenance.
 const bundles = {
     'site.min.css': [
-        'tailwind.css', 'main.css', 'project-previews.css', 'portrait.css',
+        'tailwind.css', 'foundations.css', 'main.css', 'project-previews.css', 'portrait.css',
         'analysis-comparisons.css', 'analyst-workbench.css', 'dbt-project.css',
-        'typography.css', 'skill-icons.css',
+        'typography.css', 'skill-icons.css', 'storytelling.css',
+        'lineage-explorer.css', 'data-cleaning.css',
     ],
-    'legal.min.css': ['legal.css'],
+    'legal.min.css': ['foundations.css', 'legal.css'],
 };
 for (const [output, sources] of Object.entries(bundles)) {
     const code = Buffer.from(sources.map(file => fs.readFileSync(path.join(root, 'styles', file), 'utf8')).join('\n'));

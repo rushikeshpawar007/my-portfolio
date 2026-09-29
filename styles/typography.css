@@ -1,16 +1,6 @@
 /* Reading hierarchy: identity → project purpose → result → explanation → metadata.
    Component scenes keep their own type scales; these rules cover the page itself. */
-:root {
-    --type-caption: .8125rem;
-    --type-meta: .875rem;
-    --type-small: .9375rem;
-    --type-body: 1.0625rem;
-    --type-lead: 1.1875rem;
-    --type-subheading: 1.375rem;
-    --type-project: clamp(1.75rem, 1.4rem + .7vw, 2.125rem);
-    --type-section: clamp(2rem, 1.5rem + 2vw, 3rem);
-    --mobile-nav-reserve: calc(3.2rem + 40px);
-}
+:root { --mobile-nav-reserve: calc(3.2rem + 40px); }
 body { font-size: var(--type-body); line-height: 1.7; }
 .section-title { font-size: var(--type-section); line-height: 1.2; }
 .section-eyebrow { font-size: var(--type-meta); }
@@ -20,8 +10,6 @@ header nav ul li a { font-size: var(--type-meta); letter-spacing: .02em; text-tr
 header nav ul li a::before { font-size: .75rem; }
 #lang-toggle-header, #lang-toggle-mobile { font-size: var(--type-meta); }
 #hero .hero-role { font-size: 1.25rem; line-height: 1.45; letter-spacing: 0; font-weight: 500; color: var(--heading-color); }
-#hero .hero-tagline { font-size: 1.25rem; line-height: 1.65; max-width: 51ch; }
-#hero .hero-tagline strong { display: block; margin-bottom: .35rem; }
 #hero .portrait-caption p { font-size: var(--type-meta); line-height: 1.6; }
 #hero .portrait-caption p:first-child { font-size: var(--type-small); }
 .hero-secondary-link { font-size: 1rem; }
@@ -30,15 +18,16 @@ header nav ul li a::before { font-size: .75rem; }
 .copy-email-btn.btn-compact { font-size: var(--type-small); }
 .impact-card p, html[lang='de'] .impact-card p { font-size: 1rem; line-height: 1.5; }
 .project-kicker, .project-meta, .project-preview .project-meta::before { font-size: var(--type-meta); }
-.project-kicker { text-transform: none; letter-spacing: .02em; }
-.project-intro { margin-bottom: 1.5rem; min-width: 0; }
-.project-preview h3 { font-size: var(--type-project); line-height: 1.25; }
+.project-kicker, .project-meta { font-family: var(--font-body); font-weight: 500; text-transform: none; letter-spacing: .02em; }
+.project-intro { margin-bottom: var(--space-6); min-width: 0; }
+.project-outcome { margin-top: var(--space-4); max-width: 38ch; color: var(--heading-color); font-size: var(--type-outcome); line-height: 1.4; }
+.project-outcome > span { display: block; margin-bottom: var(--space-1); color: var(--text-color); font-size: var(--type-meta); font-weight: 400; line-height: 1.5; }
+.project-outcome strong { display: block; font-weight: 600; }
+.project-title, .experience-header h3, .edu-row h3 { font-family: var(--font-display); font-size: var(--type-project); line-height: 1.25; font-weight: 400; letter-spacing: -.015em; }
 .project-intro .project-description { margin-bottom: 0; }
-.feature-copy h3 { font-size: clamp(2rem, 1.5rem + 1vw, 2.625rem); line-height: 1.2; }
-.project-description { font-size: 1.125rem; line-height: 1.65; }
+.project-description { font-size: var(--type-body); line-height: 1.65; }
 .project-description strong { font-weight: 600; color: var(--heading-color); }
 .project-tools { font-size: var(--type-meta); line-height: 1.6; }
-.comparison-label { font-size: var(--type-small); line-height: 1.5; }
 .project-preview > .project-tools { margin-top: .25rem; }
 .case-details > summary, .experience-details > summary { font-size: 1rem; line-height: 1.5; }
 .case-facts dt { font-size: var(--type-small); line-height: 1.5; text-transform: none; letter-spacing: 0; }
@@ -47,7 +36,9 @@ header nav ul li a::before { font-size: .75rem; }
 .case-facts > div:has(> dt[data-i18n-key='report_after_label']) > dd { font-size: var(--type-lead); font-weight: 500; color: var(--heading-color); }
 .case-body > p, #spotify-case-study .case-body p, #spotify-case-study .case-body li { font-size: var(--type-body); line-height: 1.7; }
 .case-body > .case-scope { font-size: var(--type-small); line-height: 1.7; }
-#spotify-case-study .case-body h4 { font-size: var(--type-subheading); line-height: 1.35; margin-bottom: .65rem; }
+.case-body h4, .role-body h4, .subsection-title, .skill-group-heading { font-family: var(--font-body); font-size: var(--type-subheading); font-weight: 600; line-height: 1.35; letter-spacing: 0; }
+.case-body h4 { margin-bottom: var(--space-3); }
+.case-body h5 { font-family: var(--font-body); font-size: var(--type-body); line-height: 1.4; font-weight: 600; }
 .case-link, .project-extra .case-link { font-size: 1rem; line-height: 1.6; }
 .dbt-project-relation { margin: 1rem 0 .5rem; font-size: var(--type-small); line-height: 1.6; }
 .visual-step span { font-size: var(--type-meta); line-height: 1.5; }
@@ -55,33 +46,29 @@ header nav ul li a::before { font-size: .75rem; }
 .arch-layer-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: .02em; }
 .arch-engine-tag { font-size: var(--type-caption); line-height: 1.6; }
 .arch-diagram { gap: 1.25rem; }
-.about-intro { font-size: 1.5rem; line-height: 1.5; max-width: 40ch; color: var(--heading-color); }
+.about-intro { font-size: var(--type-subheading); line-height: 1.5; max-width: 45ch; color: var(--heading-color); }
 .about-intro::first-letter { float: none; font: inherit; padding: 0; margin: 0; }
 .about-background { font-size: var(--type-body); line-height: 1.75; max-width: 62ch; margin-top: 1.25rem; }
-.about-layout .about-stat p { font-size: 1rem; line-height: 1.6; }
-.about-stat .impact-number { font-size: 2rem; }
-.experience-header h3 { font-size: clamp(1.5rem, 1.25rem + .4vw, 1.75rem); line-height: 1.3; }
 .experience-header .exp-company { font-size: 1.0625rem; line-height: 1.6; }
 .experience-header .exp-dates { font-size: var(--type-meta); line-height: 1.6; }
 .experience-lead { font-size: var(--type-lead); line-height: 1.6; }
 .experience-card .experience-highlights > li { font-size: var(--type-body); line-height: 1.7; }
-.experience-card ul h4 { font-size: 1.125rem; line-height: 1.4; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.experience-card ul h4 { font-size: var(--type-subheading); line-height: 1.35; font-weight: 600; text-transform: none; letter-spacing: 0; }
 .experience-card .role-body > ul p { font-size: var(--type-body); line-height: 1.7; }
 .experience-card .tech-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: 0; }
 .skill-tag-sm { font-size: var(--type-meta); line-height: 1.5; }
-.skill-group { padding-top: 1.25rem; }
+.skill-group { padding-top: var(--space-6); container-type: inline-size; }
 .skill-group-heading { position: static; display: block; margin: 0 0 1rem; padding: 0; text-transform: none; letter-spacing: 0; line-height: 1.35; }
-.skill-matrix { grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9rem, 16.666%)), 1fr)); grid-auto-rows: minmax(9rem, auto); }
-.skill-chip { min-width: 0; flex-direction: column; justify-content: center; gap: .875rem; padding: 1.25rem .75rem; text-align: center; font-family: var(--font-body); font-size: 1.0625rem; text-transform: none; letter-spacing: 0; }
-.skill-chip-label { display: flex; align-items: center; justify-content: center; min-height: 3em; max-width: 100%; overflow-wrap: anywhere; }
-.skill-chip .skill-chip-icon { display: block; width: 44px; height: 44px; flex-shrink: 0; color: var(--heading-color); filter: none; }
+.skill-matrix { --skill-columns: 6; flex-wrap: wrap; }
+.skill-chip { flex: 1 1 calc((100% - (var(--skill-columns) - 1) * var(--skill-gap)) / var(--skill-columns)); min-width: 0; min-height: 8.75rem; flex-direction: column; padding: var(--space-4) var(--space-3); text-align: center; font-family: var(--font-body); font-size: 1.0625rem; text-transform: none; letter-spacing: 0; }
+.skill-chip-label { max-width: 100%; overflow-wrap: anywhere; }
+.skill-chip .skill-chip-icon { display: block; width: var(--skill-mark-size); height: var(--skill-mark-size); flex-shrink: 0; color: var(--heading-color); filter: none; }
 /* Strengthen the fine outlines of the Airflow mark at small display sizes. */
-.skill-chip-icon:has(use[href='#skill-airflow']) { overflow: visible; stroke: currentColor; stroke-width: .55; stroke-linejoin: round; }
+.skill-chip-icon:has(use[href='#skill-airflow']) { overflow: visible; stroke: currentColor; stroke-width: .8; stroke-linejoin: round; }
+.skill-chip-icon:has(use[href='#skill-tableau']) { stroke: currentColor; stroke-width: .2; }
 .skill-note { font-family: var(--font-body); font-size: var(--type-small); line-height: 1.7; letter-spacing: 0; }
-.edu-row h3 { font-size: 1.5rem; line-height: 1.4; }
 .edu-row p:not(.edu-dates) { font-size: 1rem; line-height: 1.6; }
 .edu-row .edu-dates { font-size: var(--type-meta); line-height: 1.6; }
-#education h3:has([data-i18n-key='certs_title']) { font-size: 1.5rem; line-height: 1.4; }
 .cert-stub { font-size: var(--type-small); line-height: 1.5; }
 #contact [data-i18n-key='contact_availability'] { font-size: 1.125rem; line-height: 1.7; }
 .quick-fact, .contact-available-badge { font-size: 1rem; line-height: 1.6; }
@@ -96,8 +83,7 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
 .collapsed-content > span:first-child { text-transform: none; letter-spacing: 0; }
 #dynamic-island-container .collapsed-content { min-height: 64px; height: auto; padding-block: 1rem; }
 .bot-message-bubble, .user-message .bot-message-bubble, #bot-question-prompts-apple .prompt-button { font-size: 1rem; line-height: 1.65; }
-#dynamic-island-container [data-i18n-key='bot_challenge_h'],
-#dynamic-island-container [data-i18n-key='bot_solution_h'] { font-size: 1.25rem; line-height: 1.4; }
+#dynamic-island-container h4 { font-family: var(--font-body); font-size: var(--type-subheading); line-height: 1.4; font-weight: 600; }
 #dynamic-island-container [data-i18n-key='bot_challenge_p'],
 #dynamic-island-container [data-i18n-key='bot_solution_p'] { font-size: var(--type-body); line-height: 1.65; }
 #dynamic-island-container [data-i18n-key='bot_coretech'],
@@ -106,6 +92,7 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
 .demo-source summary, .demo-source p, .demo-source th, .demo-source td { font-size: var(--type-small); line-height: 1.6; }
 #bottom-nav a { font-family: var(--font-body); font-size: .8125rem; text-transform: none; letter-spacing: 0; line-height: 1.3; }
 @media (max-width: 767px) {
+    html { scroll-padding-bottom: calc(var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); }
     #bottom-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
     /* 12px keeps "Experience" and "Fähigkeiten" whole from 360px up. */
     #bottom-nav a { min-width: 0; padding-inline: 4px; overflow-wrap: anywhere; text-align: center; font-size: .75rem; }
@@ -115,15 +102,20 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
     footer.py-12 { padding-bottom: calc(3rem + var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); }
     #scrollTopBtn { bottom: calc(var(--mobile-nav-reserve) + 12px) !important; }
     #hero .hero-role { font-size: 1.125rem; }
-    #hero .hero-tagline { font-size: 1.125rem; line-height: 1.6; }
     header nav > a { font-size: var(--type-caption); letter-spacing: 0; }
     #hero .hero-actions { column-gap: .75rem; }
     .hero-secondary-link { font-size: var(--type-small); }
-    .about-intro { font-size: 1.375rem; }
     .experience-header .exp-dates { grid-column: 2; }
-    .skill-matrix { grid-auto-rows: minmax(9rem, auto); }
 }
 @media (min-width: 768px) and (max-width: 1199px) {
     header nav ul { gap: 1rem; }
     header nav ul li a::before { display: none; }
+}
+/* Let enlarged masthead text take a row instead of shrinking to a letter column. */
+@media (max-width: 359px) {
+    header nav.container { display: flex; flex-wrap: wrap; padding: .5rem 1rem; }
+    header nav > a { flex: 1 1 10rem; line-height: 1.25; }
+    header nav.container > div { margin-left: auto; }
+    #contact-form { padding: .75rem; }
+    #contact-form .ios-button { padding-inline: .5rem; letter-spacing: 0; }
 }
