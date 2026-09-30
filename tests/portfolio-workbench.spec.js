@@ -52,12 +52,14 @@ test('deal history uses elapsed days and distinguishes overdue, won, and due-tod
   const selector = sample.locator('select');
   const status = sample.locator('.workbench-history-summary [data-deal-status]');
   await expect(status).toHaveText('Open · 6 days overdue');
+  await expect(sample.locator('[data-deal-close]')).toHaveAttribute('datetime', '2026-03-25');
   await expect(sample.locator('[data-deal-timeline] strong')).toHaveText(['Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote']);
   expect(await sample.locator('.workbench-duration').allTextContents()).toEqual(['7 days in this stage', '9 days in this stage', '13 days in this stage so far']);
   expect(await sample.locator('[data-deal-timeline] time').evaluateAll(times => times.map(time => time.dateTime))).toEqual(['2026-03-02', '2026-03-09', '2026-03-18']);
   await selector.selectOption('D-202');
   await expect(sample).toHaveAttribute('data-deal-status', 'closed');
   await expect(status).toHaveText('Closed · no overdue flag');
+  await expect(sample.locator('[data-deal-close]')).toHaveAttribute('datetime', '2026-03-20');
   await expect(sample.locator('[data-deal-timeline] strong')).toHaveText([
     'Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote',
     'Negotiation/Review', 'Commitment', 'Closed Won',
@@ -73,6 +75,7 @@ test('deal history uses elapsed days and distinguishes overdue, won, and due-tod
   await expect(sample).toHaveAttribute('data-deal-status', 'due-today');
   await expect(status).toHaveText('Open · due today');
   await expect(sample.locator('[data-deal-close]')).toHaveText('31 Mar 2026');
+  await expect(sample.locator('[data-deal-close]')).toHaveAttribute('datetime', '2026-03-31');
   await expect(sample.locator('[data-current-stage] strong')).toHaveText('Negotiation/Review');
   await expect(sample.locator('[data-current-stage] .workbench-duration')).toHaveText('7 days in this stage so far');
 });
@@ -89,6 +92,7 @@ test('language switching retains the chosen filter and deal while translating dy
   await expect(page.locator('[data-total="difference"]')).toHaveText(/2\.500\s€/);
   await expect(page.locator('#workbench-deal')).toHaveValue('D-202');
   await expect(page.locator('.workbench-history-summary [data-deal-status]')).toHaveText('Abgeschlossen · nicht überfällig');
+  await expect(page.locator('[data-deal-close]')).toHaveAttribute('datetime', '2026-03-20');
   await expect(page.locator('[data-deal-timeline] strong')).toHaveText([
     'Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote',
     'Negotiation/Review', 'Commitment', 'Closed Won',
@@ -108,6 +112,7 @@ test('without JavaScript the native details expose complete readable samples wit
   await expect(page.locator('[data-deal-timeline] li:visible')).toHaveCount(3);
   await expect(page.locator('[data-workbench-controls]:visible')).toHaveCount(0);
   await expect(page.locator('[data-current-stage] strong')).toHaveText('Proposal/Price Quote');
+  await expect(page.locator('[data-deal-close]')).toHaveAttribute('datetime', '2026-03-25');
   await context.close();
 });
 

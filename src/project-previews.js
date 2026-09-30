@@ -1,6 +1,6 @@
 // Compositor-friendly project stories loop only while visible. HTML is the final still frame.
 (() => {
-    /** @typedef {{ root: HTMLElement, toggle: HTMLButtonElement | null, details: HTMLDetailsElement[], animations: Animation[], generation: number, failed: boolean, visible: boolean, userPaused: boolean, running: boolean, timer: number | null }} Preview */
+    /** @typedef {{ root: HTMLElement, toggle: HTMLButtonElement | null, details: HTMLDetailsElement[], animations: Animation[], generation: number, failed: boolean, visible: boolean, userPaused: boolean, running: boolean, holdDuration: number, timer: number | null }} Preview */
 
     function initProjectPreviews() {
         const roots = document.querySelectorAll('[data-project-preview]');
@@ -10,9 +10,8 @@
         const printMedia = window.matchMedia('print');
         const supportsAnimation = typeof Element.prototype.animate === 'function';
         const supportsObserver = typeof window.IntersectionObserver === 'function';
-        // Leave the completed business outcome readable before another cycle starts.
-        const holdDuration = 2000;
         let printing = printMedia.matches;
+        let overlayOpen = false;
         /** @type {Record<string, Record<string, string>>} */
         let translations = {};
         try { translations = JSON.parse(document.getElementById('translations-data')?.textContent || '{}'); } catch {}
@@ -35,7 +34,7 @@
         /** @param {Preview} preview */
         function canPlay(preview) {
             return supportsAnimation && supportsObserver && preview.visible && !preview.userPaused
-                && !reducedMotion.matches && !printing && !document.hidden && !preview.failed
+                && !reducedMotion.matches && !printing && !overlayOpen && !document.hidden && !preview.failed
                 && preview.details.every(details => details.open && details.dataset.disclosureState !== 'closing');
         }
 
@@ -75,12 +74,14 @@
          * @param {Element} element
          * @param {string} attribute
          * @param {number} fallback
+         * @param {number} [maximum]
+         * @param {number} [minimum]
          */
-        function timing(element, attribute, fallback) {
+        function timing(element, attribute, fallback, maximum = 4500, minimum = 0) {
             const raw = element.getAttribute(attribute);
             if (raw === null || raw.trim() === '') return fallback;
             const value = Number(raw);
-            return Number.isFinite(value) ? Math.max(0, Math.min(value, 4500)) : fallback;
+            return Number.isFinite(value) ? Math.max(minimum, Math.min(value, maximum)) : fallback;
         }
 
         /**
@@ -147,6 +148,16 @@
                         ],
                         duration: kind === 'pulse' ? 700 : 800,
                     };
+                case 'superseded':
+                    return {
+                        frames: [
+                            { opacity: 0, offset: 0 },
+                            { opacity: 1, offset: 0.12 },
+                            { opacity: 1, offset: 0.9 },
+                            { opacity: 0, offset: 1 },
+                        ],
+                        duration: 1200,
+                    };
                 case 'signal-y':
                 case 'signal-x': {
                     const axis = kind === 'signal-y' ? 'Y' : 'X';
@@ -164,7 +175,7 @@
                     return {
                         frames: [
                             { transform: 'scale(1) translateY(0)', offset: 0 },
-                            { transform: 'scale(1.05) translateY(-2%)', offset: 0.5 },
+                            { transform: 'scale(1.015) translateY(-0.2%)', offset: 0.5 },
                             { transform: 'scale(1) translateY(0)', offset: 1 },
                         ],
                         duration: 4000,
@@ -203,13 +214,15 @@
             }
             try {
                 preview.root.querySelectorAll('[data-preview-motion]').forEach(element => {
-                    const { frames, duration: defaultDuration } = motion(element.getAttribute('data-preview-motion'));
+                    const kind = element.getAttribute('data-preview-motion');
+                    const { frames, duration: defaultDuration } = motion(kind);
                     const delay = timing(element, 'data-preview-delay', 0);
                     const duration = Math.min(timing(element, 'data-preview-duration', defaultDuration), 4500 - delay);
                     const animation = element.animate(frames, {
                         delay,
                         duration,
-                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                        // Status labels must hold for the authored stage interval.
+                        easing: kind === 'superseded' ? 'linear' : 'cubic-bezier(0.22, 1, 0.36, 1)',
                         fill: 'both',
                         iterations: 1,
                     });
@@ -231,7 +244,7 @@
                 preview.timer = window.setTimeout(() => {
                     preview.timer = null;
                     if (preview.generation === nextGeneration) sync(preview);
-                }, holdDuration);
+                }, preview.holdDuration);
             }).catch(() => {});
         }
 
@@ -249,6 +262,8 @@
                 visible: false,
                 userPaused: false,
                 running: false,
+                // Denser stories get more reading time; malformed timings cannot spin a loop.
+                holdDuration: timing(root, 'data-preview-hold', 2000, 8000, 1000),
                 timer: null,
             };
             for (let ancestor = root.parentElement; ancestor; ancestor = ancestor.parentElement) {
@@ -301,6 +316,11 @@
         }
 
         document.addEventListener('visibilitychange', () => {
+            previews.forEach(sync);
+        });
+        document.addEventListener('portfolio:previewoverlaychange', event => {
+            if (!(event instanceof CustomEvent) || typeof event.detail?.open !== 'boolean') return;
+            overlayOpen = event.detail.open;
             previews.forEach(sync);
         });
         document.addEventListener('portfolio:languagechange', () => {

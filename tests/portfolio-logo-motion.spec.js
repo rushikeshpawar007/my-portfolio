@@ -33,7 +33,7 @@ test('brand reveal keeps optically balanced marks in equal containers and statio
   await page.goto('/#skills');
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator('.logo-motion-art, [data-logo-part]')).toHaveCount(0);
-  await expect(page.locator('#skills .skill-icon-wrap')).toHaveCount(22);
+  await expect(page.locator('#skills .skill-icon-wrap')).toHaveCount(23);
   const marks = await page.locator('#skills .skill-icon-wrap').evaluateAll(wrappers => wrappers.map(wrapper => {
     const mark = wrapper.querySelector('svg');
     const rect = mark.getBoundingClientRect();
@@ -52,7 +52,7 @@ test('brand reveal keeps optically balanced marks in equal containers and statio
     await page.setViewportSize({ width, height: 844 });
     for (const theme of ['light', 'dark']) {
       await page.locator('html').evaluate((element, value) => { element.dataset.theme = value; }, theme);
-      for (const [skill, color] of [['power-bi', 'rgb(242, 200, 17)'], ['dbt', 'rgb(255, 105, 75)']]) {
+      for (const [skill, color] of [['power-bi', 'rgb(242, 200, 17)'], ['dbt', 'rgb(255, 105, 75)'], ['r', 'rgb(39, 109, 195)']]) {
         const link = page.locator(`[data-skill="${skill}"]`);
         await page.mouse.move(0, 0);
         await link.scrollIntoViewIfNeeded();
@@ -76,7 +76,7 @@ for (const theme of ['light', 'dark']) {
     await link.scrollIntoViewIfNeeded();
     await page.mouse.move(0, 0);
     const baseline = await allIconAppearance(page);
-    expect(baseline).toHaveLength(22);
+    expect(baseline).toHaveLength(23);
     expect(new Set(baseline.map(icon => icon.color)).size).toBe(1);
     expect(baseline.every(icon => icon.backingOpacity === '0')).toBe(true);
     await link.hover();

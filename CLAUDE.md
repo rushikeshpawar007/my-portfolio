@@ -37,7 +37,7 @@ See `README.md` for the folder map. Keep `index.html`, `privacy.html`, and `impr
 
 ## Testing
 
-E2E tests in `tests/portfolio-*.spec.js` cover page structure, navigation, theme/language toggles, scrolling, bot/form interactions, accessibility, mobile reflow, keyboard controls, sample calculations, asset budgets and animation lifecycle. Playwright starts `tests/server.js` automatically and tests HTTP-served content. Regression coverage includes complete marked translations, no-JavaScript and blocked-script fallbacks, mobile overlap, and fictional-source demo behavior.
+E2E tests in `tests/portfolio-*.spec.js` cover page structure, navigation, theme/language toggles, scrolling, bot/form interactions, accessibility, mobile reflow, keyboard controls, sample calculations, asset budgets and animation lifecycle. Playwright starts `scripts/serve.cjs` automatically and tests HTTP-served content; `tests/server.js` remains a compatibility entry point. Regression coverage includes complete marked translations, no-JavaScript and blocked-script fallbacks, mobile overlap, and fictional-source demo behavior.
 
 ## Deployment
 

@@ -17,8 +17,8 @@ header nav ul li a::before { font-size: .75rem; }
 .ios-button { font-size: 1rem; line-height: 1.5; }
 .copy-email-btn.btn-compact { font-size: var(--type-small); }
 .impact-card p, html[lang='de'] .impact-card p { font-size: 1rem; line-height: 1.5; }
-.project-kicker, .project-meta, .project-preview .project-meta::before { font-size: var(--type-meta); }
-.project-kicker, .project-meta { font-family: var(--font-body); font-weight: 500; text-transform: none; letter-spacing: .02em; }
+.project-meta, .project-preview .project-meta::before { font-size: var(--type-meta); }
+.project-meta { font-family: var(--font-body); font-weight: 500; text-transform: none; letter-spacing: .02em; }
 .project-intro { margin-bottom: var(--space-6); min-width: 0; }
 .project-outcome { margin-top: var(--space-4); max-width: 38ch; color: var(--heading-color); font-size: var(--type-outcome); line-height: 1.4; }
 .project-outcome > span { display: block; margin-bottom: var(--space-1); color: var(--text-color); font-size: var(--type-meta); font-weight: 400; line-height: 1.5; }
@@ -28,7 +28,7 @@ header nav ul li a::before { font-size: .75rem; }
 .project-description { font-size: var(--type-body); line-height: 1.65; }
 .project-description strong { font-weight: 600; color: var(--heading-color); }
 .project-tools { font-size: var(--type-meta); line-height: 1.6; }
-.project-preview > .project-tools { margin-top: .25rem; }
+.project-overview > .project-tools { margin-top: .25rem; }
 .case-details > summary, .experience-details > summary { font-size: 1rem; line-height: 1.5; }
 .case-facts dt { font-size: var(--type-small); line-height: 1.5; text-transform: none; letter-spacing: 0; }
 .case-facts dd { font-size: var(--type-body); line-height: 1.7; }
@@ -40,27 +40,26 @@ header nav ul li a::before { font-size: .75rem; }
 .case-body h4 { margin-bottom: var(--space-3); }
 .case-body h5 { font-family: var(--font-body); font-size: var(--type-body); line-height: 1.4; font-weight: 600; }
 .case-link, .project-extra .case-link { font-size: 1rem; line-height: 1.6; }
-.dbt-project-relation { margin: 1rem 0 .5rem; font-size: var(--type-small); line-height: 1.6; }
 .visual-step span { font-size: var(--type-meta); line-height: 1.5; }
 .arch-node { font-size: var(--type-small); line-height: 1.5; text-transform: none; letter-spacing: 0; }
 .arch-layer-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: .02em; }
 .arch-engine-tag { font-size: var(--type-caption); line-height: 1.6; }
 .arch-diagram { gap: 1.25rem; }
 .about-intro { font-size: var(--type-subheading); line-height: 1.5; max-width: 45ch; color: var(--heading-color); }
-.about-intro::first-letter { float: none; font: inherit; padding: 0; margin: 0; }
 .about-background { font-size: var(--type-body); line-height: 1.75; max-width: 62ch; margin-top: 1.25rem; }
 .experience-header .exp-company { font-size: 1.0625rem; line-height: 1.6; }
 .experience-header .exp-dates { font-size: var(--type-meta); line-height: 1.6; }
 .experience-lead { font-size: var(--type-lead); line-height: 1.6; }
 .experience-card .experience-highlights > li { font-size: var(--type-body); line-height: 1.7; }
-.experience-card ul h4 { font-size: var(--type-subheading); line-height: 1.35; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.experience-card ul h4 { font-size: var(--type-lead); line-height: 1.4; font-weight: 600; text-transform: none; letter-spacing: 0; }
 .experience-card .role-body > ul p { font-size: var(--type-body); line-height: 1.7; }
 .experience-card .tech-label { font-size: var(--type-meta); line-height: 1.5; text-transform: none; letter-spacing: 0; }
 .skill-tag-sm { font-size: var(--type-meta); line-height: 1.5; }
 .skill-group { padding-top: var(--space-6); container-type: inline-size; }
 .skill-group-heading { position: static; display: block; margin: 0 0 1rem; padding: 0; text-transform: none; letter-spacing: 0; line-height: 1.35; }
-.skill-matrix { --skill-columns: 6; flex-wrap: wrap; }
-.skill-chip { flex: 1 1 calc((100% - (var(--skill-columns) - 1) * var(--skill-gap)) / var(--skill-columns)); min-width: 0; min-height: 8.75rem; flex-direction: column; padding: var(--space-4) var(--space-3); text-align: center; font-family: var(--font-body); font-size: 1.0625rem; text-transform: none; letter-spacing: 0; }
+/* Shared tracks keep shorter categories and incomplete rows aligned. */
+.skill-matrix { grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); }
+.skill-chip { min-width: 0; min-height: 8.75rem; flex-direction: column; padding: var(--space-4) var(--space-3); text-align: center; font-family: var(--font-body); font-size: 1.0625rem; text-transform: none; letter-spacing: 0; }
 .skill-chip-label { max-width: 100%; overflow-wrap: anywhere; }
 .skill-chip .skill-chip-icon { display: block; width: var(--skill-mark-size); height: var(--skill-mark-size); flex-shrink: 0; color: var(--heading-color); filter: none; }
 /* Strengthen the fine outlines of the Airflow mark at small display sizes. */
@@ -71,7 +70,7 @@ header nav ul li a::before { font-size: .75rem; }
 .edu-row .edu-dates { font-size: var(--type-meta); line-height: 1.6; }
 .cert-stub { font-size: var(--type-small); line-height: 1.5; }
 #contact [data-i18n-key='contact_availability'] { font-size: 1.125rem; line-height: 1.7; }
-.quick-fact, .contact-available-badge { font-size: 1rem; line-height: 1.6; }
+.quick-fact { font-size: 1rem; line-height: 1.6; }
 .contact-email-link { font-size: 1.5rem; line-height: 1.5; }
 .form-label { font-size: 1rem; line-height: 1.5; text-transform: none; letter-spacing: 0; font-weight: 500; }
 .contact-input { font-size: var(--type-body); line-height: 1.6; }
@@ -83,7 +82,7 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
 .collapsed-content > span:first-child { text-transform: none; letter-spacing: 0; }
 #dynamic-island-container .collapsed-content { min-height: 64px; height: auto; padding-block: 1rem; }
 .bot-message-bubble, .user-message .bot-message-bubble, #bot-question-prompts-apple .prompt-button { font-size: 1rem; line-height: 1.65; }
-#dynamic-island-container h4 { font-family: var(--font-body); font-size: var(--type-subheading); line-height: 1.4; font-weight: 600; }
+#dynamic-island-container h5 { font-family: var(--font-body); font-size: var(--type-subheading); line-height: 1.4; font-weight: 600; }
 #dynamic-island-container [data-i18n-key='bot_challenge_p'],
 #dynamic-island-container [data-i18n-key='bot_solution_p'] { font-size: var(--type-body); line-height: 1.65; }
 #dynamic-island-container [data-i18n-key='bot_coretech'],
@@ -100,7 +99,8 @@ footer #reopen-cookie-consent { font-size: var(--type-meta); }
     .cookie-banner { left: 12px; right: 12px; padding: 12px; bottom: calc(var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); max-height: calc(100dvh - var(--mobile-nav-reserve) - env(safe-area-inset-bottom) - 8px); }
     .cookie-btn { padding-inline: .75rem; line-height: 1.4; }
     footer.py-12 { padding-bottom: calc(3rem + var(--mobile-nav-reserve) + env(safe-area-inset-bottom)); }
-    #scrollTopBtn { bottom: calc(var(--mobile-nav-reserve) + 12px) !important; }
+    /* The header home link and footer action keep content clear on phones. */
+    #scrollTopBtn { display: none !important; }
     #hero .hero-role { font-size: 1.125rem; }
     header nav > a { font-size: var(--type-caption); letter-spacing: 0; }
     #hero .hero-actions { column-gap: .75rem; }

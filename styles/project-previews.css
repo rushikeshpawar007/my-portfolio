@@ -63,7 +63,9 @@
 .report-comparison.motion-preview { padding-top: 1.25rem; padding-bottom: 1.75rem; }
 .report-comparison .preview-caption, .report-comparison .preview-toggle { color: var(--feature-ink); }
 .report-flow { display: flex; align-items: center; justify-content: center; margin: 0.5rem 0 1.5rem; color: var(--feature-ink); }
-.report-sources { display: grid; gap: 0.75rem; width: 4.5rem; flex-shrink: 0; }
+.report-input { display: grid; justify-items: center; gap: var(--space-3); width: 6.5rem; flex-shrink: 0; }
+.report-step-label { font-size: var(--type-small); line-height: 1.5; text-align: center; }
+.report-sources { display: grid; gap: 0.75rem; width: 4.5rem; }
 .report-sources > span { display: grid; grid-template-columns: 18px 1fr; gap: 3px 8px; padding: 6px 8px; border: 1px solid var(--hairline); background: var(--surface); }
 .report-sources .icon { width: 14px; height: 14px; grid-row: span 2; }
 .report-sources i { display: block; height: 2px; background: var(--hairline); align-self: center; }
@@ -92,6 +94,12 @@
 .report-chart i { height: 5px; display: block; background: var(--feature-ink); width: 64%; }
 .report-chart i:nth-child(2) { width: 88%; background: var(--accent-text); }
 .report-chart i:nth-child(3) { width: 45%; }
+.report-prepared { display: flex; align-items: center; gap: var(--space-3); border-top: 1px solid var(--hairline); padding-top: var(--space-4); color: var(--feature-ink); }
+.report-prepared > .icon { width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+.report-prepared > div { display: grid; gap: var(--space-1); min-width: 0; }
+.report-prepared span { font-size: var(--type-meta); line-height: 1.5; }
+.report-prepared strong { font-size: var(--type-body); font-weight: 500; line-height: 1.5; }
+.report-prepared .report-ready-check { margin-left: auto; color: var(--accent-text); }
 .invoice-preview { container-type: inline-size; }
 .invoice-flow { display: flex; align-items: center; gap: 0.75rem; margin: 0.75rem 0 1.5rem; }
 .invoice-flow .visual-step { align-self: start; }
@@ -150,8 +158,8 @@
 .project-visual.royalty-preview { flex-wrap: nowrap; container-type: inline-size; }
 .royalty-preview > .preview-toolbar:first-child { flex: none; }
 .royalty-preview .preview-caption, .royalty-preview .preview-toggle { color: var(--feature-ink); }
-.royalty-flow { display: flex; align-items: start; gap: 0.75rem; margin: 0.5rem 0 1.5rem; }
-.royalty-flow .visual-step > span:last-child { font-size: 0.9375rem; line-height: 1.5; }
+.royalty-flow { display: flex; align-items: start; gap: 0.25rem; margin: 0.5rem 0 1.5rem; }
+.royalty-flow .visual-step > span:last-child { font-family: var(--font-body); font-size: var(--type-small); line-height: 1.5; overflow-wrap: anywhere; hyphens: auto; }
 .royalty-author-stack { position: relative; height: 116px; width: min(100%, 112px); }
 .royalty-author-stack .author-card { position: absolute; display: grid; grid-template-columns: 22px minmax(0, 1fr); align-content: start; align-items: center; gap: 7px; width: calc(100% - 14px); height: 88px; padding: 10px; background: var(--surface); border: 1px solid var(--hairline); }
 .author-card-back { top: 0; left: 0; rotate: -5deg; }
@@ -169,6 +177,12 @@
 .royalty-calculation > b { font: 1.75rem/1 var(--font-mono); color: var(--feature-ink); }
 .royalty-ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
 .royalty-ledger > i { height: 2px; background: var(--hairline); }
+.royalty-accounting { display: grid; align-content: space-between; justify-items: center; width: min(100%, 88px); height: 116px; padding: 10px; border: 1px solid var(--hairline); background: var(--surface); }
+.royalty-accounting-check { width: 22px; height: 22px; color: var(--accent-text); }
+.royalty-check-ledgers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.royalty-check-ledgers > span { display: grid; gap: 7px; padding: 5px 3px; border: 1px solid var(--hairline); }
+.royalty-check-ledgers i, .royalty-check-ledgers b { display: block; height: 2px; width: 100%; background: var(--hairline); }
+.royalty-check-ledgers b { background: var(--feature-ink); }
 .preview-file.royalty-statement { position: relative; align-content: space-between; width: 100%; height: 112px; padding: 10px; background: var(--surface); }
 .royalty-distribution { position: relative; display: block; width: min(100%, 140px); height: 124px; }
 .royalty-distribution .royalty-statement { position: absolute; top: 6px; width: 72%; }
@@ -193,7 +207,8 @@
 @container (max-width: 22rem) {
     .story-matches { grid-template-columns: 1fr; }
     .report-flow { display: grid; justify-items: center; gap: 1rem; }
-    .report-sources { width: min(100%, 15rem); grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+    .report-input { width: min(100%, 15rem); }
+    .report-sources { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
     .report-connector { display: none; }
     .report-sheet { width: min(100%, 15rem); }
 }
@@ -208,8 +223,17 @@
 }
 @container (max-width: 26rem) {
     .royalty-flow { flex-direction: column; align-items: stretch; }
-    .royalty-flow .visual-step { display: grid; grid-template-columns: min(38%, 112px) minmax(0, 1fr); align-items: center; justify-items: start; width: 100%; text-align: left; }
-    .royalty-flow .preview-flow-arrow { margin: 0.125rem 0 0.125rem min(20%, 50px); rotate: 90deg; }
+    .royalty-flow .visual-step { display: grid; grid-template-columns: min(34%, 88px) minmax(0, 1fr); align-items: center; justify-items: start; width: 100%; text-align: left; }
+    .royalty-flow .preview-flow-arrow { margin: 0.25rem 0 0.25rem min(15%, 36px); rotate: 90deg; line-height: 1; }
+    .royalty-author-stack { height: 80px; width: min(100%, 84px); }
+    .royalty-author-stack .author-card { height: 64px; width: calc(100% - 10px); padding: 6px; gap: 4px; }
+    .royalty-author-stack .author-card-middle { top: 6px; left: 4px; }
+    .royalty-author-stack .author-card-front { top: 12px; left: 8px; }
+    .royalty-author-stack .author-card-lines { gap: 4px; margin-top: 3px; }
+    .royalty-calculation, .royalty-accounting { width: min(100%, 72px); height: 80px; padding: 7px; }
+    .royalty-distribution { width: min(100%, 88px); height: 88px; }
+    .royalty-flow .preview-file.royalty-statement { height: 80px; padding: 6px; }
+    .royalty-flow .royalty-statement .scene-paper-lines { gap: 4px; }
     .royalty-outcome { justify-content: start; flex-wrap: wrap; }
 }
 @container (max-width: 12rem) {

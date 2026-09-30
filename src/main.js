@@ -3,6 +3,13 @@
    Rushikesh Pawar - Data Analytics Portfolio
    ============================================================ */
 
+/** @param {Event} event */
+function isCurrentPageActivation(event) {
+    // Modified clicks belong to the browser (new tab/window or download).
+    return event instanceof MouseEvent && event.button === 0 && !event.defaultPrevented
+        && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     try {
         /* ── UTILITIES ─────────────────────────────────────── */
@@ -60,6 +67,25 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch { /* The default English content remains usable without storage. */ }
         const langToggleHeader = document.getElementById("lang-toggle-header");
         const langToggleMobile = document.getElementById("lang-toggle-mobile");
+        const themeToggle = document.getElementById('theme-toggle');
+
+        function syncControlLabels() {
+            const localized = translations[currentLang] || {};
+            /** @param {HTMLElement | null} button @param {string} key @param {string} fallback */
+            const labelControl = (button, key, fallback) => {
+                if (!button) return;
+                const labelKey = localized[key] ? key : localized[fallback] ? fallback : translations.en?.[key] ? key : fallback;
+                const label = localized[labelKey] || translations.en?.[labelKey];
+                if (!label) return; // Retain the authored accessible name if translations are unavailable.
+                if (button.dataset.i18nAria !== labelKey) button.dataset.i18nAria = labelKey;
+                if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+                if (button.title !== label) button.title = label;
+            };
+            const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            labelControl(themeToggle, `label_theme_${nextTheme}`, 'label_theme');
+            const nextLanguage = currentLang === 'de' ? 'en' : 'de';
+            [langToggleHeader, langToggleMobile].forEach(button => labelControl(button, `label_language_${nextLanguage}`, 'label_language'));
+        }
 
         function translatePage() {
             document.querySelectorAll("[data-i18n-key]").forEach(el => {
@@ -78,11 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             const next = currentLang === 'de' ? 'EN' : 'DE';
-            const title = translations[currentLang]?.['lang_toggle_title'];
             [langToggleHeader, langToggleMobile].forEach(button => {
                 if (!button) return;
                 if (button.textContent !== next) button.textContent = next;
-                if (title && button.title !== title) button.title = title;
             });
             document.querySelectorAll('[data-i18n-aria]').forEach(el => {
                 const key = el.getAttribute('data-i18n-aria');
@@ -95,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (alt && el.getAttribute('alt') !== alt) el.setAttribute('alt', alt);
             });
             if (document.documentElement.lang !== currentLang) document.documentElement.lang = currentLang;
+            syncControlLabels();
         }
 
         function toggleLanguage() {
@@ -137,12 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.setAttribute('data-theme', next);
                 try { localStorage.setItem('theme', next); } catch {}
                 syncThemeColor(next);
+                syncControlLabels();
             };
             // Cross-fade the whole sheet like turning a page (progressive enhancement)
             if (document.startViewTransition && !prefersReducedMotion) {
                 document.documentElement.classList.add('theme-switching');
                 try {
                     const vt = document.startViewTransition(apply);
+                    // A skipped visual transition still applies the theme, but its
+                    // ready promise rejects (for example when the tab is hidden).
+                    vt.ready.catch(() => {});
                     // Handle both outcomes without leaving a rejected finally() promise.
                     vt.finished.then(finish, finish);
                 } catch {
@@ -155,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', throttled('theme', () => {
                 setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
@@ -180,7 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setMenuOpen(mobileMenu.classList.contains('hidden'));
             });
             mobileMenu.querySelectorAll('a[href^="#"]').forEach(link =>
-                link.addEventListener('click', () => {
+                link.addEventListener('click', event => {
+                    if (!isCurrentPageActivation(event)) return;
                     setMenuOpen(false);
                     const target = document.getElementById((link.getAttribute('href') || '').slice(1));
                     if (target) {
@@ -667,6 +696,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Native disclosures keep supporting projects compact, including without JS.
         const disclosures = initAnimatedDisclosures(motionPreference);
+        /** @param {Element} target */
+        function revealDisclosurePath(target) {
+            const ancestors = [];
+            for (let details = target.closest('details'); details; details = details.parentElement?.closest('details') || null) {
+                ancestors.push(details);
+            }
+            // Reveal the outer project before an optional analysis or technical
+            // subsection so a legacy deep link never opens hidden content only.
+            ancestors.reverse().forEach(details => disclosures.open(details));
+        }
         // Direct project and role links reveal their details before the anchor scrolls.
         /** @param {string} hash */
         function revealLinkedDisclosure(hash) {
@@ -681,11 +720,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const details = target.matches('.featured-project, .project-preview')
                 ? target.querySelector('details.case-details')
-                : target.closest('details.case-details, details.experience-details');
-            if (details instanceof HTMLDetailsElement) disclosures.open(details);
+                : target.closest('details');
+            if (details) revealDisclosurePath(details);
         }
+        document.querySelectorAll('details.analysis-details').forEach(details => {
+            details.addEventListener('toggle', () => {
+                if (details instanceof HTMLDetailsElement && details.open) revealDisclosurePath(details);
+            });
+        });
         document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', () => revealLinkedDisclosure(link.getAttribute('href') || ''));
+            link.addEventListener('click', event => {
+                if (isCurrentPageActivation(event)) revealLinkedDisclosure(link.getAttribute('href') || '');
+            });
         });
         window.addEventListener('hashchange', () => revealLinkedDisclosure(window.location.hash));
         revealLinkedDisclosure(window.location.hash);
@@ -695,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('beforeprint', () => {
             // Finish at the requested state before remembering what print must restore.
             disclosures.finishAll();
-            printDisclosures = [...document.querySelectorAll('details.case-details, details.experience-details')]
+            printDisclosures = [...document.querySelectorAll('details.case-details, details.experience-details, details.analysis-details')]
                 .filter(el => el instanceof HTMLDetailsElement && !el.open)
                 .map(el => /** @type {HTMLDetailsElement} */ (el));
             printDisclosures.forEach(el => { el.open = true; });
@@ -707,7 +753,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Move keyboard focus into the revealed demo after an explicit link activation.
         document.querySelectorAll('a[href="#dynamic-island-container"]').forEach(link => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', event => {
+                if (!isCurrentPageActivation(event)) return;
                 const island = document.getElementById('dynamic-island-container');
                 if (island) document.getElementById('close-island-btn')?.focus({ preventScroll: true });
             });
@@ -961,7 +1008,8 @@ function initFinanceBot(demoTranslations) {
             sourceLink.href = '#demo-source';
             sourceLink.className = 'case-link';
             sourceLink.textContent = tr('demo_citation');
-            sourceLink.addEventListener('click', () => {
+            sourceLink.addEventListener('click', event => {
+                if (!isCurrentPageActivation(event)) return;
                 const source = /** @type {HTMLDetailsElement | null} */ (document.getElementById('demo-source'));
                 if (source) source.open = true;
             });

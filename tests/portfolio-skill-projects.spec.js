@@ -68,7 +68,7 @@ test('project links remain usable without JavaScript and unsupported cases are n
   const context = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4173/#skills');
-  await expect(page.locator('#skills .skill-chip-icon')).toHaveCount(22);
+  await expect(page.locator('#skills .skill-chip-icon')).toHaveCount(23);
   for (const skill of ['bigquery', 'airflow', 'claude-code', 'pandas', 'power-query']) {
     await expect(page.locator(`.skill-chip[data-skill="${skill}"]`)).not.toHaveAttribute('href');
   }

@@ -40,13 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
         animations.forEach(animation => animation.cancel());
         animations.clear();
     }
+    /** @param {Element} element */
+    function containingDisclosures(element) {
+        const ancestors = [];
+        for (let details = element.closest('details'); details; details = details.parentElement?.closest('details') || null) ancestors.push(details);
+        return ancestors;
+    }
     /** @param {HTMLElement | null} element */
     function reveal(element) {
         if (!element) return;
         animations.get(element)?.cancel();
         animations.delete(element);
-        const details = element.closest('details');
-        if (reducedMotion.matches || printing || document.hidden || (details && !details.open) || typeof element.animate !== 'function') return;
+        if (reducedMotion.matches || printing || document.hidden || containingDisclosures(element).some(details => !details.open) || typeof element.animate !== 'function') return;
         const animation = element.animate([{ opacity: 0.65, transform: 'translateY(3px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 180, easing: 'ease-out' });
         animations.set(element, animation);
         animation.addEventListener('finish', () => {
@@ -58,8 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     printMedia.addEventListener('change', event => { printing = event.matches; if (printing) stopMotion(); });
     window.addEventListener('beforeprint', () => { printing = true; stopMotion(); });
     window.addEventListener('afterprint', () => { printing = printMedia.matches; });
-    const disclosures = new Set([...document.querySelectorAll('[data-workbench]')].map(example => example.closest('details')));
-    disclosures.forEach(details => details?.addEventListener('toggle', () => { if (!details.open) stopMotion(); }));
+    const disclosures = new Set([...document.querySelectorAll('[data-workbench]')].flatMap(containingDisclosures));
+    disclosures.forEach(details => details.addEventListener('toggle', () => { if (!details.open) stopMotion(); }));
 
     const reconciliation = document.querySelector('[data-workbench="reconciliation"]');
     /** @type {{id: string, bookings: number | null, accounting: number | null}[]} */
@@ -130,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.entries(fields).forEach(([field, value]) => {
             const target = history.querySelector(`[data-deal-${field}]`);
             if (target) target.textContent = value;
+            if (field === 'close' && target instanceof HTMLTimeElement) target.dateTime = deal.close;
         });
         const timeline = history.querySelector('[data-deal-timeline]');
         if (!timeline) return;

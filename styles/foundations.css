@@ -32,7 +32,7 @@
 }
 :root, html[data-theme='light'] {
     --bg-color: #F8F7F4;
-    --surface: #FFFFFF;
+    --surface: #FDFCF9;
     --heading-color: #242824;
     --ink: #242824;
     --text-primary: #454B45;
@@ -47,12 +47,12 @@
 }
 html[data-theme='dark'] {
     --bg-color: #181C19;
-    --surface: #222823;
+    --surface: #252D27;
     --heading-color: #F3F2EA;
     --ink: #F3F2EA;
     --text-primary: #CCD1C7;
     --text-color: #B1BAAF;
-    --hairline: #404A41;
+    --hairline: #49544B;
     --hairline-strong: #F3F2EA;
     --accent-color: #EF987E;
     --accent-text: #EF987E;

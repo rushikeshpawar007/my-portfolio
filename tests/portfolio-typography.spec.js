@@ -52,7 +52,7 @@ for (const width of [1440, 375]) {
     // These are explanations and actual data labels, rather than decorative marks.
     for (const selector of [
       '.report-sheet-title', '#finance-case-study .project-outcome > span', '.wb-scene-source-title', '.wb-scene-stage > strong',
-      '.dbt-flow-node > strong', '.dbt-version-table tbody td',
+      '.dbt-model-flow strong', '.dbt-version-table tbody td',
       '.invoice-flow .visual-step > span:last-child', '.royalty-flow .visual-step > span:last-child',
       '.preview-question', '.arch-node', '.analysis-bar-label',
       '.form-label', '.copy-email-btn', '.case-details > summary', '[data-preview-control-label]',

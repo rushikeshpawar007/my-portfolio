@@ -10,8 +10,7 @@ test('lineage controls keep working when visibility observation is unavailable',
   const errors = [];
   page.on('pageerror', error => { if (error.stack?.includes('lineage-explorer.js')) errors.push(error.message); });
   await page.addInitScript(() => { window.IntersectionObserver = undefined; });
-  await page.goto('/');
-  await page.locator('#dbt-history-details').evaluate(details => { details.open = true; });
+  await page.goto('/#lineage-explorer');
   const explorer = page.locator('[data-lineage-explorer]');
   await expect(explorer.locator('[data-lineage-follow]')).toBeVisible();
   await explorer.locator('[data-lineage-follow]').click();
@@ -23,7 +22,8 @@ test('lineage controls keep working when visibility observation is unavailable',
 
 test('print media settles short sample animations and keeps subsequent changes static', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#reconciliation-details').evaluate(details => { details.open = true; });
+  await page.locator('#reconciliation-details > summary').click();
+  await page.locator('#cleaning-analysis-details > summary').click();
   const exercise = page.locator('[data-cleaning]');
   await exercise.scrollIntoViewIfNeeded();
   await exercise.evaluate(element => {
@@ -75,7 +75,7 @@ for (const lang of ['en', 'de']) {
     await page.addInitScript(language => localStorage.setItem('lang', language), lang);
     await page.goto('/');
     const links = page.locator('a.skill-project-link, a.career-stop');
-    expect(await links.count()).toBe(17);
+    expect(await links.count()).toBe(18);
     for (const link of await links.all()) {
       const hash = await link.getAttribute('href');
       await link.focus();

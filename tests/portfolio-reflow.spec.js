@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 async function expectContentWithinViewport(page) {
   // Inspect content itself: overflow-x: clip can hide a broken layout from a
   // document.scrollWidth check while cutting off headings and controls.
-  const outside = await page.locator('header nav, header nav a, header nav button, main h1, main h2, main h3, .section-title > span, .impact-card, .featured-project, .project-preview, .visual-step, .skill-chip, .edu-row > *, #contact-form, .contact-email-link, .quick-fact, .contact-available-badge').evaluateAll(elements => elements.flatMap(el => {
+  const outside = await page.locator('header nav, header nav a, header nav button, main h1, main h2, main h3, #dynamic-island-container h4, #dynamic-island-container h5, .section-title > span, .impact-card, .featured-project, .project-preview, .visual-step, .skill-chip, .edu-row > *, #contact-form, .contact-email-link, .quick-fact, .contact-available-badge').evaluateAll(elements => elements.flatMap(el => {
     const rect = el.getBoundingClientRect();
     if (!rect.width || !rect.height) return [];
     const clipped = el.scrollWidth > el.clientWidth + 1;
@@ -76,7 +76,9 @@ for (const language of ['en', 'de']) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/');
       await page.evaluate(() => document.fonts.ready);
-      expect(await wordsSplitAcrossLines(page, 'main h1, main h2, main h3'), `${width}px`).toEqual([]);
+      await page.locator('[data-i18n-key="demo_open"]').click();
+      await expect(page.locator('#dynamic-island-container')).toHaveClass(/expanded/);
+      expect(await wordsSplitAcrossLines(page, 'main h1, main h2, main h3, #dynamic-island-container h4, #dynamic-island-container h5'), `${width}px`).toEqual([]);
     }
   });
 }
@@ -89,6 +91,8 @@ test('long German headings and project diagrams fit a 320px screen', async ({ pa
   });
   await page.goto('/');
   await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-i18n-key="demo_open"]').click();
+  await expect(page.locator('#dynamic-island-container')).toHaveClass(/expanded/);
   await expectContentWithinViewport(page);
 });
 
@@ -108,6 +112,8 @@ for (const width of [375, 820]) {
       });
       await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       await page.evaluate(() => document.fonts.ready);
+      await page.locator('[data-i18n-key="demo_open"]').click();
+      await expect(page.locator('#dynamic-island-container')).toHaveClass(/expanded/);
       await expectContentWithinViewport(page);
       for (const control of ['#name', '#email', '#message', '#contact-form button[type="submit"]']) {
         await page.locator(control).focus();

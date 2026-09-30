@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 for (const document of ['privacy.html', 'impressum.html']) {
-  test(`${document} remains readable on a narrow screen and at enlarged text sizes`, async ({ page }) => {
+  test(`${document} remains readable on a narrow screen and at enlarged text sizes`, async ({ page, browserName }) => {
     await page.setViewportSize({ width: 320, height: 640 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`/${document}`);
@@ -14,7 +14,13 @@ for (const document of ['privacy.html', 'impressum.html']) {
     }
 
     const back = page.getByRole('link', { name: '← Back to portfolio' });
-    await page.keyboard.press('Tab');
+    if (browserName === 'webkit') {
+      // WebKit's default keyboard settings can exclude implicit links from Tab.
+      // Still verify focus visibility and native Enter activation in that engine.
+      await back.focus();
+    } else {
+      await page.keyboard.press('Tab');
+    }
     await expect(back).toBeFocused();
     await expect(back).toHaveCSS('outline-style', 'solid');
     await expect(back).toHaveCSS('outline-width', '2px');

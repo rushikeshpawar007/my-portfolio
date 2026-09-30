@@ -109,10 +109,6 @@ header nav > a:is(:hover, :focus-visible) .brand-mark::after {
     font-weight: 600;
 }
 .case-reasoning p { margin-top: .5rem; font-size: 1.0625rem; line-height: 1.7; }
-.supporting-project .project-intro { margin-bottom: 1rem; }
-.supporting-project .project-visual.motion-preview { min-height: 0; }
-.supporting-project .preview-dashboard-window { height: 210px; }
-.supporting-project .invoice-flow { margin-top: .25rem; margin-bottom: 1.25rem; }
 .dashboard-annotation {
     max-width: 72ch;
     margin: .5rem 0 1.5rem;
@@ -130,37 +126,13 @@ header nav > a:is(:hover, :focus-visible) .brand-mark::after {
 .dashboard-annotation h4 { color: var(--heading-color); }
 .dashboard-annotation p { font-size: 1.0625rem; line-height: 1.7; }
 
-.career-path {
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.career-path li {
-    display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr);
-    gap: .25rem 1.25rem;
-    min-width: 0;
-    padding: 1.125rem 0;
-    border-top: 1px solid var(--hairline);
-}
-.career-path li:first-child { padding-top: .75rem; }
-.career-path li > div { min-width: 0; }
-.career-year {
-    color: var(--text-color);
-    font-family: var(--font-mono);
-    font-size: .875rem;
-    line-height: 1.7;
-}
-.career-path strong {
-    display: block;
-    color: var(--heading-color);
-    font-size: 1.125rem;
-    line-height: 1.5;
-    font-weight: 500;
-}
-.career-path p { margin-top: .25rem; font-size: 1rem; line-height: 1.6; }
-.career-path li:last-child strong { color: var(--accent-text); }
+.about-method dl { margin-top: var(--space-4); }
+.about-method dl > div { border-top: 1px solid var(--hairline); padding-block: var(--space-4); }
+.about-method dt { font-weight: 600; color: var(--heading-color); font-size: var(--type-body); }
+.about-method dd { margin-top: var(--space-2); font-size: var(--type-body); line-height: 1.65; }
+.analysis-details > :not(summary) { margin-block: var(--space-4); }
+.hero-specialism { color: var(--text-color); }
+
 .about-practice {
     max-width: 72ch;
     margin-top: 2rem;
@@ -175,16 +147,13 @@ header nav > a:is(:hover, :focus-visible) .brand-mark::after {
     #hero .hero-tagline { margin-top: 1rem; font-size: 1.5rem; line-height: 1.4; }
     .hero-context { margin-top: .75rem; font-size: 1rem; line-height: 1.65; }
     .project-route { gap: .25rem 1.25rem; margin-bottom: 1.5rem; }
-    .supporting-project .preview-dashboard-window { height: 194px; }
     .about-practice { margin-top: 1.5rem; padding-left: 1rem; }
 }
-@media (max-width: 359px) {
-    .career-path li { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
-}
+
 @media print {
     .project-route { display: none; }
     .project-outcome, .about-practice { color: inherit; }
-    .career-path li, .case-reasoning { break-inside: avoid; }
+    .about-method dl > div, .case-reasoning { break-inside: avoid; }
 }
 
 /* Employer marks stay still; only the short career markers respond. */
@@ -192,9 +161,13 @@ header nav > a:is(:hover, :focus-visible) .brand-mark::after {
 .career-stop { position: relative; display: flex; align-items: center; gap: .5rem; min-height: 44px; padding-bottom: .5rem; scroll-margin-block: 6rem; }
 .career-stop > div { min-width: 0; overflow-wrap: anywhere; }
 .career-stop small { display: block; font-size: .8125rem; line-height: 1.5; color: var(--text-color); }
+html[lang='de'] .career-stop small { hyphens: auto; -webkit-hyphens: auto; }
 .career-stop::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: var(--accent-text); transform: scaleX(.15); transform-origin: left; opacity: .4; }
 .career-stop:is(:hover, :focus-visible)::after { transform: scaleX(1); opacity: 1; }
 .career-stop:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 4px; }
 .experience-role h3 { scroll-margin-top: 6rem; }
 @media (prefers-reduced-motion: no-preference) { .career-stop::after { transition: transform 240ms ease, opacity 180ms ease; } }
-@media (max-width: 767px) { .career-trail { grid-template-columns: 1fr; gap: .75rem; } }
+@media (max-width: 767px) {
+    .career-trail { grid-template-columns: repeat(auto-fit, minmax(min(100%, 5rem), 1fr)); gap: var(--space-3); }
+    .career-stop { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+}

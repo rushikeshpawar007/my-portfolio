@@ -19,7 +19,7 @@
 .lineage-panel { min-width: 0; padding: 1rem; background: var(--surface); border: 1px solid var(--hairline); }
 .lineage-panel[data-lineage-dependent='true'], .lineage-history[data-lineage-dependent='true'] { border-color: var(--accent-text); }
 .lineage-panel[data-lineage-current='true'] { background: var(--feature-surface); }
-.lineage-panel h5 { margin: 0 0 .75rem; color: var(--heading-color); font-size: 1.0625rem; line-height: 1.5; }
+.lineage-panel h6 { margin: 0 0 .75rem; color: var(--heading-color); font-family: var(--font-body); font-size: var(--type-body); font-weight: 600; line-height: 1.5; }
 .lineage-panel p { margin: .75rem 0 0; font-size: .875rem; line-height: 1.65; }
 .lineage-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: .875rem; line-height: 1.5; }
 .lineage-table caption { text-align: left; margin-bottom: .65rem; color: var(--text-color); }
@@ -27,12 +27,12 @@
 .lineage-table th:first-child { width: 19%; }
 .lineage-table th:last-child { width: 26%; }
 .lineage-table td:last-child { font-variant-numeric: tabular-nums; }
-.lineage-table tr[data-lineage-stage='Closed Won'] td { color: var(--text-color); }
+.lineage-table tr:is([data-lineage-stage='Closed Won'], [data-lineage-stage='Closed Lost']) td { color: var(--text-color); }
 .lineage-table small { display: block; margin-top: .2rem; color: var(--accent-text); font: inherit; }
 .lineage-sql { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-mono); font-size: .875rem; line-height: 1.8; }
 [data-lineage-active='1'] .lineage-sql span { color: var(--accent-text); text-decoration: underline; text-underline-offset: .25em; }
 .lineage-result { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; align-items: center; }
-.lineage-result h5 { margin-bottom: .25rem; }
+.lineage-result h6 { margin-bottom: .25rem; }
 .lineage-result strong { display: block; font-family: var(--font-mono); color: var(--accent-text); font-size: clamp(1.5rem, 6cqi, 2.5rem); font-weight: 400; line-height: 1.3; overflow-wrap: anywhere; }
 .lineage-history { margin-top: .75rem; border-left: 2px solid var(--hairline); padding-left: .875rem; font-size: .875rem; line-height: 1.7; }
 @container (max-width: 34rem) { .lineage-panels, .lineage-result, .lineage-steps { grid-template-columns: 1fr; } }

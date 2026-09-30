@@ -77,7 +77,7 @@ test('the cookie banner links to the privacy policy in the visitor’s language'
 test('both language toggles have a translated accessible name', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('cookie-consent', 'denied'));
   await page.goto('/');
-  for (const [lang, name] of [['en', 'Switch language'], ['de', 'Sprache wechseln']]) {
+  for (const [lang, name] of [['en', 'Switch to German'], ['de', 'Zu Englisch wechseln']]) {
     if (lang === 'de') await page.locator('#lang-toggle-header').click();
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     for (const id of ['lang-toggle-header', 'lang-toggle-mobile']) {
@@ -150,7 +150,7 @@ for (const width of [320, 375, 768, 1440]) {
       }
       await page.locator('#cookie-decline').click();
       await page.evaluate(() => document.fonts.ready);
-      // Categories have different counts; compare tiles within each filled row.
+      // Every category shares the same tracks, including its incomplete final row.
       const skillGroups = await page.locator('.skill-matrix').evaluateAll(groups => groups.map(group => {
         const bounds = group.getBoundingClientRect();
         const rows = new Map();
@@ -165,12 +165,15 @@ for (const width of [320, 375, 768, 1440]) {
         }
         return { left: bounds.left, right: bounds.right, rows: [...rows.values()] };
       }));
+      const sharedTileWidth = skillGroups[0].rows[0][0].width;
       for (const group of skillGroups) {
+        expect(Math.abs(group.left - skillGroups[0].left)).toBeLessThan(2);
+        expect(Math.abs(group.right - skillGroups[0].right)).toBeLessThan(2);
         for (const row of group.rows) {
           expect(Math.abs(row[0].left - group.left)).toBeLessThan(2);
-          expect(Math.abs(row.at(-1).right - group.right)).toBeLessThan(2);
+          expect(row.at(-1).right).toBeLessThanOrEqual(group.right + 1);
           for (const size of row) {
-            expect(Math.abs(size.width - row[0].width)).toBeLessThan(1);
+            expect(Math.abs(size.width - sharedTileWidth)).toBeLessThan(1);
             expect(size.height).toBe(row[0].height);
             expect(size.height).toBeGreaterThanOrEqual(44);
             expect(size.icon).toBeGreaterThanOrEqual(36);
@@ -182,8 +185,8 @@ for (const width of [320, 375, 768, 1440]) {
         }
       }
       if (width >= 1280) {
-        expect(skillGroups[1].rows).toHaveLength(1);
-        expect(skillGroups[1].rows[0]).toHaveLength(7);
+        expect(sharedTileWidth).toBeGreaterThanOrEqual(150);
+        expect(skillGroups[1].rows.length).toBeGreaterThan(1);
         expect(skillGroups[1].rows[0][0].height).toBeLessThan(160);
       }
       if (width < 768) {
@@ -206,7 +209,7 @@ test('case studies are compact, keyboard operable, and keep the measured outcome
   await page.goto('/');
   await page.locator('#cookie-decline').click();
   await expect(page.locator('details.case-details[open]')).toHaveCount(0);
-  await expect(page.locator('.project-preview')).toHaveCount(7);
+  await expect(page.locator('#projects article.project-preview')).toHaveCount(6);
   await expect(page.locator('#finance-case-study .project-outcome')).toContainText('Manual preparation per monthly report');
   await expect(page.locator('#finance-case-study .project-outcome')).toContainText('~10 hours → ~5 minutes');
   const summary = page.locator('#royalty-case-study-details > summary');
@@ -232,7 +235,7 @@ test('native case studies work without scripts and print restores disclosure sta
   await page.goto('/');
   await page.locator('#report-details > summary').click();
   await page.evaluate(() => dispatchEvent(new Event('beforeprint')));
-  await expect(page.locator('details.case-details[open]')).toHaveCount(8);
+  await expect(page.locator('details.case-details[open]')).toHaveCount(7);
   await expect(page.locator('details.experience-details[open]')).toHaveCount(3);
   await page.evaluate(() => dispatchEvent(new Event('afterprint')));
   await expect(page.locator('details.case-details[open]')).toHaveCount(1);

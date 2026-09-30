@@ -4,11 +4,11 @@ A static data analyst portfolio with English and German content, light and dark 
 
 ## Local setup
 
-Use Node.js 24 LTS (recommended). The supported engine range is `^22.13.0 || >=24.0.0`.
+Use Node.js 24 LTS (recommended and recorded in `.nvmrc`, matching CI). The supported engine range is `^22.13.0 || >=24.0.0`.
 
 ```sh
 npm ci
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run build:css
 npm run preview
 ```
@@ -20,11 +20,18 @@ Open [the local portfolio](http://127.0.0.1:4173). Stop the server with `Ctrl+C`
 ```sh
 npm run lint
 npm run typecheck
+npm run audit:deps
 npm run test:server
 npm test
 ```
 
-Playwright starts the local server automatically when needed. Type checking validates JavaScript through JSDoc without generating application files.
+Playwright starts the local server automatically when needed. Type checking validates JavaScript through JSDoc without generating application files. Lint warnings fail the check. The dependency audit fails on reported high or critical advisories and requires access to the npm registry.
+
+The full browser suite runs in Chromium. Firefox and WebKit also cover navigation,
+language/theme controls, dashboard viewing, analyst examples and legal pages.
+Use `npm test -- --project=chromium` to run only the full Chromium suite, or select
+`--project=firefox` / `--project=webkit` for the focused engine checks. WebKit
+testing does not replace checking Safari on real Apple devices.
 
 CI rejects focused `test.only` cases so an accidentally narrowed test run cannot pass unnoticed. Failed browser tests retain screenshots, and CI also retains traces in `test-results/` for inspection with `npx playwright show-trace <trace.zip>`.
 
@@ -80,6 +87,8 @@ Inline scripts are protected by CSP hashes. When changing an inline script, upda
 ## Documentation
 
 - [Design](docs/DESIGN.md)
+- [Content evidence, CV consistency and open questions](docs/CONTENT-EVIDENCE-REVIEW.md)
+- [Resume-backed project details and source notes](docs/RESUME-CONTENT-ADDITIONS.md)
 - [Layout system and verification — September 2026](docs/LAYOUT-REVIEW-2026-09-29.md)
 - [Performance review and measurements](docs/PERFORMANCE.md)
 - [Quality and interaction audit — September 2026](docs/AUDIT-2026-09-29.md)

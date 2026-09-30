@@ -38,9 +38,8 @@ test('project titles share one role and each card tells the same sequence', asyn
       bodySize: parseFloat(getComputedStyle(article.querySelector('.project-description')).fontSize),
     };
   }));
-  expect(cards).toHaveLength(8);
-  // No implementation stack is documented for this project; its category is not a tool.
-  await expect(page.locator('#royalty-case-study .project-tools')).toHaveCount(0);
+  expect(cards).toHaveLength(7);
+  await expect(page.locator('#royalty-case-study .project-tools')).toHaveText('R · SQL');
   for (const card of cards) {
     expect(card.missing, card.id).toEqual([]);
     expect(card.ordered, card.id).toBe(true);
@@ -73,7 +72,7 @@ test('category navigation is distinct from project content and still opens the c
 test('every case study describes its action and keeps keyboard focus when collapsed', async ({ page }) => {
   await ready(page);
   const details = page.locator('#projects details.case-details');
-  await expect(details).toHaveCount(8);
+  await expect(details).toHaveCount(7);
   for (const panel of await details.all()) {
     const summary = panel.locator(':scope > summary');
     const label = await summary.getAttribute('aria-describedby');
@@ -94,26 +93,50 @@ test('every case study describes its action and keeps keyboard focus when collap
   }
 });
 
-test('paired project actions align while the featured copy begins beside its visual', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await ready(page);
-  const layout = await page.evaluate(() => {
-    const rows = new Map();
-    for (const article of document.querySelectorAll('#projects article.project-preview')) {
-      const box = article.getBoundingClientRect();
-      const top = Math.round(box.top);
-      const row = rows.get(top) || [];
-      row.push({ id: article.id, bottom: article.querySelector('.case-details > summary').getBoundingClientRect().bottom });
-      rows.set(top, row);
-    }
-    const copy = document.querySelector('.feature-copy').getBoundingClientRect();
-    const visual = document.querySelector('.report-comparison').getBoundingClientRect();
-    return { rows: [...rows.values()].filter(row => row.length === 2), featuredTopDifference: Math.abs(copy.top - visual.top) };
-  });
-  expect(layout.rows).toHaveLength(3);
-  for (const row of layout.rows) expect(Math.abs(row[0].bottom - row[1].bottom), row.map(card => card.id).join(' / ')).toBeLessThan(2);
-  expect(layout.featuredTopDifference).toBeLessThan(2);
-});
+for (const width of [390, 1440]) {
+  for (const language of ['en', 'de']) {
+    test(`seven full-width projects keep their primary stories visible with details closed at ${width}px in ${language}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.addInitScript(value => localStorage.setItem('lang', value), language);
+      await ready(page);
+      const articles = page.locator('#projects article');
+      await expect(articles).toHaveCount(7);
+      await expect(page.locator('#projects details[open]')).toHaveCount(0);
+      const previews = [];
+      for (const article of await articles.all()) {
+        const preview = article.locator('[data-project-preview]').first();
+        await preview.scrollIntoViewIfNeeded();
+        await expect(preview).toBeVisible();
+        await expect(preview).toHaveAttribute('data-preview-state', 'complete');
+        await expect(preview.locator('[data-preview-toggle]')).toHaveCount(1);
+        expect(await preview.evaluate(element => Boolean(element.closest('details')))).toBe(false);
+        previews.push(await preview.getAttribute('data-project-preview'));
+      }
+      expect(previews).toEqual(['report', 'reconciliation', 'deal-history', 'royalty', 'chat', 'invoice', 'spotify']);
+      await expect(page.locator('#projects details[open]')).toHaveCount(0);
+      const layout = await page.evaluate(() => {
+        const grid = document.querySelector('#projects .bento-grid').getBoundingClientRect();
+        const projects = [...document.querySelectorAll('#projects article')].map(article => {
+          const box = article.getBoundingClientRect();
+          const preview = article.querySelector('[data-project-preview]').getBoundingClientRect();
+          const copy = article.querySelector('.project-intro').getBoundingClientRect();
+          const action = article.querySelector('.case-details > summary').getBoundingClientRect();
+          return { id: article.id, top: box.top, bottom: box.bottom, left: box.left, right: box.right, contentBottom: Math.max(preview.bottom, copy.bottom), actionTop: action.top };
+        });
+        const copy = document.querySelector('.feature-copy').getBoundingClientRect();
+        const visual = document.querySelector('.report-comparison').getBoundingClientRect();
+        return { left: grid.left, right: grid.right, projects, featuredTopDifference: Math.abs(copy.top - visual.top) };
+      });
+      for (const [index, project] of layout.projects.entries()) {
+        expect(Math.abs(project.left - layout.left), project.id).toBeLessThan(2);
+        expect(Math.abs(project.right - layout.right), project.id).toBeLessThan(2);
+        expect(project.actionTop, project.id).toBeGreaterThanOrEqual(project.contentBottom - 1);
+        if (index) expect(project.top, project.id).toBeGreaterThanOrEqual(layout.projects[index - 1].bottom);
+      }
+      if (width === 1440) expect(layout.featuredTopDifference).toBeLessThan(2);
+    });
+  }
+}
 
 for (const width of [768, 1440]) {
   for (const reducedMotion of ['reduce', 'no-preference']) {
@@ -121,7 +144,7 @@ for (const width of [768, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       await page.emulateMedia({ reducedMotion });
       await ready(page);
-      // Each side of a project row moves differently when its card spans the grid.
+      // Both analytical cases keep their full reading width and usable controls.
       for (const id of ['reconciliation-details', 'pipeline-history-details']) {
         const panel = page.locator('#' + id);
         const summary = panel.locator(':scope > summary');
@@ -204,7 +227,7 @@ for (const width of [390, 768, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       await page.addInitScript(value => localStorage.setItem('lang', value), language);
       await ready(page);
-      await page.locator('#reconciliation-case-study details > summary').click();
+      await page.locator('#reconciliation-details > summary').click();
       const layout = await page.evaluate(() => {
         const selectors = ['main > section', '#projects article', '.project-title', '.project-description', '.project-outcome', '.case-details > summary', '.experience-header', '.skill-matrix', '#contact-form'];
         const outside = [...document.querySelectorAll(selectors.join(','))].flatMap(element => {

@@ -1,5 +1,14 @@
 const { defineConfig, devices } = require('@playwright/test');
 
+// Keep full coverage in Chromium and exercise the main visitor journeys in
+// other engines without tripling browser-specific performance diagnostics.
+const crossBrowserTests = [
+  '**/portfolio-interactions.spec.js',
+  '**/portfolio-dashboard-viewer.spec.js',
+  '**/portfolio-workbench.spec.js',
+  '**/portfolio-legal.spec.js',
+];
+
 module.exports = defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.js',
@@ -21,5 +30,7 @@ module.exports = defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', testMatch: crossBrowserTests, timeout: 20000, use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', testMatch: crossBrowserTests, timeout: 20000, use: { ...devices['Desktop Safari'] } },
   ],
 });

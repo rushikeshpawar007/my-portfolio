@@ -7,7 +7,8 @@ test.beforeEach(async ({ page }) => {
 
 async function openExercise(page) {
   await page.goto('/');
-  await page.locator('#reconciliation-details').evaluate(details => { details.open = true; });
+  await page.locator('#reconciliation-details > summary').click();
+  await page.locator('#cleaning-analysis-details > summary').click();
   const exercise = page.locator('[data-cleaning]');
   await expect(exercise.locator('[data-cleaning-select="0"]')).toBeVisible();
   return exercise;
@@ -54,7 +55,9 @@ test('the no-JavaScript example stays complete and hides nonfunctional controls'
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4173/');
   await page.locator('#reconciliation-details > summary').click();
+  await page.locator('#cleaning-analysis-details > summary').click();
   const exercise = page.locator('[data-cleaning]');
+  await expect(exercise).toBeVisible();
   await expect(exercise.locator('[data-cleaning-row]')).toHaveCount(4);
   await expect(exercise.locator('[data-cleaning-count]')).toHaveText('4 input rows · 3 retained · 1 needs review');
   await expect(exercise.locator('[data-cleaning-controls]')).toBeHidden();
@@ -80,6 +83,16 @@ test('cleaning motion is finite and stops for reduced motion', async ({ page }) 
   expect(motions[0].properties.every(property => ['opacity', 'transform', 'offset', 'computedOffset', 'easing', 'composite'].includes(property))).toBe(true);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect.poll(() => exercise.locator('[data-cleaning-result]').evaluate(element => element.getAnimations().length)).toBe(0);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await exercise.evaluate(element => {
+    element.querySelector('[data-cleaning-select="0"]').click();
+    element.querySelector('[data-cleaning-result]').getAnimations().forEach(animation => animation.pause());
+  });
+  await page.locator('#reconciliation-details > summary').click();
+  await expect.poll(() => exercise.locator('[data-cleaning-result]').evaluate(element => element.getAnimations().length)).toBe(0);
+  await expect(exercise).toHaveAttribute('data-cleaning-step', '0');
+  await expect(page.locator('#cleaning-analysis-details')).toHaveAttribute('open', '');
+  await expect(exercise).toBeHidden();
 });
 
 for (const language of ['en', 'de']) {

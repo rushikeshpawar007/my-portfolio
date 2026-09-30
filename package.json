@@ -8,7 +8,8 @@
     "preview": "node scripts/serve.cjs",
     "test:server": "node --test tests/server.test.cjs",
     "test": "playwright test",
-    "lint": "eslint src/ tests/ scripts/ eslint.config.js playwright.config.js",
+    "lint": "eslint src/ tests/ scripts/ eslint.config.js playwright.config.js --max-warnings 0",
+    "audit:deps": "npm audit --audit-level=high",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],

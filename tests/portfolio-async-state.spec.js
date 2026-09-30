@@ -88,6 +88,8 @@ test('copy feedback and its reset follow language changes before and after copyi
 
 test('choosing a demo question by keyboard keeps focus in the demo, so Escape still closes it', async ({ page }) => {
   await page.goto('/');
+  await page.locator('#rag-case-study-details > summary').focus();
+  await page.keyboard.press('Enter');
   const island = page.locator('#dynamic-island-container');
   await island.focus();
   await page.keyboard.press('Enter');

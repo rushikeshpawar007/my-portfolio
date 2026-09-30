@@ -7,6 +7,7 @@ test.beforeEach(async ({ page }) => {
 
 test('budget periods calculate positive and negative revenue variance using the budget base', async ({ page }) => {
   await page.goto('/#report-details');
+  await page.locator('#report-analysis-details > summary').click();
   const example = page.locator('[data-analysis-example="budget"]');
   await expect(example).toBeVisible();
   await expect(example).toContainText('Fictional sample');
@@ -63,6 +64,8 @@ test('new analysis examples retain complete source values and hide inactive cont
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4173');
   await page.locator('#report-details > summary').click();
+  await page.locator('#report-analysis-details > summary').click();
+  await expect(page.locator('[data-analysis-example="budget"]')).toBeVisible();
   await expect(page.locator('[data-budget-insight]')).toContainText('€12,000 above budget');
   await expect(page.locator('#budget-period')).toBeHidden();
   await expect(page.locator('[data-budget-explain]')).toBeHidden();
@@ -93,6 +96,7 @@ test('comparison values remain within narrow containers with doubled German text
   await page.evaluate(async () => {
     document.documentElement.style.fontSize = '32px';
     document.querySelector('#report-details').open = true;
+    document.querySelector('#report-analysis-details').open = true;
     document.querySelector('#cariad-role-details').open = true;
     await document.fonts.ready;
   });

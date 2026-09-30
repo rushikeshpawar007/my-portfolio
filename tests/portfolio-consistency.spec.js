@@ -51,19 +51,18 @@ test('tablet navigation visibly marks the current section without shifting links
   await expect(inactive).toHaveCSS('border-inline-start-width', '2px');
 });
 
-test('the demo follows its project and category bookmarks remain attached to the work', async ({ page }) => {
+test('the demo belongs to its project and category bookmarks remain attached to the work', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#royalty-case-study #story-automation')).toHaveCount(1);
   await expect(page.locator('#invoice-case-study #story-more')).toHaveCount(1);
-  const order = await page.locator('.bento-grid > *').evaluateAll(elements => elements.map(el => el.id || el.className));
-  expect(order.indexOf('rag-case-study')).toBeLessThan(order.findIndex(id => id.includes('demo-exhibit')));
-  expect(order.findIndex(id => id.includes('demo-exhibit'))).toBeLessThan(order.indexOf('invoice-case-study'));
+  await expect(page.locator('#rag-case-study-details .demo-exhibit #dynamic-island-container')).toHaveCount(1);
+  await expect(page.locator('.bento-grid > .demo-exhibit')).toHaveCount(0);
 });
 
 test('the demo close control keeps a 44px target on tablet', async ({ page }) => {
   await page.setViewportSize({ width: 820, height: 1180 });
   await page.goto('/');
-  await page.locator('#dynamic-island-container').click();
+  await page.locator('[data-i18n-key="demo_open"]').click();
   const close = page.locator('#close-island-btn');
   await expect(close).toBeVisible();
   const bounds = await close.boundingBox();
@@ -96,7 +95,7 @@ test('language changes include dates, source values, image descriptions and acce
   const textKeys = ['cariad_dates', 'kpmg_dates', 'smauto_dates', 'htw_dates', 'jspm_dates',
     'demo_revenue_value', 'demo_budget_value', 'demo_expenses_value'];
   const labelKeys = ['label_impact', 'label_back_to_top', 'label_mobile_navigation', 'label_demo_conversation'];
-  const imageKeys = ['alt_profile', 'alt_spotify_preview', 'alt_spotify_dashboard'];
+  const imageCounts = { alt_profile: 2, alt_spotify_detail: 1, alt_spotify_dashboard: 2 };
 
   for (const language of ['de', 'en']) {
     // The toggle ignores clicks within 150 ms of the previous one; retry until the
@@ -111,9 +110,9 @@ test('language changes include dates, source values, image descriptions and acce
     for (const key of labelKeys) {
       await expect(page.locator(`[data-i18n-aria="${key}"]`)).toHaveAttribute('aria-label', translations[language][key]);
     }
-    for (const key of imageKeys) {
+    for (const [key, count] of Object.entries(imageCounts)) {
       const images = page.locator(`[data-i18n-alt="${key}"]`);
-      await expect(images).toHaveCount(key === 'alt_profile' ? 2 : 1);
+      await expect(images).toHaveCount(count);
       for (const image of await images.all()) {
         await expect(image).toHaveAttribute('alt', translations[language][key]);
       }

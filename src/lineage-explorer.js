@@ -15,7 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const next = explorer.querySelector('[data-lineage-follow]');
     const status = explorer.querySelector('[data-lineage-status]');
     const history = explorer.querySelector('[data-lineage-history]');
-    const details = explorer.closest('details');
+    /** @type {HTMLDetailsElement[]} */
+    const disclosureAncestors = [];
+    for (let details = explorer.closest('details'); details; details = details.parentElement?.closest('details') || null) {
+        disclosureAncestors.push(details);
+    }
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     const printMedia = matchMedia('print');
     let printing = printMedia.matches;
@@ -24,8 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let visible = false;
     let step = -1;
     const rows = Array.from(explorer.querySelectorAll('tr[data-lineage-amount]'));
-    // The displayed three-row sample is the calculation source of truth.
-    const total = rows.reduce((sum, row) => sum + (row.getAttribute('data-lineage-stage') === 'Closed Won' ? 0 : Number(row.getAttribute('data-lineage-amount'))), 0);
+    // Keep this explicit rule aligned with the illustrative SQL. An unrecognised
+    // status must not silently enter the open pipeline alongside closed deals.
+    const openStages = new Set(['Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote', 'Negotiation/Review', 'Commitment']);
+    const total = rows.reduce((sum, row) => sum + (openStages.has(row.getAttribute('data-lineage-stage') || '') ? Number(row.getAttribute('data-lineage-amount')) : 0), 0);
     const captions = ['lineage_source_status', 'lineage_model_status', 'lineage_report_status'];
     /** @type {Map<string, Intl.NumberFormat>} */
     const moneyFormats = new Map();
@@ -63,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelMotion();
         step = chosen;
         render();
-        if (!visible || reduced.matches || printing || document.hidden || (details && !details.open)) return;
+        if (!visible || reduced.matches || printing || document.hidden || disclosureAncestors.some(details => !details.open)) return;
         panels.slice(step).forEach((panel, index) => {
             if (typeof panel.animate !== 'function') return;
             const animation = panel.animate([{ opacity: .72, transform: 'translateY(3px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 180, delay: index * 45, easing: 'ease-out' });
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         observer.observe(explorer);
     }
-    details?.addEventListener('toggle', () => { if (!details.open) cancelMotion(); });
+    disclosureAncestors.forEach(details => details.addEventListener('toggle', () => { if (!details.open) cancelMotion(); }));
     reduced.addEventListener('change', cancelMotion);
     document.addEventListener('visibilitychange', () => { if (document.hidden) cancelMotion(); });
     printMedia.addEventListener('change', event => { printing = event.matches; if (printing) cancelMotion(); });

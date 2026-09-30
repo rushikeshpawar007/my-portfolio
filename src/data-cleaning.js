@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stop();
         step = next;
         render(true);
-        if (!motion.matches && !printing && !document.hidden && (!details || details.open) && result && typeof result.animate === 'function') {
+        if (!motion.matches && !printing && !document.hidden && disclosureAncestors.every(details => details.open) && result && typeof result.animate === 'function') {
             const active = result.animate([{ opacity: .6, transform: 'translateY(3px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 180, easing: 'ease-out' });
             animation = active;
             active.addEventListener('finish', () => { if (animation === active) animation = undefined; }, { once: true });
@@ -97,8 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
     printMedia.addEventListener('change', event => { printing = event.matches; if (printing) stop(); });
     window.addEventListener('beforeprint', () => { printing = true; stop(); });
     window.addEventListener('afterprint', () => { printing = printMedia.matches; });
-    const details = exercise.closest('details');
-    details?.addEventListener('toggle', () => { if (!details.open) stop(); });
+    /** @type {HTMLDetailsElement[]} */
+    const disclosureAncestors = [];
+    for (let details = exercise.closest('details'); details; details = details.parentElement?.closest('details') || null) disclosureAncestors.push(details);
+    disclosureAncestors.forEach(details => details.addEventListener('toggle', () => { if (!details.open) stop(); }));
     document.addEventListener('portfolio:languagechange', () => render(Boolean(exercise.querySelector('[data-cleaning-announcement]')?.textContent)));
     render();
     const controls = exercise.querySelector('[data-cleaning-controls]');

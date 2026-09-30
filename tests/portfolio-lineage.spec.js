@@ -6,25 +6,53 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function openExplorer(page) {
-  await page.goto('/');
-  await page.locator('#dbt-history-details').evaluate(details => { details.open = true; });
+  await page.goto('/#lineage-explorer');
   const explorer = page.locator('[data-lineage-explorer]');
   await expect(explorer.locator('[data-lineage-follow]')).toBeVisible();
   return explorer;
 }
 
 test('the project introduction opens the sample and moves keyboard focus to it', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('#dbt-history-details')).not.toHaveAttribute('open', '');
+  await page.goto('/#dbt-history-case-study');
+  await expect(page.locator('#dbt-history-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#pipeline-analysis-details')).not.toHaveAttribute('open', '');
   await page.locator('a[href="#lineage-explorer"]').focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#lineage-explorer$/);
   await expect(page.locator('#dbt-history-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#pipeline-analysis-details')).toHaveAttribute('open', '');
   await expect(page.locator('#lineage-explorer')).toBeFocused();
   await expect(page.locator('#lineage-title')).toBeInViewport();
 });
 
-test('pipeline lineage excludes the won deal and totals one current row per deal', async ({ page }) => {
+for (const id of ['pipeline-history-case-study', 'dbt-history-case-study', 'dbt-history-details', 'lineage-explorer']) {
+  test(`legacy ${id} bookmark reveals its containing disclosures`, async ({ page }) => {
+    await page.goto(`/#${id}`);
+    const target = page.locator(`#${id}`);
+    await expect(target).toBeVisible();
+    await expect.poll(() => target.evaluate(element => {
+      for (let details = element.closest('details'); details; details = details.parentElement?.closest('details')) {
+        if (!details.open) return false;
+      }
+      return true;
+    })).toBe(true);
+  });
+}
+
+test('opening a nested technical disclosure reveals its project and printing restores optional analysis state', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#dbt-history-details').evaluate(details => { details.open = true; });
+  await expect(page.locator('#pipeline-history-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#pipeline-analysis-details')).not.toHaveAttribute('open', '');
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
+  await expect(page.locator('#pipeline-analysis-details')).toHaveAttribute('open', '');
+  await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+  await expect(page.locator('#pipeline-analysis-details')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#dbt-history-details')).toHaveAttribute('open', '');
+  await expect(page.locator('#pipeline-history-details')).toHaveAttribute('open', '');
+});
+
+test('pipeline lineage excludes won and lost deals and totals one current row per deal', async ({ page }) => {
   const explorer = await openExplorer(page);
   const sample = await explorer.locator('tbody tr').evaluateAll(rows => rows.map(row => ({
     id: row.cells[0].textContent,
@@ -35,12 +63,30 @@ test('pipeline lineage excludes the won deal and totals one current row per deal
     { id: 'D-201', stage: 'Proposal/Price Quote', amount: 18000 },
     { id: 'D-202', stage: 'Closed Won', amount: 12000 },
     { id: 'D-203', stage: 'Negotiation/Review', amount: 7000 },
+    { id: 'D-204', stage: 'Closed Lost', amount: 9000 },
   ]);
   expect(new Set(sample.map(row => row.id)).size).toBe(sample.length);
-  expect(sample.filter(row => row.stage !== 'Closed Won').reduce((sum, row) => sum + row.amount, 0)).toBe(25000);
+  const sql = await explorer.locator('.lineage-sql').textContent();
+  const allowedStages = [...sql.matchAll(/'([^']+)'/g)].map(match => match[1]);
+  expect(allowedStages).toEqual(['Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote', 'Negotiation/Review', 'Commitment']);
+  expect(sample.filter(row => allowedStages.includes(row.stage)).reduce((sum, row) => sum + row.amount, 0)).toBe(25000);
   await expect(explorer.locator('[data-lineage-total]')).toHaveText('€25,000');
-  await expect(explorer.locator('.lineage-sql')).toContainText("WHERE stage <> 'Closed Won'");
+  await expect(explorer.locator('.lineage-sql')).toContainText('WHERE stage IN');
   await expect(explorer.locator('[data-lineage-history]')).toContainText('not added to this current pipeline total');
+});
+
+test('the calculation admits all defined open stages and rejects an unknown status', async ({ page }) => {
+  await page.addInitScript(() => document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.querySelector('[data-lineage-explorer] tbody');
+    for (const stage of ['Prospecting', 'Test/Demo/Meeting', 'Proposal/Price Quote', 'Negotiation/Review', 'Commitment', 'Unclassified']) {
+      const row = document.createElement('tr');
+      row.dataset.lineageStage = stage;
+      row.dataset.lineageAmount = stage === 'Unclassified' ? '1000000' : '100';
+      tbody.append(row);
+    }
+  }, { once: true }));
+  const explorer = await openExplorer(page);
+  await expect(explorer.locator('[data-lineage-total]')).toHaveText('€25,500');
 });
 
 test('keyboard tracing keeps focus, retains evidence, and highlights downstream dependencies', async ({ page }) => {
@@ -54,7 +100,7 @@ test('keyboard tracing keeps focus, retains evidence, and highlights downstream 
     await expect(explorer.locator(`[data-lineage-step="${step}"]`)).toHaveAttribute('aria-pressed', 'true');
     await expect(explorer.locator('[data-lineage-panel][data-lineage-dependent="true"]')).toHaveCount(3 - step);
     await expect(explorer.locator('[data-lineage-panel]:visible')).toHaveCount(3);
-    await expect(explorer.locator('tbody tr:visible')).toHaveCount(3);
+    await expect(explorer.locator('tbody tr:visible')).toHaveCount(4);
   }
   const source = explorer.locator('[data-lineage-step="0"]');
   await source.focus();
@@ -71,7 +117,7 @@ test('language switching translates labels and money without resetting the selec
   await explorer.locator('[data-lineage-step="2"]').click();
   await page.locator('#lang-toggle-header').click();
   await expect(explorer).toHaveAttribute('data-lineage-active', '2');
-  await expect(explorer.locator('h4')).toHaveText('Einer Kennzahl auf der Spur.');
+  await expect(explorer.locator('#lineage-title')).toHaveText('Einer Kennzahl auf der Spur.');
   await expect(explorer.locator('[data-lineage-total]')).toHaveText(/25\.000\s€/);
   await expect(explorer.locator('[data-lineage-follow]')).toHaveText('Erneut nachverfolgen ↺');
   await expect(explorer.locator('[data-lineage-status]')).toContainText('zwei aktuelle Deal-Datensätze');
@@ -82,13 +128,18 @@ test('without JavaScript the disclosure exposes the full explanation and no iner
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4173/');
-  await page.locator('#dbt-history-details > summary').click();
   const explorer = page.locator('[data-lineage-explorer]');
-  await expect(explorer.locator('tbody tr:visible')).toHaveCount(3);
+  const ancestorIds = await explorer.evaluate(element => {
+    const ids = [];
+    for (let details = element.closest('details'); details; details = details.parentElement?.closest('details')) ids.unshift(details.id);
+    return ids;
+  });
+  for (const id of ancestorIds) await page.locator(`#${id} > summary`).click();
+  await expect(explorer.locator('tbody tr:visible')).toHaveCount(4);
   await expect(explorer.locator('[data-lineage-total]')).toHaveText('€25,000');
   await expect(explorer.locator('.lineage-sql')).toBeVisible();
   await expect(explorer.locator('[data-lineage-controls]')).toBeHidden();
-  await expect(explorer).toContainText('Fictional three-deal sample');
+  await expect(explorer).toContainText('Fictional four-deal sample');
   await context.close();
 });
 
@@ -120,7 +171,9 @@ test('tracing uses finite transform/opacity motion and cancels on reduced motion
   await explorer.evaluate(element => {
     element.querySelector('[data-lineage-step="0"]').click();
     element.getAnimations({ subtree: true }).filter(animation => animation.constructor.name === 'Animation').forEach(animation => animation.pause());
-    element.closest('details').open = false;
+    const ancestors = [];
+    for (let details = element.closest('details'); details; details = details.parentElement?.closest('details')) ancestors.push(details);
+    ancestors.at(-1).open = false;
   });
   await expect.poll(() => explorer.evaluate(element => element.getAnimations({ subtree: true }).filter(animation => animation.constructor.name === 'Animation').length)).toBe(0);
 });
@@ -134,7 +187,7 @@ for (const language of ['en', 'de']) {
       document.documentElement.style.fontSize = '32px';
       await document.fonts.ready;
     });
-    const overflow = await explorer.locator('.lineage-panel, .lineage-panel h5, .lineage-sql, .lineage-follow, .lineage-steps button').evaluateAll(elements => elements.flatMap(element => {
+    const overflow = await explorer.locator('.lineage-panel, .lineage-panel h6, .lineage-sql, .lineage-follow, .lineage-steps button').evaluateAll(elements => elements.flatMap(element => {
       const rect = element.getBoundingClientRect();
       return rect.left < -1 || rect.right > innerWidth + 1 || element.scrollWidth > element.clientWidth + 1 ? [element.className] : [];
     }));

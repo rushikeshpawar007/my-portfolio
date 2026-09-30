@@ -1,3 +1,78 @@
+# Final code review — 30 September 2026
+
+The final review retained the existing static architecture, colours and project
+visuals. No browser framework or animation dependency was needed. Earlier
+measurements below are historical; the checks here describe the current code.
+
+## Corrections and maintenance
+
+- Handle a skipped View Transition's rejected `ready` promise so changing theme
+  still completes without an unhandled browser error.
+- Let modified internal-link clicks open another tab without expanding content
+  or moving focus on the original page. Normal navigation and legacy deep links
+  still reveal their target disclosures.
+- Disable transitions entirely with reduced motion. Firefox exposed tiny pending
+  transitions on hidden content despite the previous 0.01 ms duration.
+- Keep localized deal close dates paired with valid machine-readable `datetime`
+  attributes, including the authored fallback without JavaScript.
+- Align initial theme/language accessible names with the action each button will
+  perform. Remove obsolete layout selectors without changing the visual system.
+- Keep the existing 130,000-byte portfolio CSS budget: the current bundle is
+  **129,923 bytes**, down from 131,203 before this review. The legal bundle is
+  4,965 bytes. These are file sizes, not compressed transfer measurements.
+- Fail linting on warnings, add the dependency audit to CI, and share the Node
+  24 LTS recommendation through `.nvmrc` and CI's `node-version-file` setting.
+- Retain the full Chromium suite and add focused Firefox/WebKit coverage for
+  navigation, language/theme controls, dashboard viewing, analyst examples and
+  legal pages. Tests now use keyboard activation when asserting retained
+  keyboard focus; pointer-click behaviour remains covered separately.
+
+## Dependencies and guidance
+
+`npm outdated` returned no outdated packages and `npm audit` reported **zero
+known vulnerabilities** on this review date. The installed direct development
+dependencies were already current: Playwright 1.63.0, Tailwind/CLI 4.3.3,
+ESLint 10.11.0, `@eslint/js` 10.0.1, globals 17.12.0, Lightning CSS 1.33.0 and
+TypeScript 7.0.2. No dependency upgrade was necessary. Immutable CI action
+revisions also matched their current release tags.
+
+Official references used in this review:
+
+- [Node release policy](https://nodejs.org/en/about/previous-releases): recommend
+  the supported LTS line for development/CI, rather than adopting Current solely
+  because its major version is higher.
+- [ViewTransition.ready](https://developer.mozilla.org/en-US/docs/Web/API/ViewTransition/ready):
+  skipped transitions can reject `ready` independently of completing the update.
+- [Playwright best practices](https://playwright.dev/docs/best-practices): test
+  visible behaviour, isolate browser state and use retrying assertions.
+- [Native button focus](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button#clicking_and_focus):
+  Safari does not focus pointer-clicked buttons by default.
+- [Tailwind browser requirements](https://tailwindcss.com/docs/upgrade-guide#browser-requirements):
+  retain the existing explicit modern-browser build targets.
+- [npm audit](https://docs.npmjs.com/cli/v11/commands/npm-audit/): check published
+  advisories in addition to version freshness. The CI audit fails on reported
+  high or critical findings; a clean audit is not proof of absence of defects.
+
+## Verification scope and limits
+
+The full Chromium run passed all **331 browser tests**, and all **60 focused
+cross-engine checks** passed (30 Firefox, 30 WebKit), without retries. The final
+reduced-motion change was also checked against the dashboard viewer and animated previews.
+CSS generation, ESLint, JavaScript type checking and all **six preview-server
+tests** passed. The four shipped HTML documents have one H1 each; the structural
+audit found no duplicate IDs, missing local assets, broken label/ARIA references
+or nested interactive controls. Inline executable scripts matched their CSP
+hashes, and CSS output remained deterministic across LF/CRLF inputs.
+
+Cross-engine checks use Playwright engines on Windows, not physical Apple or
+Android devices. WebKit's default keyboard traversal on this platform skips
+implicit links; legal-page tests therefore check explicit focus, visible focus
+styling and Enter activation there while preserving real Tab traversal in
+Chromium and Firefox. Local commands ran on Node 22.16.0; hosted CI on the
+configured Node 24 line was not executed from this workspace. No real contact
+message was sent. These functional checks do not certify 120 FPS or replace
+field performance measurements.
+
 # Code and performance review — 25 September 2026
 
 The measurements below were captured before the subsequent asset-folder

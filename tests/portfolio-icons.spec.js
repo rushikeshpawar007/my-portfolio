@@ -55,7 +55,7 @@ test('social and mobile navigation icons retain meaningful accessible labels', a
 
 test('decorative icons stay out of the accessibility tree after the demo opens', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#dynamic-island-container').click();
+  await page.locator('[data-i18n-key="demo_open"]').click();
   await expect(page.locator('.prompt-button').first()).toBeVisible();
   const exposed = await page.locator('svg').evaluateAll(icons => icons
     .filter(icon => icon.getAttribute('aria-hidden') !== 'true'

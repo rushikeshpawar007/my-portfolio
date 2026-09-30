@@ -41,6 +41,7 @@ to those roles; `styles/legal.css` applies them to the standalone documents.
 | Supported outcome | 20–24px | Semibold body face, with a smaller measurement/context label |
 | Description/body | 17px | 1.65–1.7 line height, comfortable reading measure |
 | Lead | 19px | Introductory or emphasized prose |
+| Expanded role labels | 19px | Semibold body face in neutral heading ink |
 | Metadata/caption | 13–15px | Secondary colour, sentence case |
 
 Sizes use rem-based limits and natural wrapping. Mini dashboards keep their
@@ -54,12 +55,21 @@ own data hierarchy without overriding the project-title role.
 - Projects follow category → title → supported outcome → description → actual
   tools → case-study action. Preview scenes illustrate the work. The featured
   card uses the same type roles with a deliberate split surface.
+- Reporting automation, reconciliation and sales pipeline history lead. The
+  dbt material is a technical chapter inside the sales-history case, retaining
+  both legacy fragment IDs. Each of the seven projects owns a full-width row,
+  with its primary animation visible before the project details are opened.
+- Budget analysis, data cleaning and the current-pipeline calculation sit in
+  optional native disclosures. Historical stage analysis is the sales case's
+  primary example. The current-pipeline sample uses an explicit five-stage
+  allowlist and excludes both Closed Won and Closed Lost.
 - Compact category navigation replaces repeated chapter headings. Legacy
   category fragment IDs remain on visible metadata, so bookmarks still work.
-- Closed secondary projects form a two-column overview where space permits.
-  With the disclosure enhancement available, open cases use the full reading
-  width and preserve the visitor's position at the control. Native fallback
-  retains a stable overview layout. Mobile uses a single logical column.
+- Desktop project rows top-align the overview beside the primary animation.
+  Details expand underneath across the reading width without rearranging the
+  overview. Tablet and mobile stack copy, animation and disclosure control.
+  Opening facts sit close to the summary without a second top divider or added
+  margin. This layout also works without JavaScript.
 - A disclosure says **Show project details** / **Hide project details**.
   Navigation links say **View case study** or describe their destination.
   The plus/collapse indicator, visible focus outline and native keyboard
@@ -75,28 +85,41 @@ Implementation guidance: [W3C heading structure](https://www.w3.org/WAI/tutorial
 [W3C reflow](https://www.w3.org/WAI/WCAG21/Understanding/reflow), and
 [web.dev responsive typography](https://web.dev/learn/design/typography).
 
+The design rationale is to make project titles and outcomes easy to scan, keep
+related copy and controls close together, and separate sections with a consistent
+spacing scale. This follows NN/g's research on [heading-led scanning](https://www.nngroup.com/articles/layer-cake-pattern-scanning/)
+and [proximity](https://www.nngroup.com/articles/gestalt-proximity/), alongside
+[GOV.UK's spacing guidance](https://design-system.service.gov.uk/styles/spacing/).
+Preserve comfortable control areas as spacing changes; [WCAG 2.2 target-size guidance](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+sets a 24 × 24 CSS-pixel minimum subject to its exceptions, while this system uses a 44px
+control token. These principles guide refinements rather than certify usability
+or accessibility conformance.
+
 ## Color — ivory, charcoal, sage, and terracotta
 
 The page keeps its printed-report identity with a more neutral ivory sheet,
 charcoal ink, and terracotta for results, indices, and focus. Muted sage is
-reserved for the featured before/after comparison. White panels distinguish
-project previews from the page without gradients or shadows.
+reserved for the featured before/after comparison. Warm off-white panels soften
+the light surface contrast; slightly lighter dark surfaces and hairlines make
+grouping easier to see without gradients or shadows. The page, ink, sage and
+terracotta tokens remain unchanged.
 
 | Role | Light | Dark |
 |---|---|---|
 | Page | #F8F7F4 | #181C19 |
-| Surface | #FFFFFF | #222823 |
+| Surface | #FDFCF9 | #252D27 |
 | Heading ink | #242824 | #F3F2EA |
 | Body ink | #454B45 | #CCD1C7 |
 | Caption ink | #596059 | #B1BAAF |
-| Hairline | #D8DDD5 | #404A41 |
+| Hairline | #D8DDD5 | #49544B |
 | Accent text / data | #A4432E | #EF987E |
 | Accent hover | #843323 | #FFB69D |
 | Featured surface | #EDF1E9 | #2B352D |
 | Featured ink | #354A39 | #D4E1CF |
 
-Measured text contrast: body on page 8.36:1 light / 11.09:1 dark;
-captions on surface 6.48:1 / 7.53:1; accent on the featured surface
+Calculated text contrast from the palette tokens: body on page 8.36:1 light / 11.09:1 dark;
+captions on surface 6.31:1 / 7.09:1; body on surface 8.73:1 / 9.11:1;
+accent on the featured surface
 5.37:1 / 5.74:1; featured ink on featured surface 8.38:1 / 9.38:1.
 Semantic color pairs have browser regression coverage at a 4.5:1 minimum.
 Legacy aliases resolve to these tokens. The default root palette is light,
@@ -120,6 +143,10 @@ so the no-JavaScript page retains intentional styling.
   Desktop active section uses a 2px overline; the tablet overlay uses an inline
   rule and leaves page geometry unchanged. Navigation and toggle targets are at
   least 44px high. Toggles are square hairline-bordered typographic buttons.
+  Their accessible names and tooltips describe the next theme or language,
+  updating together after either setting changes.
+- **Controls**: primary and secondary actions use sentence case, shared body
+  typography and visible focus states.
 - **Hero**: asymmetric spread — stable body-font role line, Zodiak name,
   closing rule, prominent value proposition, quieter role context, one primary case-study action, and quieter CV/LinkedIn
   links. Employer logos sit in a ruled row, with portrait/location alongside.
@@ -132,7 +159,8 @@ so the no-JavaScript page retains intentional styling.
   numeral left, label right-aligned.
 - **Experience**: four single-column ruled rows share the same logo, role,
   company, date, and lead layout. The first three have optional native details
-  with Challenge / Solution / Impact columns. Dates use muted mono text; rows
+  with context, contribution and outcome labels in neutral 19px semibold sans
+  serif. Dates use muted mono text; rows
   remain at full opacity, with stable monochrome logos in both themes.
 - **Projects**: one Selected work section, with compact category links for
   Reporting, Data quality and Automation. Each card reads category, title,
@@ -164,9 +192,9 @@ so the no-JavaScript page retains intentional styling.
   cells show a compact, underlined destination with an inline right arrow and
   color only the hovered or keyboard-focused icon. Destination labels stay visible
   on every device. Tiles use natural content height with an 8.75rem minimum;
-  seven engineering tools share one desktop row, become four plus three on
-  tablets, and finish with a compact full-width Airflow row on phones. The
-  platform group stays capped at 36rem. Category spacing is 1.5rem. Stack
+  all categories use the same responsive grid with a 10rem preferred minimum
+  tile width. Partial rows retain equal widths. Phones use two columns, with
+  one column for enlarged text. Category spacing is 1.5rem. Stack
   captions occupy the same reserved space as group notes, avoiding layout jumps.
   Tool names retain their appearance on hover. All four categories share the
   same neutral divider; Automation & AI has no extra accent rule.
@@ -177,7 +205,8 @@ so the no-JavaScript page retains intentional styling.
   Zodiak link with red underline. Facts carry 6px red square bullets.
 - **Footer**: colophon — final closing rule, name mark, social links, typeset
   credit line, mono metadata. Mobile tab bar: solid paper, hairline top rule,
-  mono labels, active tab = 2px red overline.
+  mono labels, active tab = 2px red overline. Phones hide the floating top
+  button and provide a 44px in-flow footer return link to `#main`.
 - **Toasts / cookie banner**: raised surface, ink border, mono text, square.
 
 ## Motion — print-restrained
@@ -224,7 +253,7 @@ the page readable.
   links, icons, and backgrounds all go red, the ledger becomes a promo flyer.
 - The closing double rule appears at exactly four ledger moments (six rule
   elements). Never add a fifth moment.
-- Project previews use a thin border and a white / raised surface. Elsewhere prefer rules to cards; no shadows, backdrop blur, or pills.
+- Project previews use a thin border and a warm off-white / raised dark surface. Elsewhere prefer rules to cards; no shadows, backdrop blur, or pills.
 - No decorative icons glued to headings; ornaments (indices, footnote markers)
   live in `aria-hidden` spans or CSS pseudo-elements, **never inside
   `data-i18n-key` nodes** (the i18n renderer overwrites textContent).
@@ -290,11 +319,11 @@ the page readable.
 - At mobile sizes, the cookie banner sits above the bottom navigation. The expanded demo has no fixed height limit.
 - Browser tests run through the local HTTP server, with regression coverage for translations, script failure, sources, and responsive layouts.
 
-## Compact project presentation — September 2026
+## Full-width project presentation — September 2026
 
 - Content measure: 76rem, with fluid gutters. The hero and impact strip retain a tighter relationship than separate content sections.
 - The reporting project leads with a clearly scoped outcome, sage workflow illustration and terracotta top rule. The manual-preparation measurement is labeled in the overview; detailed evidence remains in the case study.
-- Seven supporting projects use paired desktop cards, with a full-width dbt technical case between the analyst cards and the remaining pairs. All stack into a single phone column. Native details disclose the full case studies and work without JavaScript.
+- Three primary cases lead, followed by royalty automation, the finance chatbot, invoice automation and Spotify. All seven projects have their own full-width row and visible primary animation. The dbt technical chapter belongs to sales pipeline history. Native details disclose supporting evidence and work without JavaScript.
 - Each disclosure references its project title for assistive technology. Deep links open the relevant case study; print opens all studies and restores their previous state afterward.
 - Phone navigation uses the bottom tabs only. The menu button is retained at tablet widths (768–1023px); desktop uses the masthead links. Theme and language controls remain available at every size.
 - The Spotify screenshot appears in its preview and its expanded case study; supporting projects use compact workflow illustrations.
@@ -311,13 +340,13 @@ the page readable.
 
 - Supporting projects now show concise workflow illustrations and the existing Spotify dashboard preview before their disclosures. The figures describe the actual workflows; full details remain available in each case study.
 - A small RP masthead mark, sentence-case headings, and readable impact captions carry the editorial identity. Main sections share fluid spacing; the hero and impact strip retain a tighter gap.
-- The About section pairs the introduction with a compact facts column on desktop and stacks on phones. At 320px, impact values are smaller to give German labels adequate room.
+- The About section pairs the professional approach with business context, data and delivery examples; employment chronology stays in Experience. Its introduction has no isolated first-letter accent. It stacks on phones. At 320px, impact values are smaller to give German labels adequate room.
 - Contact fields sit on a distinct surface, with native name/email autocomplete, a vertically resizable message field, and a privacy link. Cookie, theme, language, and copy controls meet a 44px minimum target. The copy control is bilingual.
 - Tablet navigation dismisses on Escape, outside interaction, focus leaving, and breakpoint changes. Navigation announces the active section with `aria-current`; section jumps and Back to top preserve a useful keyboard focus destination.
 
 ## Subtle motion refinement
 
-- The existing light and dark palettes remain unchanged. Motion uses one gentle ease and short distances. Section reveals remain one-shot; project previews loop while visible with a pause control.
+- Motion uses the shared palette, one gentle ease and short distances. Section reveals remain one-shot; project previews loop while visible with a pause control.
 - Sections fade in once over 500ms. Headings settle by 5px, project items by 8px, and row stagger is limited to 60ms (120ms for the third impact metric). Phone project cards have no stagger delay.
 - Hero copy settles by 6px with a maximum 300ms delay. The closing rule draws independently, without the previous competing translation.
 - Case studies and role details open and close over 240ms. Repeated activation reverses from the current height; keyboard activation, direct case links, printing, content changes, and viewport changes retain native disclosure behavior.
@@ -336,20 +365,20 @@ the page readable.
 ## Project previews
 
 - Eight short, looping project previews accompany the reporting, reconciliation, deal history, dbt modeling, royalty, invoice, finance chatbot, and Spotify projects. A ninth animation traces the chatbot architecture inside its expanded case study. They use the existing palette and typography, with local SVG artwork.
-- The dbt case explains the technical modeling behind the existing sales-history case, with an explicit related-case link. A looping illustration traces Salesforce through dbt history models on Athena to forecast inputs; fictional D-201 rows retain all three stages at the same fixed snapshot. No production schema, code, employer data or new business metric is implied. Its wider layout gives the model and explanation room without changing the surrounding card pairs.
-- Reconciliation pairs a prominent net difference with two source totals on a shared scale and one specific exception. Deal history pairs elapsed days with three dated stages and a proportional duration bar. Both use the expanded examples' fictional figures, label their sample scope, and stack into readable rows on narrow screens. Their animation uses the same visibility and Pause controls as the other previews.
-- Reporting connects source records to one report before revealing the time saving. Invoice steps advance from CSV/Excel through Python to PDF. The chatbot shows a clearly labeled fictional Q3 question, thinking indicator, answer, and source.
+- The dbt implementation is a technical subsection inside the sales-history case. Both legacy case anchors remain reachable and open their ancestor disclosures. A quiet Salesforce → dbt / Athena source strip sits above fictional D-201 history: each stage becomes current, then remains available with a closed validity period when the next version appears. The complete frame retains three versions and one current row at the fixed snapshot date. Temporary current labels are decorative; the accessible markup, reduced-motion and print views describe the complete history. No production schema, code, employer data or new business metric is implied.
+- Reconciliation pairs a prominent net difference with two source totals on a shared scale and one specific exception. Deal history pairs elapsed days with three dated stages and a proportional duration bar. Both use the expanded examples' fictional figures and label their sample scope. Analyst previews share a 24rem baseline height and 1rem (16px at default text size) content gaps; stage tiles stack when their container is 26rem or narrower. Their animation uses the same visibility and Pause controls as the other previews.
+- Reporting labels source data and the Power BI model, then reveals a prepared monthly report ready to download. This is an illustrative status, not a download control; the actual manual-preparation result stays stationary beside the preview. Invoice steps advance from CSV/Excel through Python to PDF. The chatbot shows a clearly labeled fictional Q3 question, thinking indicator, answer, and source.
 - Report artwork assembles a miniature dashboard, royalty records arrive as layered author cards, and the invoice's lower paper panel unfolds into place. These are schematic illustrations, not additional business data. Hairlines and existing theme tokens supply depth without shadows or new colors. Supporting desktop preview panels share a minimum height.
-- The royalty preview moves from author records through calculations to statements, then shows the existing 300+ authors result. The architecture walkthrough traces report extraction, orchestration, retrieval, response, and the user interface with a small signal and brief outlines; its text stays visible throughout.
-- Spotify gently tours the existing authentic dashboard screenshot. This is an image preview, not a recording of filtering or live chart updates. The public Tableau dashboard remains available through its existing link.
-- Each approximately 3–4 second story repeats while visible, holding the complete frame for 1.2 seconds between cycles. A keyboard-accessible Pause/Resume control lets visitors stop the animation on its readable final frame. The visitor's pause choice survives scrolling, tab changes, language changes, preference changes, and case-study closure.
+- The royalty preview moves from watch-time data through R calculation, the documented accounting check, and author statements, then shows the existing 300+ authors result. Four steps share the same visual size, with more compact paper artwork in the mobile list. The chatbot architecture walkthrough traces report extraction, orchestration, retrieval, response, and the user interface with a small signal and brief outlines; its text stays visible throughout.
+- Spotify presents a readable crop of the authentic artist-ranking panel with restrained motion. A clearly labelled link opens the full screenshot in a native dialog, with optional original-size detail, keyboard scrolling, Escape/Close, and focus returned to its opener. Without JavaScript the link opens the image directly. This is an image preview, not a recording of filtering or live chart updates; the public Tableau dashboard remains linked. Background stories settle while the dialog is open and resume according to the visitor's existing pause choices.
+- Each approximately 3–4 second story repeats while visible. Simple stories hold the complete frame for two seconds; reconciliation and dbt hold for five, and deal history and the chatbot for four. The optional `data-preview-hold` value is bounded to 1–8 seconds, with invalid values falling back to two. A keyboard-accessible Pause/Resume control lets visitors stop the animation on its readable final frame. The visitor's pause choice survives scrolling, tab changes, language changes, preference changes, and case-study closure.
 - Offscreen previews, closed or closing case studies, background tabs, printing, and reduced motion settle to the complete still frame and cancel their pending cycle. Eligible visible previews resume automatically. No JavaScript or animation API also yields that still frame with controls hidden.
 - Text and playback labels support English and German. Invoice steps stack when enlarged text leaves insufficient width. Preview animation uses only transforms and opacity, with one cancellable timer between cycles; no GIF downloads, external players, or per-frame JavaScript loops are added.
 
 ## Consistency checks
 
-- CV-backed additions place revenue reconciliation and Salesforce deal history
-  first among the supporting projects. Real contributions and outcomes are kept
+- Reporting, revenue reconciliation and Salesforce deal history lead the project
+  section. Real contributions and outcomes are kept
   separate from explicitly fictional interactive samples. Reconciliation uses
   five records and a stated matching rule; stage history uses a fixed snapshot
   date and elapsed calendar days. Closed and due-today deals are not overdue.
@@ -381,7 +410,7 @@ the page readable.
 ## Purposeful logo motion
 
 - All skill marks share a restrained 160ms color reveal and 180ms backing fade on hover or keyboard focus. Optically balanced marks, names and project captions stay centered and stationary. Power BI and dark-theme low-contrast marks use a tight 48px neutral backing for readability. There are no extra charts or nodes beside the logos, enlarged circles, shadows or looping logo effects.
-- The employer strip links KPMG, CARIAD and Lecturio to their experience headings. Always-visible captions describe the progression from audit analytics through sales reporting to finance automation. The marks retain their monochrome treatment; a short accent rule responds on hover or focus. Three columns become three compact rows on phones.
+- The employer strip links KPMG, CARIAD and Lecturio to their experience headings. Always-visible captions describe the progression from audit analytics through sales reporting to finance automation. The marks retain their monochrome treatment; a short accent rule responds on hover or focus. Phones use compact responsive tracks with each icon above its employer name and caption; tracks wrap as available space requires.
 - Touch navigation remains one tap and keyboard activation follows the native link. The skill color reveal works without JavaScript; reduced motion makes the change immediate. Employer links also work without JavaScript; enhancement places keyboard focus at the selected role.
 - Interaction guidance: [W3C reduced-motion technique C39](https://www.w3.org/WAI/WCAG22/Techniques/css/C39), [W3C keyboard criterion](https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html) and [web.dev animation performance](https://web.dev/articles/animations-guide). These guide the implementation; they are not a claim of comprehensive accessibility conformance.
 
@@ -389,7 +418,7 @@ the page readable.
 
 - Hero metrics are 99%, 300+ and 4+ years in analytics, using the CV's "finance, automotive and audit" phrasing. `₹200k` stays in the S.M. Auto entry: converted, it undersold the headline row.
 - The Lecturio location describes the person ("based in Hamburg" / "wohnhaft in Hamburg"); the company itself is not placed in Hamburg.
-- Phone navigation uses concise labels: Career/Skills in English and Beruf/Tools in German. Desktop retains the fuller labels; destinations are unchanged.
+- Navigation consistently uses Experience/Skills in English and Erfahrung/Tools in German across desktop and phone layouts; destinations are unchanged.
 - German headings keep `hyphens: manual`: long compounds get a soft hyphen (`Monats­berichte`, `zusammen­arbeiten`) or shorter phrasing (`Automatisierte Rechnungspipeline`). A test checks that no heading word splits without a hyphen at 320–768px.
 - A saved German preference sets `.lang-pending` before first paint, hiding the English markup until main.js translates it. `lang` stays `en` until then, so it always describes the visible text; the 3s failsafe still reveals the page if main.js fails.
 - Controls that wait (demo questions, copy, contact submit) use `aria-disabled` rather than `disabled`, so keyboard focus and Escape stay in place. The copy result is announced through a status region.

@@ -1,0 +1,81 @@
+/* An authentic dashboard detail, with a progressively enhanced full-image view. */
+.dashboard-detail-link { display: block; min-width: 0; color: var(--heading-color); }
+.project-visual.motion-preview.dashboard-preview { min-height: 0; }
+.dashboard-detail-link .preview-dashboard-window {
+    position: relative;
+    display: block;
+    height: auto;
+    aspect-ratio: 1.7;
+    overflow: hidden;
+    background: #E6E6E6;
+}
+.dashboard-detail-link .preview-dashboard-window img {
+    position: absolute;
+    width: 345%;
+    max-width: none;
+    height: auto;
+    left: -3.4%;
+    top: -62.3%;
+    transform-origin: 15% 36%;
+}
+.dashboard-detail-caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--type-meta);
+    line-height: 1.5;
+}
+.dashboard-detail-caption > span:first-child { color: var(--text-color); }
+.dashboard-open-label { display: inline-flex; align-items: center; gap: var(--space-2); text-decoration: underline; text-underline-offset: 4px; }
+.dashboard-detail-link:hover .dashboard-open-label { color: var(--accent-text); }
+.dashboard-detail-link:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -3px; }
+.dashboard-viewer {
+    width: min(94vw, 92rem);
+    max-width: calc(100vw - var(--space-4));
+    max-height: calc(100dvh - var(--space-8));
+    margin: auto;
+    padding: var(--space-6);
+    border: 1px solid var(--hairline-strong);
+    background: var(--bg-color);
+    color: var(--text-primary);
+}
+.dashboard-viewer[open] { display: flex; flex-direction: column; gap: var(--space-4); }
+.dashboard-viewer::backdrop { background: rgb(15 20 16 / .75); }
+.dashboard-viewer-header, .dashboard-viewer-controls { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-6); flex-shrink: 0; }
+.dashboard-viewer-header h2 { margin: 0; font-family: var(--font-display); font-size: var(--type-subheading); line-height: 1.3; color: var(--heading-color); }
+.dashboard-viewer-controls p { max-width: 65ch; font-size: var(--type-meta); line-height: 1.6; }
+.dashboard-viewer-close, .dashboard-zoom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--control-size);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--hairline-strong);
+    color: var(--heading-color);
+    background: var(--surface);
+    font-size: var(--type-meta);
+    line-height: 1.4;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+.dashboard-viewer-close > span:last-child { font-size: 1.5rem; line-height: 1; }
+.dashboard-viewer-close { min-width: var(--control-size); }
+.dashboard-viewer :is(button:hover, button[aria-pressed='true']) { background: var(--feature-surface); color: var(--feature-ink); }
+.dashboard-viewer :is(button, a, [tabindex]):focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.dashboard-zoom svg { width: 20px; height: 20px; flex-shrink: 0; }
+.dashboard-viewer-canvas { min-width: 0; min-height: 6rem; overflow: auto; overscroll-behavior: contain; background: var(--surface); }
+.dashboard-viewer-canvas img { display: block; width: 100%; max-width: 1421px; height: auto; margin-inline: auto; }
+.dashboard-viewer[data-dashboard-zoomed] .dashboard-viewer-canvas img { width: 1421px; max-width: none; }
+.dashboard-viewer-tableau { align-self: start; flex-shrink: 0; min-height: var(--control-size); font-size: var(--type-meta); }
+@media (max-width: 767px) {
+    .dashboard-viewer { padding: var(--space-4); max-height: calc(100dvh - var(--space-4)); }
+    .dashboard-viewer-header { align-items: start; gap: var(--space-3); }
+    .dashboard-viewer-close { max-width: 9rem; }
+    .dashboard-viewer-controls { align-items: start; flex-direction: column; gap: var(--space-2); }
+    .dashboard-detail-caption { align-items: start; flex-direction: column; }
+}
+@media print { .dashboard-viewer { display: none !important; } }

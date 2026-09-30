@@ -117,6 +117,13 @@ test.describe('Images', () => {
     });
     await page.waitForTimeout(1000);
 
+    // The full-size screenshot is intentionally lazy inside a closed dialog.
+    // Exercise its actual opener before checking the loaded image inventory.
+    await page.locator('.dashboard-detail-link').click();
+    await expect(page.locator('#spotify-dashboard-viewer')).toBeVisible();
+    await expect.poll(() => page.locator('#spotify-dashboard-viewer img').evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+    await page.keyboard.press('Escape');
+
     const broken = await page.evaluate(() => {
       const imgs = document.querySelectorAll('img[src]:not([src^="http"]):not([src^="data:"])');
       const results = [];
@@ -413,18 +420,25 @@ test.describe('Experience Timeline', () => {
     }
   });
 
-  test('most entries have Challenge/Solution/Impact structure', async ({ page }) => {
-    // First 3 entries (Lecturio, CARIAD, KPMG) have full CSI; S.M. Auto is collapsed
-    const entries = page.locator('.timeline-container');
-    const count = await entries.count();
-    let csiCount = 0;
-    for (let i = 0; i < count; i++) {
-      const text = await entries.nth(i).textContent();
-      if (text.includes('Challenge') && text.includes('Solution') && text.includes('Impact')) {
-        csiCount++;
+  test('detailed roles provide structured context, contribution and results', async ({ page }) => {
+    const roles = page.locator('details.experience-details');
+    await expect(roles).toHaveCount(3);
+    for (const role of await roles.all()) {
+      await role.locator(':scope > summary').click();
+      const sections = role.locator('.role-body > ul > li');
+      await expect(sections).toHaveCount(3);
+      const headings = [];
+      for (const section of await sections.all()) {
+        const heading = section.locator('h4');
+        await expect(heading).toBeVisible();
+        await expect(heading).not.toBeEmpty();
+        headings.push((await heading.textContent()).trim());
+        const explanation = section.locator('h4 + p');
+        await expect(explanation).toBeVisible();
+        await expect(explanation).not.toBeEmpty();
       }
+      expect(new Set(headings).size).toBe(3);
     }
-    expect(csiCount).toBeGreaterThanOrEqual(3);
   });
 
   test('skill tags are present in most entries', async ({ page }) => {
@@ -486,10 +500,7 @@ test.describe('Projects Section', () => {
   test('bento grid exists with project cards', async ({ page }) => {
     const grid = page.locator('.bento-grid');
     await expect(grid).toBeAttached();
-    // 1 dynamic island wrapper + 3 project cards (Spotify, RAG, Invoice) = at least 3 children
-    const children = page.locator('.bento-grid > *');
-    const count = await children.count();
-    expect(count).toBeGreaterThanOrEqual(3);
+    await expect(grid.locator(':scope > article')).toHaveCount(7);
   });
 
   test('AI Finance Bot dynamic island is present in collapsed state', async ({ page }) => {
@@ -517,6 +528,7 @@ test.describe('Projects Section', () => {
 test.describe('AI Finance Bot', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(FILE_URL);
+    await page.locator('#rag-case-study-details > summary').click();
     await page.locator('#dynamic-island-container').scrollIntoViewIfNeeded();
     await page.waitForTimeout(500);
   });

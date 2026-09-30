@@ -10,15 +10,20 @@ test('the dbt deep link opens its technical case and connects to the same busine
   const card = page.locator('#dbt-history-case-study');
   const details = page.locator('#dbt-history-details');
   const preview = card.locator('[data-project-preview="dbt-history"]');
+  await expect(page.locator('#pipeline-history-details')).toHaveAttribute('open', '');
   await expect(details).toHaveAttribute('open', '');
-  await expect(details.locator('.case-body')).toBeVisible();
+  await expect(card).toBeVisible();
+  await expect(page.locator('#pipeline-history-case-study #dbt-history-case-study')).toHaveCount(1);
   await expect(preview).toContainText('Salesforce');
   await expect(preview).toContainText('dbt');
   await expect(preview).toContainText('Athena');
   await expect(preview.locator('[data-preview-toggle]')).toBeHidden();
-  await card.locator('a[href="#pipeline-history-case-study"]').click();
-  await expect(page).toHaveURL(/#pipeline-history-case-study$/);
+  await page.locator('#pipeline-history-details > summary').click();
+  await expect(card).toBeHidden();
+  await page.locator('#pipeline-history-case-study a[href="#dbt-history-case-study"]').click();
+  await expect(page).toHaveURL(/#dbt-history-case-study$/);
   await expect(page.locator('#pipeline-history-details')).toHaveAttribute('open', '');
+  await expect(card).toBeVisible();
 });
 
 test('the dbt case remains readable and keyboard operable without JavaScript', async ({ browser }) => {
@@ -26,22 +31,26 @@ test('the dbt case remains readable and keyboard operable without JavaScript', a
   const page = await context.newPage();
   try {
     await page.goto('http://127.0.0.1:4173/');
+    await page.locator('#pipeline-history-details > summary').click();
     const details = page.locator('#dbt-history-details');
-    const summary = details.locator('summary');
+    const summary = details.locator(':scope > summary');
     await summary.focus();
     await page.keyboard.press('Enter');
     await expect(details).toHaveAttribute('open', '');
-    await expect(details.locator('.case-body')).toBeVisible();
+    await expect(page.locator('#dbt-history-case-study')).toBeVisible();
     await expect(details).toContainText('Athena');
     const preview = page.locator('[data-project-preview="dbt-history"]');
     await expect(preview.locator('[data-preview-toggle]')).toBeHidden();
     await expect(preview).toContainText('D-201');
     const readable = await preview.locator('[data-preview-motion]').evaluateAll(elements => elements.every(element => {
       const opacity = getComputedStyle(element).opacity;
-      const hiddenDecoration = ['pulse', 'thinking', 'signal-x', 'signal-y'].includes(element.dataset.previewMotion);
+      const hiddenDecoration = ['pulse', 'thinking', 'signal-x', 'signal-y', 'superseded'].includes(element.dataset.previewMotion);
       return element.getAnimations().length === 0 && opacity === (hiddenDecoration ? '0' : '1');
     }));
     expect(readable).toBe(true);
+    await expect(preview.locator('.dbt-current-label')).toHaveText('Current');
+    await expect(preview.locator('[data-i18n-key="dbt_retained"]')).toHaveText(['Retained', 'Retained']);
+    expect(await preview.locator('.dbt-transient-current').evaluateAll(labels => labels.every(label => label.getAttribute('aria-hidden') === 'true'))).toBe(true);
     await page.keyboard.press('Enter');
     await expect(details).not.toHaveAttribute('open');
     await expect(summary).toBeFocused();

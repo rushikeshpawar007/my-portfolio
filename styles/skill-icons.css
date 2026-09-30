@@ -12,12 +12,13 @@
 .skill-chip:is([data-skill='qlik-sense'], [data-skill='github-pages']) { --skill-mark-size: 36px; }
 .skill-chip:is([data-skill='power-bi'], [data-skill='python'], [data-skill='dbt']) { --skill-mark-size: 38px; }
 .skill-chip:is([data-skill='excel'], [data-skill='bigquery'], [data-skill='claude-code']) { --skill-mark-size: 40px; }
-.skill-chip:is([data-skill='tableau'], [data-skill='airflow'], [data-skill='n8n'], [data-skill='salesforce'], [data-skill='aws']) { --skill-mark-size: 44px; }
+.skill-chip:is([data-skill='tableau'], [data-skill='r'], [data-skill='airflow'], [data-skill='n8n'], [data-skill='salesforce'], [data-skill='aws']) { --skill-mark-size: 44px; }
 .skill-chip[data-skill='power-bi'] { --skill-brand: #F2C811; --skill-backing: #292D29; }
 .skill-chip[data-skill='tableau'] { --skill-brand: #E97627; }
 .skill-chip[data-skill='qlik-sense'] { --skill-brand: #009848; }
 .skill-chip[data-skill='excel'] { --skill-brand: #217346; }
 .skill-chip[data-skill='python'] { --skill-brand: #3776AB; }
+.skill-chip[data-skill='r'] { --skill-brand: #276DC3; }
 .skill-chip[data-skill='bigquery'] { --skill-brand: #669DF6; }
 .skill-chip[data-skill='dbt'] { --skill-brand: #FF694B; }
 .skill-chip[data-skill='pandas'] { --skill-brand: #150458; }
@@ -50,7 +51,7 @@ html[data-theme='dark'] .skill-chip:is([data-skill='pandas'], [data-skill='aws']
     pointer-events: none;
 }
 .skill-project-intro { margin: 0 0 var(--space-8); max-width: var(--reading-width); color: var(--text-color); font-size: 1.125rem; line-height: 1.65; }
-.skill-project-label { font-size: .8125rem; line-height: 1.4; color: var(--text-color); overflow-wrap: anywhere; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+.skill-project-label { font-size: var(--type-meta); line-height: 1.4; color: var(--text-color); overflow-wrap: anywhere; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
 .skill-project-link:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -3px; }
 .skill-chip:focus-visible .skill-chip-icon { color: var(--skill-brand); }
 .skill-chip:focus-visible .skill-icon-wrap::before { opacity: 1; }
@@ -70,19 +71,11 @@ html[data-theme='dark'] .skill-chip:is([data-skill='pandas'], [data-skill='aws']
 @media (prefers-reduced-motion: reduce) {
     .skill-chip .skill-chip-icon, .skill-icon-wrap::before { transition: none !important; }
 }
-/* Flex growth fills the shorter final row: seven tools become four plus three. */
-.skill-matrix--engineering { --skill-columns: 7; }
-.skill-matrix--platforms { --skill-columns: 3; max-width: 36rem; }
-@container (max-width: 64rem) {
-    .skill-matrix { --skill-columns: 3; }
-    .skill-matrix--engineering { --skill-columns: 4; }
-}
-@container (max-width: 40rem) {
-    .skill-matrix { --skill-columns: 2; }
-    .skill-matrix--engineering > :last-child,
-    .skill-matrix--platforms > :last-child { flex-basis: 100%; flex-direction: row; justify-content: center; min-height: 0; }
+/* Phones retain two equal columns; enlarged text gets one comfortable column. */
+@container (max-width: 26rem) {
+    .skill-matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @container (max-width: 16rem) {
-    .skill-matrix { --skill-columns: 1; }
+    .skill-matrix { grid-template-columns: minmax(0, 1fr); }
     .skill-project-label [aria-hidden] { display: none; }
 }

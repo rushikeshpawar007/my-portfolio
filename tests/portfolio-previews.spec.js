@@ -11,10 +11,25 @@ async function openInvoice(page, controlledClock = false) {
   return openPreview(page, 'invoice', controlledClock);
 }
 
+async function revealPreview(page, preview) {
+  const ancestors = await preview.evaluate(element => {
+    const ids = [];
+    for (let details = element.closest('details'); details; details = details.parentElement?.closest('details')) ids.unshift(details.id);
+    return ids;
+  });
+  for (const id of ancestors) {
+    const details = page.locator('#' + id);
+    if (await details.getAttribute('open') === null) await details.locator(':scope > summary').click();
+    await expect(details).toHaveAttribute('open', '');
+    await expect(details).not.toHaveAttribute('data-disclosure-state');
+  }
+}
+
 async function openPreview(page, name, controlledClock = false) {
   if (controlledClock) await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
   await page.goto('/');
   const preview = page.locator(`[data-project-preview="${name}"]`);
+  await revealPreview(page, preview);
   await preview.scrollIntoViewIfNeeded();
   await expect(preview).toHaveAttribute('data-preview-state', 'playing');
   if (controlledClock) await page.clock.pauseAt(new Date('2026-01-01T00:01:00Z'));
@@ -31,7 +46,7 @@ async function finishPreview(preview) {
 async function expectStatic(preview) {
   expect(await preview.locator('[data-preview-motion]').evaluateAll(elements => elements.every(element => {
     const style = getComputedStyle(element);
-    const expectedOpacity = ['thinking', 'pulse', 'signal-x', 'signal-y'].includes(element.dataset.previewMotion) ? '0' : '1';
+    const expectedOpacity = ['thinking', 'pulse', 'signal-x', 'signal-y', 'superseded'].includes(element.dataset.previewMotion) ? '0' : '1';
     return element.getAnimations().length === 0 && style.opacity === expectedOpacity;
   }))).toBe(true);
 }
@@ -111,6 +126,7 @@ test('reduced motion keeps complete stills and preserves a pause when normal mot
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   for (const preview of await page.locator(previewSelector).all()) {
+    await revealPreview(page, preview);
     await expect(preview).toHaveAttribute('data-preview-state', 'complete');
     await expect(preview.locator('[data-preview-toggle]')).toBeHidden();
     await expectStatic(preview);
@@ -188,6 +204,8 @@ test('missing animation support keeps every project preview readable', async ({ 
   await page.goto('/');
   await expect(page.locator(previewSelector)).toHaveCount(9);
   for (const preview of await page.locator(previewSelector).all()) {
+    await revealPreview(page, preview);
+    await expect(preview).toBeVisible();
     await expect(preview).toHaveAttribute('data-preview-state', 'complete');
     await expect(preview.locator('[data-preview-toggle]')).toBeHidden();
     await expectStatic(preview);
@@ -199,6 +217,8 @@ test('blocked preview JavaScript leaves useful still frames with no inactive con
   await page.goto('/');
   await expect(page.locator(previewSelector)).toHaveCount(9);
   for (const preview of await page.locator(previewSelector).all()) {
+    await revealPreview(page, preview);
+    await expect(preview).toBeVisible();
     await expect(preview).not.toHaveAttribute('data-preview-state');
     await expect(preview.locator('[data-preview-toggle]')).toBeHidden();
     await expectStatic(preview);
@@ -214,6 +234,7 @@ test('a delayed dashboard decode cannot restart a paused or offscreen tour', asy
   });
   await page.goto('/');
   const spotify = page.locator('[data-project-preview="spotify"]');
+  await revealPreview(page, spotify);
   await spotify.scrollIntoViewIfNeeded();
   await expect(spotify).toHaveAttribute('data-preview-state', 'playing');
   expect(await spotify.locator('img').evaluate(image => image.getAnimations().length)).toBe(0);
@@ -236,6 +257,8 @@ test('a delayed dashboard decode cannot restart a paused or offscreen tour', asy
 
 test('the royalty workflow repeats and its pause control settles the whole story', async ({ page }) => {
   const royalty = await openPreview(page, 'royalty', true);
+  await expect(page.locator('#royalty-case-study-details')).not.toHaveAttribute('open');
+  await expect(royalty).toBeVisible();
   await finishPreview(royalty);
   await expectStatic(royalty);
   await page.clock.fastForward(2000);
@@ -245,11 +268,14 @@ test('the royalty workflow repeats and its pause control settles the whole story
   await page.clock.fastForward(20000);
   await expect(royalty).toHaveAttribute('data-preview-state', 'complete');
   await expectStatic(royalty);
+  await expect(page.locator('#royalty-case-study-details')).not.toHaveAttribute('open');
 });
 
 for (const name of ['reconciliation', 'deal-history', 'dbt-history']) {
   test(`${name} repeats its complete analytical story and suspends when offscreen or paused`, async ({ page }) => {
     const preview = await openPreview(page, name, true);
+    const hold = name === 'deal-history' ? 4000 : 5000;
+    await expect(preview).toHaveAttribute('data-preview-hold', String(hold));
     const motions = await preview.locator('[data-preview-motion]').evaluateAll(elements => elements.flatMap(element => element.getAnimations().map(animation => {
       const timing = animation.effect.getTiming();
       return { end: Number(timing.delay) + Number(timing.duration), iterations: timing.iterations, properties: animation.effect.getKeyframes().flatMap(frame => Object.keys(frame)) };
@@ -263,7 +289,7 @@ for (const name of ['reconciliation', 'deal-history', 'dbt-history']) {
     for (let cycle = 0; cycle < 2; cycle += 1) {
       await finishPreview(preview);
       await expectStatic(preview);
-      await page.clock.fastForward(1999);
+      await page.clock.fastForward(hold - 1);
       await expect(preview).toHaveAttribute('data-preview-state', 'complete');
       await page.clock.fastForward(1);
       await expect(preview).toHaveAttribute('data-preview-state', 'playing');
@@ -326,9 +352,91 @@ test('analytical card pause choices remain independent through repeated language
   await expectStatic(reconciliation);
 });
 
+test('dbt makes a new version current while retaining the preceding stage and its validity period', async ({ page }) => {
+  const preview = await openPreview(page, 'dbt-history', true);
+  const rows = preview.locator('.dbt-version-table tbody tr');
+  const seek = async time => preview.locator('[data-preview-motion]').evaluateAll((elements, currentTime) => {
+    elements.forEach(element => element.getAnimations().forEach(animation => {
+      animation.pause();
+      animation.currentTime = currentTime;
+    }));
+  }, time);
+
+  await seek(1000);
+  await expect(rows.nth(0)).toHaveCSS('opacity', '1');
+  await expect(rows.nth(0).locator('.dbt-transient-current')).toHaveCSS('opacity', '1');
+  await expect(rows.nth(1)).toHaveCSS('opacity', '0');
+  await seek(2200);
+  await expect(rows.nth(0)).toHaveCSS('opacity', '1');
+  await expect(rows.nth(0).locator('[data-i18n-key="dbt_retained"]')).toHaveCSS('opacity', '1');
+  await expect(rows.nth(0).locator('.dbt-version-end')).toHaveText('→ 9 Mar');
+  await expect(rows.nth(1).locator('.dbt-transient-current')).toHaveCSS('opacity', '1');
+  await expect(rows.nth(2)).toHaveCSS('opacity', '0');
+  await finishPreview(preview);
+  await expectStatic(preview);
+  await expect(rows.nth(1).locator('.dbt-version-end')).toHaveText('→ 18 Mar');
+  await expect(rows.nth(2)).toContainText('Proposal/Price Quote');
+  await expect(rows.nth(2).locator('.dbt-current-label')).toHaveText('Current');
+  await expect(rows.nth(2)).toContainText('No end date');
+  await expect(preview).toContainText('3 versions retained');
+  await expect(preview).toContainText('Earlier stages remain available for analysis.');
+
+  await preview.locator('[data-preview-toggle]').click();
+  await page.locator('#lang-toggle-header').click();
+  await expect(rows.nth(2).locator('.dbt-current-label')).toHaveText('Aktuell');
+  await expect(rows.nth(0).locator('[data-i18n-key="dbt_retained"]')).toHaveText('Erhalten');
+  await expect(rows.nth(2)).toContainText('Kein Enddatum');
+  await expectStatic(preview);
+});
+
+test('an image viewer suspends a pending repeat and preserves the visitor’s pause choice', async ({ page }) => {
+  const preview = await openInvoice(page, true);
+  const overlay = async open => page.evaluate(active => {
+    document.dispatchEvent(new CustomEvent('portfolio:previewoverlaychange', { detail: { open: active } }));
+  }, open);
+  await finishPreview(preview);
+  await overlay(true);
+  await page.clock.fastForward(20000);
+  await expect(preview).toHaveAttribute('data-preview-state', 'complete');
+  await expectStatic(preview);
+  await overlay(false);
+  await expect(preview).toHaveAttribute('data-preview-state', 'playing');
+  await preview.locator('[data-preview-toggle]').click();
+  await overlay(true);
+  await overlay(false);
+  await expect(preview).toHaveAttribute('data-preview-paused', 'true');
+  await expectStatic(preview);
+});
+
+test('printing dbt history shows retained versions and only the final current label', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/#dbt-history-case-study');
+  await page.emulateMedia({ media: 'print' });
+  const preview = page.locator('[data-project-preview="dbt-history"]');
+  await expect(preview.locator('.dbt-current-label')).toHaveText('Current');
+  await expect(preview.locator('[data-i18n-key="dbt_retained"]')).toHaveText(['Retained', 'Retained']);
+  for (const temporaryLabel of await preview.locator('.dbt-transient-current').all()) await expect(temporaryLabel).toBeHidden();
+});
+
+for (const [value, hold] of [['-500', 1000], ['100000', 8000], ['invalid', 2000]]) {
+  test(`preview hold ${value} remains bounded or falls back to the default`, async ({ page }) => {
+    await page.route('http://127.0.0.1:4173/', async route => {
+      const response = await route.fetch();
+      const body = (await response.text()).replace('data-project-preview="invoice"', `data-project-preview="invoice" data-preview-hold="${value}"`);
+      await route.fulfill({ response, body });
+    });
+    const preview = await openInvoice(page, true);
+    await finishPreview(preview);
+    await page.clock.fastForward(hold - 1);
+    await expect(preview).toHaveAttribute('data-preview-state', 'complete');
+    await page.clock.fastForward(1);
+    await expect(preview).toHaveAttribute('data-preview-state', 'playing');
+  });
+}
+
 async function openPipeline(page) {
   const details = page.locator('#rag-case-study-details');
-  await details.locator('summary').click();
+  await details.locator(':scope > summary').click();
   await expect(details).toHaveAttribute('open', '');
   await expect(details).not.toHaveAttribute('data-disclosure-state');
   const pipeline = page.locator('[data-project-preview="rag-pipeline"]');
@@ -376,7 +484,7 @@ test('the RAG signal stops as closing starts and remembers pause across reopenin
   await expect(pipeline).toHaveAttribute('data-preview-paused', 'true');
   await closePipelineDuringTransition(details);
   await finishDisclosure(details);
-  await details.locator('summary').click();
+  await details.locator(':scope > summary').click();
   await expect(details).not.toHaveAttribute('data-disclosure-state');
   await pipeline.scrollIntoViewIfNeeded();
   await expect(pipeline).toHaveAttribute('data-preview-paused', 'true');
@@ -418,7 +526,7 @@ test('the RAG architecture remains readable through native details without JavaS
   try {
     await page.goto('http://127.0.0.1:4173/');
     const details = page.locator('#rag-case-study-details');
-    await details.locator('summary').click();
+    await details.locator(':scope > summary').click();
     const pipeline = page.locator('[data-project-preview="rag-pipeline"]');
     await expect(pipeline).toBeVisible();
     await expect(pipeline).toContainText('Pinecone');

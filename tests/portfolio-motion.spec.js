@@ -21,7 +21,7 @@ for (const id of ['report-details', 'royalty-case-study-details', 'lecturio-role
   test(`${id} expands gently and preserves native keyboard focus`, async ({ page }) => {
     await page.goto('/');
     const details = page.locator('#' + id);
-    const summary = details.locator('summary');
+    const summary = details.locator(':scope > summary');
     await summary.focus();
     // Sample the 240 ms animation in the same task that starts it; reading it after
     // a separate round trip fails whenever a busy runner lets the animation finish.
@@ -84,7 +84,7 @@ test('reduced motion opens and closes every disclosure without animation', async
     el.querySelector('summary').click();
     return opened && !el.open && el.style.overflow === '';
   }));
-  expect(states).toHaveLength(11);
+  expect(states).toHaveLength(10);
   expect(states.every(Boolean)).toBe(true);
 });
 
@@ -118,7 +118,7 @@ test('printing mid-animation reveals all content and restores intended states', 
     }
     dispatchEvent(new Event('beforeprint'));
   });
-  await expect(page.locator('details.case-details[open], details.experience-details[open]')).toHaveCount(11);
+  await expect(page.locator('details.case-details[open], details.experience-details[open]')).toHaveCount(10);
   await expect(page.locator('[data-disclosure-state]')).toHaveCount(0);
   expect(await page.locator('details.case-details, details.experience-details').evaluateAll(elements => elements.every(el => el.style.overflow === '' && el.getAnimations().length === 0))).toBe(true);
   await page.evaluate(() => dispatchEvent(new Event('afterprint')));
